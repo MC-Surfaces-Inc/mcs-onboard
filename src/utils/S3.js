@@ -25,7 +25,7 @@ const client = new S3Client({
 });
 
 const createBucket = async (username) => {
-  let bucketName = "onboard-" + username;
+  let bucketName = "mcs-onboard-" + username;
 
   try {
     await client.send(new CreateBucketCommand({ Bucket: bucketName }));
@@ -36,7 +36,7 @@ const createBucket = async (username) => {
 };
 
 const createEmptyObject = async (username, newBucket) => {
-  let bucketName = "onboard-" + username;
+  let bucketName = "mcs-onboard-" + username;
 
   try {
     await client.send(
@@ -49,7 +49,7 @@ const createEmptyObject = async (username, newBucket) => {
 };
 
 const getObjects = async (username, prefix) => {
-  let bucketName = "onboard-" + username;
+  let bucketName = "mcs-onboard-" + username;
 
   try {
     let objects = await client.send(
@@ -67,7 +67,7 @@ const getObjects = async (username, prefix) => {
 };
 
 const deleteObject = async (username, key) => {
-  let bucketName = "onboard-" + username;
+  let bucketName = "mcs-onboard-" + username;
 
   try {
     await client.send(
@@ -110,7 +110,7 @@ const putObject = async (user, parentBucket) => {
   let file = await pickFile();
   if (file === "Canceled") return "Canceled";
 
-  let bucket = "onboard-".concat(user.sageUserId, "-", user.sageEmployeeNumber);
+  let bucket = "mcs-onboard-".concat(user.sageUserId, "-", user.sageEmployeeNumber);
   let key = parentBucket.concat("/", file.name);
   let body = await fileToBlob(file.uri);
 
@@ -162,7 +162,7 @@ const getFiles = async (user, clientName) => {
   response.Contents.forEach(file => {
     file.Name = file.Key.split("/")[1];
     file.LastModified = new Date(file.LastModified).toLocaleString("en-us");
-    file.Bucket = "onboard-" + user.sageUserId + "-" + user.sageEmployeeNumber;
+    file.Bucket = "mcs-onboard-" + user.sageUserId + "-" + user.sageEmployeeNumber;
   });
 
   return response.Contents;

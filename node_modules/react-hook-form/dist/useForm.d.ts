@@ -1,6 +1,6 @@
 import { FieldValues, UseFormProps, UseFormReturn } from './types';
 /**
- * Custom hook to mange the entire form.
+ * Custom hook to manage the entire form.
  *
  * @remarks
  * [API](https://react-hook-form.com/api/useform) • [Demo](https://codesandbox.io/s/react-hook-form-get-started-ts-5ksmm) • [Video](https://www.youtube.com/watch?v=RkXv4AXXC_4)

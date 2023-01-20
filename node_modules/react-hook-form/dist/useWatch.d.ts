@@ -1,4 +1,4 @@
-import { Control, DeepPartialSkipArrayKey, FieldPath, FieldPathValue, FieldPathValues, FieldValues, UnpackNestedValue } from './types';
+import { Control, DeepPartialSkipArrayKey, FieldPath, FieldPathValue, FieldPathValues, FieldValues } from './types';
 /**
  * Subscribe to the entire form values change and re-render at the hook level.
  *
@@ -21,11 +21,11 @@ import { Control, DeepPartialSkipArrayKey, FieldPath, FieldPathValue, FieldPathV
  * ```
  */
 export declare function useWatch<TFieldValues extends FieldValues = FieldValues>(props: {
-    defaultValue?: UnpackNestedValue<DeepPartialSkipArrayKey<TFieldValues>>;
+    defaultValue?: DeepPartialSkipArrayKey<TFieldValues>;
     control?: Control<TFieldValues>;
     disabled?: boolean;
     exact?: boolean;
-}): UnpackNestedValue<DeepPartialSkipArrayKey<TFieldValues>>;
+}): DeepPartialSkipArrayKey<TFieldValues>;
 /**
  * Custom hook to subscribe to field change and isolate re-rendering at the component level.
  *
@@ -78,7 +78,7 @@ export declare function useWatch<TFieldValues extends FieldValues = FieldValues,
  */
 export declare function useWatch<TFieldValues extends FieldValues = FieldValues, TFieldNames extends readonly FieldPath<TFieldValues>[] = readonly FieldPath<TFieldValues>[]>(props: {
     name: readonly [...TFieldNames];
-    defaultValue?: UnpackNestedValue<DeepPartialSkipArrayKey<TFieldValues>>;
+    defaultValue?: DeepPartialSkipArrayKey<TFieldValues>;
     control?: Control<TFieldValues>;
     disabled?: boolean;
     exact?: boolean;
@@ -96,5 +96,5 @@ export declare function useWatch<TFieldValues extends FieldValues = FieldValues,
  * const values = useWatch()
  * ```
  */
-export declare function useWatch<TFieldValues extends FieldValues = FieldValues, TFieldNames extends FieldPath<TFieldValues>[] = FieldPath<TFieldValues>[]>(): FieldPathValues<TFieldValues, TFieldNames>;
+export declare function useWatch<TFieldValues extends FieldValues = FieldValues>(): DeepPartialSkipArrayKey<TFieldValues>;
 //# sourceMappingURL=useWatch.d.ts.map
