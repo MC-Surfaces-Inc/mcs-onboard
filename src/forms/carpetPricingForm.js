@@ -84,6 +84,8 @@ export default function CarpetPricingForm({ programs, clientId }) {
     });
   };
 
+  console.log(control)
+
   return (
     <Box flex={1} m={2} mb={10}>
       <InteractiveTable

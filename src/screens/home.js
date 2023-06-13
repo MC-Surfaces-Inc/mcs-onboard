@@ -25,6 +25,8 @@ import Loading from "./loading";
 export default function Home({ navigation }) {
   const user = useSelector(state => state.auth.user);
 
+  console.log(user);
+
   React.useEffect(() => {
     if (user) {
       S3.createBucket(`${user.sageUserId}-${user.sageEmployeeNumber}`);
@@ -33,6 +35,8 @@ export default function Home({ navigation }) {
 
   const ClientList = ({ user }) => {
     const { data = [], error, isLoading } = useGetClientsByUserQuery(user.id);
+
+    console.log(data);
 
     return (
       <FlatList
@@ -87,7 +91,6 @@ export default function Home({ navigation }) {
                       name={"user-plus"}
                       size={24}
                       color={"#fafaf9"}
-                      flex={1}
                     />
                   }
                   my={2.5}

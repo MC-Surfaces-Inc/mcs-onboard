@@ -12,6 +12,7 @@ import {
 import { NativeBaseProvider, extendTheme } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
+// @ts-ignore
 import { useDispatch, useSelector, RootStateOrAny } from "react-redux";
 import Login from "./src/screens/login";
 import Home from "./src/screens/home";

@@ -47,7 +47,6 @@ export default function Table({
                         name={"plus-circle"}
                         size={24}
                         color={"#4ade80"}
-                        flex={1}
                       />
                     }
                     {...triggerProps}
@@ -66,7 +65,6 @@ export default function Table({
                     name={"plus-circle"}
                     size={24}
                     color={"#4ade80"}
-                    flex={1}
                   />
                 }
                 onPress={action}

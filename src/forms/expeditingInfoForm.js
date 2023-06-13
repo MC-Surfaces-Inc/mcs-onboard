@@ -116,11 +116,11 @@ export default function ExpeditingInfoForm({ clientId, data }) {
               title={"Estimated Number of Homes per Year"}
             />
 
-            <DatePicker
-              control={control}
-              field={"expediting_details.estimatedStartDate"}
-              title={"Estimated Start Date"}
-            />
+            {/*<DatePicker*/}
+            {/*  control={control}*/}
+            {/*  field={"expediting_details.estimatedStartDate"}*/}
+            {/*  title={"Estimated Start Date"}*/}
+            {/*/>*/}
 
             <Picker
               choices={yesOrNo}

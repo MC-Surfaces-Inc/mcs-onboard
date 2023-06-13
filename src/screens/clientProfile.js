@@ -10,9 +10,13 @@ import {
   VStack,
 } from "native-base";
 import {
-  useDeleteAddressMutation, useDeleteContactMutation, useDeleteProgramInfoMutation, useDeleteProgramPartsMutation,
+  useDeleteAddressMutation,
+  useDeleteContactMutation,
+  useDeleteProgramInfoMutation,
+  useDeleteProgramPartsMutation,
   useGetClientByIdQuery,
-  useUpdateApprovalsMutation, useUpdateProgramsMutation,
+  useUpdateApprovalsMutation,
+  useUpdateProgramsMutation,
   useUpdateStatusMutation,
 } from "../services/client";
 import S3 from "../utils/S3";
@@ -139,7 +143,7 @@ export default function ClientProfile({ navigation, route }) {
               <Menu
                 trigger={triggerProps => (
                   <Pressable {...triggerProps}>
-                    <HamburgerIcon />
+                    <HamburgerIcon size={8} color={"black"} />
                   </Pressable>
                 )}
                 w={200}>
@@ -150,6 +154,7 @@ export default function ClientProfile({ navigation, route }) {
                   Client Details
                 </Menu.Item>
                 <Menu.Item
+                  isDisabled={!Object.values(data.programs).includes(1)}
                   onPress={() =>
                     navigation.push("ProgramDetails", {
                       programs: data.programs,
@@ -159,6 +164,7 @@ export default function ClientProfile({ navigation, route }) {
                   Program Details
                 </Menu.Item>
                 <Menu.Item
+                  isDisabled={!Object.values(data.programs).includes(1)}
                   onPress={() =>
                     navigation.push("ProgramPricing", {
                       programs: data.programs,

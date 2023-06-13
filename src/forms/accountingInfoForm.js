@@ -90,12 +90,12 @@ export default function AccountingInfoForm({ clientId, data }) {
               choices={paymentType}
             />
 
-            <Picker
-              control={control}
-              title={"Payment Portal"}
-              field={"accounting_details.paymentPortal"}
-              choices={yesOrNo}
-            />
+        {/*    <Picker*/}
+        {/*      control={control}*/}
+        {/*      title={"Payment Portal"}*/}
+        {/*      field={"accounting_details.paymentPortal"}*/}
+        {/*      choices={yesOrNo}*/}
+        {/*    />*/}
 
             <TextInput
               control={control}
@@ -117,7 +117,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             <Picker
               control={control}
               title={"POs Required for Invoices?"}
-              field={data.poInvoiceRequired}
+              field={"accoutning_details.poInvoiceRequired"}
               choices={yesOrNo}
             />
 

@@ -20,7 +20,6 @@ export default function Toolbar({ navigation, route }) {
               name={"arrow-left"}
               size={24}
               color={"#fafaf9"}
-              flex={1}
             />
           }
           width={"100%"}
@@ -33,7 +32,7 @@ export default function Toolbar({ navigation, route }) {
     return (
       <IconButton
         icon={
-          <FontAwesome5 name={"home"} size={24} color={"#fafaf9"} flex={1} />
+          <FontAwesome5 name={"home"} size={24} color={"#fafaf9"} />
         }
         width={"100%"}
         my={2.5}
@@ -47,48 +46,43 @@ export default function Toolbar({ navigation, route }) {
       alignItems={"center"}
       bg={"coolGray.800"}
       borderRightRadius={"md"}
-      my={2}>
-      <Box my={2}>
-        <Image
-          alt={"Logo"}
-          borderRadius={"md"}
-          size={50}
-          source={require("./logo.png")}
-        />
-      </Box>
+      my={2}
+      maxWidth={"5%"}>
+
+      <Image
+        alt={"Logo"}
+        borderRadius={"md"}
+        size={50}
+        source={require("./logo.png")}
+        my={2}
+      />
 
       <Divider />
 
-      <Box>
-        <NavIcon />
-        <Divider />
-      </Box>
+      <NavIcon />
 
       <Divider />
 
-      <Box justifyContent={"flex-start"}>
-        <IconButton
-          icon={<FontAwesome5 name={"question"} size={24} color={"#fafaf9"} />}
-          width={"100%"}
-          my={2.5}
-        />
-      </Box>
+      <IconButton
+        icon={<FontAwesome5 name={"question"} size={24} color={"#fafaf9"} />}
+        width={"100%"}
+        my={2.5}
+      />
 
-      <Box flex={1} justifyContent={"flex-end"}>
-        <IconButton
-          icon={
-            <FontAwesome5
-              name={"sign-out-alt"}
-              size={24}
-              color={"#dc2626"}
-              flex={1}
-            />
-          }
-          m={2.5}
-          mb={10}
-          onPress={() => dispatch(clearToken())}
-        />
-      </Box>
+      <Divider />
+
+      <IconButton
+        icon={
+          <FontAwesome5
+            name={"sign-out-alt"}
+            size={24}
+            color={"#dc2626"}
+          />
+        }
+        m={2.5}
+        mb={10}
+        onPress={() => dispatch(clearToken())}
+      />
     </VStack>
   );
 }
