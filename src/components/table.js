@@ -3,10 +3,12 @@ import {
   Box,
   Divider,
   HStack,
-  IconButton, Menu,
+  IconButton,
+  Menu,
   Popover,
   Pressable,
-  Text, ThreeDotsIcon,
+  Text,
+  ThreeDotsIcon,
 } from "native-base";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { FlatList } from "react-native";
@@ -39,20 +41,20 @@ export default function Table({
   //   keyName: "key"
   // });
 
-  // const TextInput = ({ control, field, index }) => (
-  //   <Controller
-  //     control={control}
-  //     name={`${field}`}
-  //     render={({ field: { onBlur, onChange, value} }) => {
-  //       return (
-  //         <TextInput
-  //           control={control}
-  //           field={`${field}`}
-  //           />
-  //       );
-  //     }}
-  //   />
-  // )
+  const TextInput = ({ control, field, index }) => (
+    <Controller
+      control={control}
+      name={`${field}`}
+      render={({ field: { onBlur, onChange, value} }) => {
+        return (
+          <TextInput
+            control={control}
+            field={`${field}`}
+            />
+        );
+      }}
+    />
+  )
 
   return (
     <Box borderColor={"coolGray.600"} borderWidth={1} borderRadius={"md"} m={2}>
@@ -116,7 +118,7 @@ export default function Table({
       <FlatList
         data={data}
         scrollEnabled={false}
-        keyExtractor={item => item.key}
+        keyExtractor={(item, index) => index}
         ListEmptyComponent={
           <HStack>
             <Text flex={1} fontSize={"sm"} p={2}>
@@ -145,34 +147,32 @@ export default function Table({
                   );
                 })}
 
-                {editRow &&
-                  <Menu
-                    trigger={triggerProps => (
-                      <Pressable {...triggerProps}>
-                        <Box p={2}>
-                          <ThreeDotsIcon size={4} color={"primary.900"}/>
-                        </Box>
-                      </Pressable>
-                    )}
-                    w={200}>
-                    <Menu.Group title={"Actions"}>
-                      <Divider bg={"coolGray.400"}/>
-                      <Menu.Item onPress={() => setEditItem(true)}>
-                        Edit
-                      </Menu.Item>
-                      <Menu.Item
-                        onPress={() => {
-                          if (alertHeader) {
-                            showAlert(true);
-                          } else {
-                            rowAction(selectedItem);
-                          }
-                        }}>
-                        Delete
-                      </Menu.Item>
-                    </Menu.Group>
-                  </Menu>
-                }
+                {/*<Menu*/}
+                {/*  trigger={triggerProps => (*/}
+                {/*    <Pressable {...triggerProps}>*/}
+                {/*      <Box p={2}>*/}
+                {/*        <ThreeDotsIcon size={4} color={"primary.900"}/>*/}
+                {/*      </Box>*/}
+                {/*    </Pressable>*/}
+                {/*  )}*/}
+                {/*  w={200}>*/}
+                {/*  <Menu.Group title={"Actions"}>*/}
+                {/*    <Divider bg={"coolGray.400"}/>*/}
+                {/*    <Menu.Item onPress={() => setEditItem(true)}>*/}
+                {/*      Edit*/}
+                {/*    </Menu.Item>*/}
+                {/*    <Menu.Item*/}
+                {/*      onPress={() => {*/}
+                {/*        if (alertHeader) {*/}
+                {/*          showAlert(true);*/}
+                {/*        } else {*/}
+                {/*          rowAction(selectedItem);*/}
+                {/*        }*/}
+                {/*      }}>*/}
+                {/*      Delete*/}
+                {/*    </Menu.Item>*/}
+                {/*  </Menu.Group>*/}
+                {/*</Menu>*/}
               </HStack>
 
               {index !== data.length - 1 && <Divider bg={"coolGray.400"} />}

@@ -117,7 +117,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             <Picker
               control={control}
               title={"POs Required for Invoices?"}
-              field={"accoutning_details.poInvoiceRequired"}
+              field={"accounting_details.poInvoiceRequired"}
               choices={yesOrNo}
             />
 

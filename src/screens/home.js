@@ -60,7 +60,7 @@ export default function Home({ navigation }) {
               </Box>
               <HStack alignItems={"center"}>
                 <Box>
-                  {item.territory && <Badge colorScheme={"info"} style={{ marginRight: 10 }}>{item.territory}</Badge>}
+                  {item.territory && <Badge bg={"coolGray.500"} style={{ marginRight: 10 }} _text={{ color: "white" }}>{item.territory}</Badge>}
                 </Box>
                 <Box>
                   {item.status && <Badge bg={statusColors[item.status]} style={{ marginRight: 10 }} _text={{ color: "white" }}>{item.status}</Badge>}

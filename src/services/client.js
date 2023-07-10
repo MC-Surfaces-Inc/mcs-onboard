@@ -9,6 +9,7 @@ export const clientApi = emptySplitApi.injectEndpoints({
     getClientById: builder.query({
       query: clientId => `clients/${clientId}/profile-data`,
       providesTags: [
+        "BasicInfo",
         "Addresses",
         "Contacts",
         "Programs",
@@ -56,6 +57,14 @@ export const clientApi = emptySplitApi.injectEndpoints({
         body: body,
       }),
       invalidatesTags: ["Contacts"],
+    }),
+    updateClient: builder.mutation({
+      query: ({ id, body }) => ({
+        url: `clients/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Clients", "BasicInfo"]
     }),
     updatePrograms: builder.mutation({
       query: ({ id, body }) => ({
@@ -160,6 +169,7 @@ export const {
   useUpdateProgramPricingMutation,
   useUpdateStatusMutation,
   useUpdateApprovalsMutation,
+  useUpdateClientMutation,
   useDeleteAddressMutation,
   useDeleteContactMutation,
   useDeleteBillingPartsMutation,

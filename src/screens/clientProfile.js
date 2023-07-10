@@ -1,12 +1,15 @@
 import React from "react";
 import {
   Box,
+  Button,
+  Center,
   Divider,
   HamburgerIcon,
   Heading,
   HStack,
   Menu,
-  Pressable, Text,
+  Pressable,
+  Text,
   VStack,
 } from "native-base";
 import {
@@ -15,7 +18,7 @@ import {
   useDeleteProgramInfoMutation,
   useDeleteProgramPartsMutation,
   useGetClientByIdQuery,
-  useUpdateApprovalsMutation,
+  useUpdateApprovalsMutation, useUpdateClientMutation,
   useUpdateProgramsMutation,
   useUpdateStatusMutation,
 } from "../services/client";
@@ -27,6 +30,12 @@ import AddContactForm from "../forms/addContactForm";
 import AddAddressForm from "../forms/addAddressForm";
 import AddProgramForm from "../forms/addProgramForm";
 import { useSelector } from "react-redux";
+import Picker from "../components/picker";
+import { useForm } from "react-hook-form";
+import { territories } from "../constants/dropdownValues";
+import Popup from "../components/popup";
+import TextInput from "../components/textInput";
+import { showNotification } from "../components/notification";
 
 const statusColors = {
   Potential: "primary.900",
@@ -39,7 +48,10 @@ const statusColors = {
 export default function ClientProfile({ navigation, route }) {
   const clientId = route.params?.clientId;
   const user = useSelector(state => state.auth.user);
+  const { control, handleSubmit, errors, setValue } = useForm();
   const { data, error, isLoading } = useGetClientByIdQuery(clientId);
+  const [openModal, setOpenModal] = React.useState(false);
+  const [loading, setLoading] = React.useState(false);
   const [files, setFiles] = React.useState([]);
   const [updateStatus, result] = useUpdateStatusMutation();
   const [updateApprovals, result1] = useUpdateApprovalsMutation();
@@ -48,15 +60,18 @@ export default function ClientProfile({ navigation, route }) {
   const [deleteContact, result4] = useDeleteContactMutation();
   const [deleteProgram, result5] = useDeleteProgramInfoMutation();
   const [deleteParts, result6] = useDeleteProgramPartsMutation();
+  const [updateInfo, result7] = useUpdateClientMutation();
 
   React.useEffect(() => {
     const getFiles = async () =>
       setFiles(await S3.getFiles(user, data.basicInfo.name));
 
-    if (data) {
+  if (data) {
       getFiles();
+      setValue("client.name", data.basicInfo.name);
+      setValue("client.territory", data.basicInfo.territory);
     }
-  }, [data, user]);
+  }, [data, user, setValue]);
 
   if (data === undefined || isLoading) {
     return <Loading navigation={navigation} />;
@@ -83,17 +98,15 @@ export default function ClientProfile({ navigation, route }) {
       return [];
     }
 
-    let newArr = Object.keys(arr).map(x => ({
+    return Object.keys(arr).map(x => ({
       name: x,
       value:
         data.approvals[x] === 1
           ? "Approved"
           : data.approvals[x] === 0
-          ? "Declined"
-          : "No Response",
+            ? "Declined"
+            : "No Response",
     }));
-
-    return newArr;
   };
 
   const formatPrograms = arr => {
@@ -102,9 +115,56 @@ export default function ClientProfile({ navigation, route }) {
       .map((x, index) => ({ selection: x, key: x }));
   };
 
+  const onSubmit = values => {
+    setLoading(true);
+    updateInfo({
+      id: clientId,
+      body: {
+        ...values.client
+      }
+    })
+      .unwrap()
+      .then(res => {
+        setLoading(false);
+        showNotification({
+          text: "Client Name & Territory Successfully Updated",
+        });
+        setOpenModal(false);
+      })
+  }
+
   return (
     <HStack flex={1} justifyContent={"flex-start"} pt={5}>
       <Toolbar navigation={navigation} />
+
+      <Popup open={openModal} setOpen={setOpenModal} header={"Edit Client Name & Territory"}>
+        <TextInput
+          control={control}
+          title={"Client Name"}
+          field={"client.name"}
+        />
+        <Picker
+          control={control}
+          title={"Territory"}
+          field={"client.territory"}
+          choices={territories}
+        />
+
+        <Center>
+          <Button
+            _loading={{
+              bg: "success.400",
+            }}
+            bg={"success.400"}
+            isLoading={loading}
+            isLoadingText={"Submitting"}
+            m={5}
+            onPress={handleSubmit(onSubmit)}
+            width={"35%"}>
+            Save
+          </Button>
+        </Center>
+      </Popup>
 
       <VStack flex={1}>
         <VStack mx={2}>
@@ -113,100 +173,133 @@ export default function ClientProfile({ navigation, route }) {
             justifyContent={"space-between"}
             my={2}
             width={"100%"}>
-            <Heading color={"coolGray.800"} p={1}>
-              {data.basicInfo.name}
-            </Heading>
-            <Box
-              alignItems={"center"}
-              borderColor={statusColors[data.status.current]}
-              borderRadius={"lg"}
-              borderWidth={1}
-              bg={statusColors[data.status.current]}
-              p={2}
-              w={"15%"}>
-              <Text color={"white"}>{data.status.current}</Text>
-            </Box>
+            <HStack flex={1} justifyContent={"flex-start"} alignItems={"center"} h={"100%"}>
+              <Heading color={"coolGray.800"} p={1}>
+                {data.basicInfo.name}
+              </Heading>
+            </HStack>
+
+            <HStack flex={1} justifyContent={"flex-end"} alignItems={"center"}>
+              <Box
+                alignItems={"center"}
+                borderColor={"coolGray.500"}
+                borderRadius={"lg"}
+                borderWidth={1}
+                bg={"coolGray.500"}
+                colorScheme={"info"}
+                mx={2}
+                p={2}
+                w={"25%"}>
+                <Text color={"white"}>{data.basicInfo.territory || "None Selected"}</Text>
+              </Box>
+
+              <Box
+                alignItems={"center"}
+                borderColor={statusColors[data.status.current]}
+                borderRadius={"lg"}
+                borderWidth={1}
+                bg={statusColors[data.status.current]}
+                mx={2}
+                p={2}
+                w={"25%"}>
+                <Text color={"white"}>{data.status.current}</Text>
+              </Box>
+
+              <Box ml={2}>
+                <Menu
+                  offset={10}
+                  placement={"bottom right"}
+                  trigger={triggerProps => (
+                    <Pressable {...triggerProps}>
+                      <HamburgerIcon size={8} color={"black"} />
+                    </Pressable>
+                  )}
+                  w={200}>
+                  <Menu.Group title={"Client Actions"}>
+                    <Divider bg={"coolGray.400"} />
+
+                    <Menu.Group title={"Edit"}>
+                      <Menu.Item
+                        isDisabled={
+                          data.status.current !== "Potential" &&
+                          data.status.current !== "Declined" &&
+                          data.status.current !== "Updating"
+                        }
+                        onPress={() => setOpenModal(!openModal)}>
+                        Edit Name & Territory
+                      </Menu.Item>
+                    </Menu.Group>
+
+                    <Divider bg={"coolGray.400"} />
+
+                    <Menu.Group title={"Client Pages"}>
+                      <Menu.Item
+                        onPress={() =>
+                          navigation.push("ClientDetails", { clientId: clientId })
+                        }>
+                        Client Details
+                      </Menu.Item>
+                      <Menu.Item
+                        isDisabled={!Object.values(data.programs).includes(1)}
+                        onPress={() =>
+                          navigation.push("ProgramDetails", {
+                            programs: data.programs,
+                            clientId: clientId,
+                          })
+                        }>
+                        Program Details
+                      </Menu.Item>
+                      <Menu.Item
+                        isDisabled={!Object.values(data.programs).includes(1)}
+                        onPress={() =>
+                          navigation.push("ProgramPricing", {
+                            programs: data.programs,
+                            clientId: clientId,
+                          })
+                        }>
+                        Program Pricing
+                      </Menu.Item>
+                    </Menu.Group>
+
+                    <Divider bg={"coolGray.400"} />
+
+                    <Menu.Group title={"Edit Status"}>
+                      <Menu.Item
+                        onPress={() => {
+                          updateStatus({ id: clientId, body: { status: "Queued" } });
+                          updateApprovals({
+                            id: clientId,
+                            body: {
+                              edythc: null,
+                              lisak: null,
+                              kimn: null,
+                            },
+                          });
+                        }}
+                        isDisabled={
+                          data.status.current !== "Potential" &&
+                          data.status.current !== "Declined"
+                        }>
+                        Submit Client
+                      </Menu.Item>
+                      <Menu.Item
+                        onPress={() => {
+                          updateStatus({ id: clientId, body: { status: "Pushed" } });
+                        }}
+                        isDisabled={data.status.current !== "Approved"}>
+                        Push Client
+                      </Menu.Item>
+                      <Menu.Item isDisabled={data.status.current !== "Pushed" || data.status.current !== "Potential"}>
+                        Update Client
+                      </Menu.Item>
+                    </Menu.Group>
+                  </Menu.Group>
+                </Menu>
+              </Box>
+            </HStack>
           </HStack>
 
-          <Divider bg={"coolGray.800"} />
-
-          <HStack
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            my={2}
-            width={"100%"}>
-            <Heading color={"coolGray.800"} p={1} size={"md"}>
-              Territory: {data.basicInfo.territory || "None Selected"}
-            </Heading>
-
-            <Box>
-              <Menu
-                trigger={triggerProps => (
-                  <Pressable {...triggerProps}>
-                    <HamburgerIcon size={8} color={"black"} />
-                  </Pressable>
-                )}
-                w={200}>
-                <Menu.Item
-                  onPress={() =>
-                    navigation.push("ClientDetails", { clientId: clientId })
-                  }>
-                  Client Details
-                </Menu.Item>
-                <Menu.Item
-                  isDisabled={!Object.values(data.programs).includes(1)}
-                  onPress={() =>
-                    navigation.push("ProgramDetails", {
-                      programs: data.programs,
-                      clientId: clientId,
-                    })
-                  }>
-                  Program Details
-                </Menu.Item>
-                <Menu.Item
-                  isDisabled={!Object.values(data.programs).includes(1)}
-                  onPress={() =>
-                    navigation.push("ProgramPricing", {
-                      programs: data.programs,
-                      clientId: clientId,
-                    })
-                  }>
-                  Program Pricing
-                </Menu.Item>
-                <Divider bg={"coolGray.400"} />
-                <Menu.Item
-                  onPress={() => {
-                    updateStatus({ id: clientId, body: { status: "Queued" } });
-                    updateApprovals({
-                      id: clientId,
-                      body: {
-                        edythc: null,
-                        lisak: null,
-                        kimn: null,
-                      },
-                    });
-                  }}
-                  isDisabled={
-                    data.status.current !== "Potential" &&
-                    data.status.current !== "Declined"
-                  }>
-                  Submit Client
-                </Menu.Item>
-                <Divider bg={"coolGray.400"} />
-                <Menu.Item
-                  onPress={() => {
-                    updateStatus({ id: clientId, body: { status: "Pushed" } });
-                  }}
-                  isDisabled={data.status.current !== "Approved"}>
-                  Push Client
-                </Menu.Item>
-                <Divider bg={"coolGray.400"}/>
-                <Menu.Item isDisabled={data.status.current !== "Pushed" || data.status.current !== "Potential"}>
-                  Update Client
-                </Menu.Item>
-              </Menu>
-            </Box>
-          </HStack>
+          <Divider bg={"coolGray.800"} mb={5} />
         </VStack>
 
         <Table

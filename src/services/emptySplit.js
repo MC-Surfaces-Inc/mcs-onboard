@@ -10,6 +10,7 @@ export const emptySplitApi = createApi({
   endpoints: () => ({}),
   tagTypes: [
     "Clients",
+    "BasicInfo",
     "User",
     "Addresses",
     "Contacts",
