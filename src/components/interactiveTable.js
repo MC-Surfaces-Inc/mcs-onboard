@@ -21,8 +21,7 @@ export default function InteractiveTable({ title, components, control }) {
   const [rowsToDelete, setRowsToDelete] = React.useState([]);
   const { fields, append } = useFieldArray({
     control,
-    name: `${title.replace(/[-\s\/]/g, "_")}`,
-    keyName: "key",
+    name: title.replace(/[-\s\/]/g, "_")
   });
   const [deleteParts, result] = useDeleteBillingPartsMutation();
   const [loading, setLoading] = React.useState(false);

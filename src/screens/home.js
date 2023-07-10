@@ -1,6 +1,7 @@
 import React from "react";
 import { FlatList } from "react-native";
 import {
+  Badge,
   Box,
   Divider,
   Heading,
@@ -22,10 +23,16 @@ import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../features/auth/authSlice";
 import Loading from "./loading";
 
+const statusColors = {
+  Potential: "primary.900",
+  Queued: "warning.500",
+  Declined: "error.600",
+  Approved: "success.400",
+  Pushed: "darkBlue.500",
+};
+
 export default function Home({ navigation }) {
   const user = useSelector(state => state.auth.user);
-
-  console.log(user);
 
   React.useEffect(() => {
     if (user) {
@@ -35,8 +42,6 @@ export default function Home({ navigation }) {
 
   const ClientList = ({ user }) => {
     const { data = [], error, isLoading } = useGetClientsByUserQuery(user.id);
-
-    console.log(data);
 
     return (
       <FlatList
@@ -49,14 +54,19 @@ export default function Home({ navigation }) {
             <HStack
               alignItems={"center"}
               justifyContent={"space-between"}
-              p={2}>
+              p={4}>
               <Box>
                 <Text fontSize={"lg"}>{item.name}</Text>
-                <Text fontSize={"sm"}>
-                  {"\tTerritory:"} {item.territory || "None Selected"}
-                </Text>
               </Box>
-              <FontAwesome5 name={"angle-right"} size={18} />
+              <HStack alignItems={"center"}>
+                <Box>
+                  {item.territory && <Badge colorScheme={"info"} style={{ marginRight: 10 }}>{item.territory}</Badge>}
+                </Box>
+                <Box>
+                  {item.status && <Badge bg={statusColors[item.status]} style={{ marginRight: 10 }} _text={{ color: "white" }}>{item.status}</Badge>}
+                </Box>
+                <FontAwesome5 name={"angle-right"} size={18} />
+              </HStack>
             </HStack>
             <Divider />
           </Pressable>

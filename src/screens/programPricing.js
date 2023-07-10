@@ -26,12 +26,9 @@ export default function ProgramPricing({ navigation, route }) {
               placeholder={"Select Program"}
               selectedValue={form}
               w={250}>
-              <Select.Item label={"Cabinets"} value={"Cabinets"} />
-              <Select.Item label={"Carpet"} value={"Carpet"} />
-              <Select.Item label={"Countertops"} value={"Countertops"} />
-              <Select.Item label={"LVP"} value={"LVP"} />
-              <Select.Item label={"Tile"} value={"Tile"} />
-              <Select.Item label={"Wood"} value={"Wood"} />
+              {Object.keys(programs).filter(program => programs[program] === 1).map((program, index) => (
+                <Select.Item label={program} value={program} key={program}/>
+              ))}
             </Select>
           </Box>
         </HStack>
@@ -46,7 +43,7 @@ export default function ProgramPricing({ navigation, route }) {
         {form === "Countertops" && (
           <CountertopsPricingForm clientId={clientId} programs={programs} />
         )}
-        {form === "LVP" && (
+        {form === "Vinyl" && (
           <VinylPricingForm clientId={clientId} programs={programs} />
         )}
         {form === "Tile" && (

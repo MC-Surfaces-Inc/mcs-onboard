@@ -3,14 +3,17 @@ import {
   Box,
   Divider,
   HStack,
-  IconButton,
+  IconButton, Menu,
   Popover,
   Pressable,
-  Text,
+  Text, ThreeDotsIcon,
 } from "native-base";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { FlatList } from "react-native";
 import { AlertNotification } from "./alert";
+import { useForm } from "react-hook-form";
+import { Controller, useFieldArray } from "react-hook-form";
+import TextInput from "./textInput";
 
 export default function Table({
   title,
@@ -24,9 +27,32 @@ export default function Table({
   alertBody,
   fields,
   position,
+  editRow
 }) {
+  const { control, handleSubmit, errors, setValue } = useForm();
   const [alert, showAlert] = React.useState(false);
   const [selectedItem, setItem] = React.useState(null);
+  const [editItem, setEditItem] = React.useState(false);
+  // const { fields, append } = useFieldArray({
+  //   control,
+  //   name: `${title}`,
+  //   keyName: "key"
+  // });
+
+  // const TextInput = ({ control, field, index }) => (
+  //   <Controller
+  //     control={control}
+  //     name={`${field}`}
+  //     render={({ field: { onBlur, onChange, value} }) => {
+  //       return (
+  //         <TextInput
+  //           control={control}
+  //           field={`${field}`}
+  //           />
+  //       );
+  //     }}
+  //   />
+  // )
 
   return (
     <Box borderColor={"coolGray.600"} borderWidth={1} borderRadius={"md"} m={2}>
@@ -82,6 +108,7 @@ export default function Table({
             {column}
           </Text>
         ))}
+        {editRow && <Text p={1} color={"#fafaf9"}>test</Text>}
       </HStack>
 
       <Divider bg={"coolGray.400"} />
@@ -99,25 +126,53 @@ export default function Table({
         }
         renderItem={({ item, index }) => {
           return (
-            <Pressable
-              onPress={() => {
-                if (rowAction) {
-                  setItem(item);
-                  if (alertHeader) {
-                    showAlert(true);
-                  } else {
-                    rowAction(selectedItem);
+            <React.Fragment>
+              <HStack alignItems={"center"}>
+                {fields.map((cell, cellIndex) => {
+                  if (editItem) {
+                    return (
+                      <TextInput
+                        control={control}
+                        field={`${data}[${index}].${item}`}
+                      />
+                    )
                   }
-                }
-              }}>
-              <HStack>
-                {fields.map((cell, index) => {
+
                   return (
                     <Text flex={1} fontSize={"sm"} key={cell} p={2}>
                       {item[cell] === null ? "No Data" : item[cell]}
                     </Text>
                   );
                 })}
+
+                {editRow &&
+                  <Menu
+                    trigger={triggerProps => (
+                      <Pressable {...triggerProps}>
+                        <Box p={2}>
+                          <ThreeDotsIcon size={4} color={"primary.900"}/>
+                        </Box>
+                      </Pressable>
+                    )}
+                    w={200}>
+                    <Menu.Group title={"Actions"}>
+                      <Divider bg={"coolGray.400"}/>
+                      <Menu.Item onPress={() => setEditItem(true)}>
+                        Edit
+                      </Menu.Item>
+                      <Menu.Item
+                        onPress={() => {
+                          if (alertHeader) {
+                            showAlert(true);
+                          } else {
+                            rowAction(selectedItem);
+                          }
+                        }}>
+                        Delete
+                      </Menu.Item>
+                    </Menu.Group>
+                  </Menu>
+                }
               </HStack>
 
               {index !== data.length - 1 && <Divider bg={"coolGray.400"} />}
@@ -129,7 +184,7 @@ export default function Table({
                 setShown={showAlert}
                 action={() => rowAction(selectedItem)}
               />
-            </Pressable>
+            </React.Fragment>
           );
         }}
       />

@@ -14,9 +14,9 @@ import { showNotification } from "../components/notification";
 
 export default function CountertopsPricingForm({ programs, clientId }) {
   const { control, handleSubmit, errors, reset, setValue } = useForm();
-  const [types, setTypes] = React.useState(null);
-  const [colors, setColors] = React.useState(null);
-  const { data, error, isLoading } = useGetClientProgramPricingQuery({
+  const [types, setTypes] = React.useState([]);
+  const [colors, setColors] = React.useState([]);
+  const { data=[], error, isLoading } = useGetClientProgramPricingQuery({
     program: "Countertops",
     clientId: clientId,
   });
@@ -24,25 +24,23 @@ export default function CountertopsPricingForm({ programs, clientId }) {
   const countertopOptions = useGetCountertopOptionsQuery();
 
   React.useEffect(() => {
-    if (isLoading || countertopOptions.isLoading) {
-      return <Loading navigation={null} />;
-    } else {
+    if (countertopOptions !== undefined) {
       // Reformat Countertop Type/Color Options
       setTypes(
-        countertopOptions.data.types.map(item => ({
+        countertopOptions?.data?.types.map(item => ({
           label: item.type,
           value: item.type,
         })),
       );
       setColors(
-        countertopOptions.data.colors.map(item => ({
+        countertopOptions?.data?.colors.map(item => ({
           label: item.color,
           value: item.color,
         })),
       );
     }
 
-    if (data) {
+    if (data.parts) {
       reset({
         Edges: data.parts.filter(part => part.programTable === "Edges"),
         Sinks: data.parts.filter(part => part.programTable === "Sinks"),
@@ -59,7 +57,7 @@ export default function CountertopsPricingForm({ programs, clientId }) {
         Level_10: data.parts.filter(part => part.programTable === "Level 10"),
       });
     }
-  }, [reset, isLoading, data, setValue, countertopOptions]);
+  }, [countertopOptions, setTypes, setColors, data, reset]);
 
   if (programs.Countertops === 0 || programs.Countertops === null) {
     return (
@@ -161,6 +159,14 @@ export default function CountertopsPricingForm({ programs, clientId }) {
       text: "Billing Parts Successfully Added",
     });
   };
+
+  if (types === undefined || colors === undefined) {
+    return <Loading navigation={null} />
+  }
+
+  if (isLoading || countertopOptions.isLoading) {
+    return <Loading />
+  }
 
   return (
     <Box flex={1} m={2} mb={10}>
@@ -286,7 +292,7 @@ export default function CountertopsPricingForm({ programs, clientId }) {
         bg={"#4ade80"}
         shadow={2}
         size={"lg"}
-        icon={<FontAwesome5 name={"save"} size={32} color={"white"} flex={1} />}
+        icon={<FontAwesome5 name={"save"} size={32} color={"white"}/>}
         onPress={handleSubmit(onSubmit)}
       />
     </Box>

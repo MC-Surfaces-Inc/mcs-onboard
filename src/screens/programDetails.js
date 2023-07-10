@@ -23,7 +23,7 @@ export default function ProgramDetails({ navigation, route }) {
               onValueChange={itemValue => setForm(itemValue)}
               placeholder={"Select Program"}
               selectedValue={form}
-              w={"35%"}>
+              w={250}>
               <Select.Item label={"Cabinets"} value={"Cabinets"} />
               <Select.Item label={"Carpet"} value={"Carpet"} />
               <Select.Item label={"Countertops"} value={"Countertops"} />

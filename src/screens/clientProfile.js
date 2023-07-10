@@ -200,6 +200,10 @@ export default function ClientProfile({ navigation, route }) {
                   isDisabled={data.status.current !== "Approved"}>
                   Push Client
                 </Menu.Item>
+                <Divider bg={"coolGray.400"}/>
+                <Menu.Item isDisabled={data.status.current !== "Pushed" || data.status.current !== "Potential"}>
+                  Update Client
+                </Menu.Item>
               </Menu>
             </Box>
           </HStack>
@@ -210,7 +214,7 @@ export default function ClientProfile({ navigation, route }) {
           fields={["type", "address", "city", "state", "zip"]}
           data={data.addresses}
           title={"Addresses"}
-          addIcon={true}
+          addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
           editIcon={true}
           form={
             data.addresses.length !== 3 ? (
@@ -228,14 +232,20 @@ export default function ClientProfile({ navigation, route }) {
           rowAction={row =>
             deleteAddress({ clientId: row.clientId, id: row.id })
           }
+          editRow={true}
         />
 
         <Table
           columnNames={["Name", "Title", "Phone", "Email"]}
           fields={["name", "title", "phone", "email"]}
-          data={data.contacts}
+          data={data.contacts.map(item => ({
+            name: item.name,
+            title: item.title,
+            phone: item.phone.slice(0, 3).concat("-", item.phone.slice(4, 7), "-", item.phone.slice(8)),
+            email: item.email
+          }))}
           title={"Contacts"}
-          addIcon={true}
+          addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
           editIcon={true}
           form={<AddContactForm clientId={clientId} />}
           position={"left"}
@@ -246,6 +256,7 @@ export default function ClientProfile({ navigation, route }) {
           rowAction={row =>
             deleteContact({ clientId: row.clientId, id: row.id })
           }
+          editRow={true}
         />
 
         <HStack flex={1}>
@@ -255,7 +266,7 @@ export default function ClientProfile({ navigation, route }) {
               data={formatPrograms(data.programs)}
               fields={["selection"]}
               title={"Programs"}
-              addIcon={true}
+              addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
               editIcon={true}
               form={
                 <AddProgramForm
@@ -289,7 +300,7 @@ export default function ClientProfile({ navigation, route }) {
               data={formatFileArray(files)}
               fields={["name", "type", "size"]}
               title={"Files"}
-              addIcon={true}
+              addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
               editIcon={true}
               action={async () => await S3.putObject(user, data.basicInfo.name)}
               link={true}

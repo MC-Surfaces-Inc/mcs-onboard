@@ -17,17 +17,13 @@ export default function WoodPricingForm({ programs, clientId }) {
   const [updateParts, result] = useUpdateProgramPricingMutation();
 
   React.useEffect(() => {
-    if (isLoading) {
-      return <Loading navigation={null} />;
-    }
-
     if (data) {
       reset({
         Wood_Flooring: data.parts.filter(part => part.programTable === "Wood Flooring"),
         Miscellaneous: data.parts.filter(part => part.programTable === "Miscellaneous"),
       });
     }
-  }, [reset, isLoading, data, setValue]);
+  }, [reset, isLoading, data]);
 
   if (programs.Wood === 0 || programs.Wood === null) {
     return (
@@ -64,6 +60,10 @@ export default function WoodPricingForm({ programs, clientId }) {
     });
   };
 
+  if (isLoading) {
+    return <Loading navigation={null} />;
+  }
+
   return (
     <Box flex={1} m={2} mb={10}>
       <InteractiveTable
@@ -92,7 +92,7 @@ export default function WoodPricingForm({ programs, clientId }) {
         bg={"#4ade80"}
         shadow={2}
         size={"lg"}
-        icon={<FontAwesome5 name={"save"} size={32} color={"white"} flex={1} />}
+        icon={<FontAwesome5 name={"save"} size={32} color={"white"} />}
         onPress={handleSubmit(onSubmit)}
       />
     </Box>

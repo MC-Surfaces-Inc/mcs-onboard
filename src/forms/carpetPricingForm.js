@@ -13,35 +13,21 @@ import { showNotification } from "../components/notification";
 
 export default function CarpetPricingForm({ programs, clientId }) {
   const { control, handleSubmit, errors, reset, setValue } = useForm();
-  const { data, error, isLoading } = useGetClientProgramPricingQuery({
+  const { data=[], error, isLoading } = useGetClientProgramPricingQuery({
     program: "Carpet",
     clientId: clientId,
   });
   const [updateParts, result] = useUpdateProgramPricingMutation();
 
   React.useEffect(() => {
-    if (isLoading) {
-      return <Loading navigation={null} />;
-    }
-
-    let flooringParts = data.parts.filter(
-      part => part.programTable === "Carpet Flooring",
-    );
-    let padParts = data.parts.filter(
-      part => part.programTable === "Carpet Pad",
-    );
-    let miscParts = data.parts.filter(
-      part => part.programTable === "Miscellaneous",
-    );
-
-    if (data) {
+    if (data.parts) {
       reset({
-        Carpet_Flooring: [...flooringParts],
-        Carpet_Pad: [...padParts],
-        Miscellaneous: [...miscParts],
+        Carpet_Flooring: data.parts.filter(part => part.programTable === "Carpet Flooring"),
+        Carpet_Pad: data.parts.filter(part => part.programTable === "Carpet Pad"),
+        Miscellaneous: data.parts.filter(part => part.programTable === "Miscellaneous"),
       });
     }
-  }, [reset, isLoading, data, setValue]);
+  }, [reset, data]);
 
   if (programs.Carpet === 0 || programs.Carpet === null) {
     return (
@@ -84,7 +70,9 @@ export default function CarpetPricingForm({ programs, clientId }) {
     });
   };
 
-  console.log(control)
+  if (isLoading) {
+    return <Loading navigation={null} />;
+  }
 
   return (
     <Box flex={1} m={2} mb={10}>
@@ -123,7 +111,7 @@ export default function CarpetPricingForm({ programs, clientId }) {
         bg={"#4ade80"}
         shadow={2}
         size={"lg"}
-        icon={<FontAwesome5 name={"save"} size={32} color={"white"} flex={1} />}
+        icon={<FontAwesome5 name={"save"} size={32} color={"white"}/>}
         onPress={handleSubmit(onSubmit)}
       />
     </Box>

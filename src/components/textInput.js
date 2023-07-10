@@ -5,7 +5,7 @@ import { Controller } from "react-hook-form";
 export default function TextInput({ control, field, title }) {
   return (
     <Box flex={1}>
-      <FormControl.Label>{title}</FormControl.Label>
+      {title && <FormControl.Label>{title}</FormControl.Label>}
       <Controller
         control={control}
         name={field}

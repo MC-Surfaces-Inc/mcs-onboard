@@ -17,10 +17,6 @@ export default function TilePricingForm({ programs, clientId }) {
   const [updateParts, result] = useUpdateProgramPricingMutation();
 
   React.useEffect(() => {
-    if (isLoading) {
-      return <Loading navigation={null} />;
-    }
-
     if (data) {
       reset({
         Backsplash_Fireplace_Wall_Tile: data.parts.filter(part => part.programTable === "Backsplash/Fireplace Wall Tile"),
@@ -43,7 +39,7 @@ export default function TilePricingForm({ programs, clientId }) {
         Miscellaneous: data.parts.filter(part => part.programTable === "Miscellaneous"),
       });
     }
-  }, [reset, isLoading, data, setValue]);
+  }, [reset, isLoading, data]);
 
   if (programs.Tile === 0 || programs.Tile === null) {
     return (
@@ -169,6 +165,10 @@ export default function TilePricingForm({ programs, clientId }) {
       text: "Billing Parts Successfully Added",
     });
   };
+
+  if (isLoading) {
+    return <Loading navigation={null} />;
+  }
 
   return (
     <Box flex={1} m={2} mb={10}>
@@ -375,7 +375,7 @@ export default function TilePricingForm({ programs, clientId }) {
         bg={"#4ade80"}
         shadow={2}
         size={"lg"}
-        icon={<FontAwesome5 name={"save"} size={32} color={"white"} flex={1} />}
+        icon={<FontAwesome5 name={"save"} size={32} color={"white"} />}
         onPress={handleSubmit(onSubmit)}
       />
     </Box>

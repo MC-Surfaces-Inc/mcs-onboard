@@ -20,17 +20,13 @@ export default function VinylPricingForm({ programs, clientId }) {
   const [updateParts, result] = useUpdateProgramPricingMutation();
 
   React.useEffect(() => {
-    if (isLoading) {
-      return <Loading navigation={null} />;
-    }
-
     if (data) {
       reset({
         LVP_Flooring: data.parts.filter(part => part.programTable === "LVP Flooring"),
         Miscellaneous: data.parts.filter(part => part.programTable === "Miscellaneous"),
       });
     }
-  }, [reset, isLoading, data, setValue]);
+  }, [reset, isLoading, data]);
 
   if (programs.LVP === 0 || programs.LVP === null) {
     return (
@@ -67,6 +63,10 @@ export default function VinylPricingForm({ programs, clientId }) {
     });
   };
 
+  if (isLoading) {
+    return <Loading navigation={null} />;
+  }
+
   return (
     <Box flex={1} m={2} mb={10}>
       <InteractiveTable
@@ -95,7 +95,7 @@ export default function VinylPricingForm({ programs, clientId }) {
         bg={"#4ade80"}
         shadow={2}
         size={"lg"}
-        icon={<FontAwesome5 name={"save"} size={32} color={"white"} flex={1} />}
+        icon={<FontAwesome5 name={"save"} size={32} color={"white"} />}
         onPress={handleSubmit(onSubmit)}
       />
     </Box>
