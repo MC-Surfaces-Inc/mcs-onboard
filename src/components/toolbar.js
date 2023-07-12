@@ -23,7 +23,7 @@ export default function Toolbar({ navigation, route }) {
             />
           }
           width={"100%"}
-          my={2.5}
+          my={2}
           onPress={() => navigation.goBack()}
         />
       );
@@ -35,7 +35,7 @@ export default function Toolbar({ navigation, route }) {
           <FontAwesome5 name={"home"} size={24} color={"#fafaf9"} />
         }
         width={"100%"}
-        my={2.5}
+        my={2}
         onPress={() => navigation.popToTop()}
       />
     );
@@ -61,12 +61,10 @@ export default function Toolbar({ navigation, route }) {
 
       <NavIcon />
 
-      <Divider />
-
       <IconButton
         icon={<FontAwesome5 name={"question"} size={24} color={"#fafaf9"} />}
         width={"100%"}
-        my={2.5}
+        my={2}
       />
 
       <Divider />
