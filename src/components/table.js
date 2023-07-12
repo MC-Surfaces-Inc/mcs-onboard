@@ -1,7 +1,7 @@
 import React from "react";
 import {
   Box,
-  Divider,
+  Divider, Fab,
   HStack,
   IconButton,
   Menu,
@@ -29,32 +29,11 @@ export default function Table({
   alertBody,
   fields,
   position,
-  editRow
+  edit,
+  setIndex,
 }) {
-  const { control, handleSubmit, errors, setValue } = useForm();
   const [alert, showAlert] = React.useState(false);
   const [selectedItem, setItem] = React.useState(null);
-  const [editItem, setEditItem] = React.useState(false);
-  // const { fields, append } = useFieldArray({
-  //   control,
-  //   name: `${title}`,
-  //   keyName: "key"
-  // });
-
-  const TextInput = ({ control, field, index }) => (
-    <Controller
-      control={control}
-      name={`${field}`}
-      render={({ field: { onBlur, onChange, value} }) => {
-        return (
-          <TextInput
-            control={control}
-            field={`${field}`}
-            />
-        );
-      }}
-    />
-  )
 
   return (
     <Box borderColor={"coolGray.600"} borderWidth={1} borderRadius={"md"} m={2}>
@@ -110,7 +89,7 @@ export default function Table({
             {column}
           </Text>
         ))}
-        {editRow && <Text p={1} color={"#fafaf9"}>test</Text>}
+        {edit && <Text color="white" mr={1}>Test</Text>}
       </HStack>
 
       <Divider bg={"coolGray.400"} />
@@ -130,49 +109,43 @@ export default function Table({
           return (
             <React.Fragment>
               <HStack alignItems={"center"}>
-                {fields.map((cell, cellIndex) => {
-                  if (editItem) {
-                    return (
-                      <TextInput
-                        control={control}
-                        field={`${data}[${index}].${item}`}
-                      />
-                    )
-                  }
+                {fields.map((cell, cellIndex) => (
+                  <Text flex={1} fontSize={"sm"} key={cell} p={2}>
+                    {item[cell] === null ? "No Data" : item[cell]}
+                  </Text>
+                ))}
 
-                  return (
-                    <Text flex={1} fontSize={"sm"} key={cell} p={2}>
-                      {item[cell] === null ? "No Data" : item[cell]}
-                    </Text>
-                  );
-                })}
-
-                {/*<Menu*/}
-                {/*  trigger={triggerProps => (*/}
-                {/*    <Pressable {...triggerProps}>*/}
-                {/*      <Box p={2}>*/}
-                {/*        <ThreeDotsIcon size={4} color={"primary.900"}/>*/}
-                {/*      </Box>*/}
-                {/*    </Pressable>*/}
-                {/*  )}*/}
-                {/*  w={200}>*/}
-                {/*  <Menu.Group title={"Actions"}>*/}
-                {/*    <Divider bg={"coolGray.400"}/>*/}
-                {/*    <Menu.Item onPress={() => setEditItem(true)}>*/}
-                {/*      Edit*/}
-                {/*    </Menu.Item>*/}
-                {/*    <Menu.Item*/}
-                {/*      onPress={() => {*/}
-                {/*        if (alertHeader) {*/}
-                {/*          showAlert(true);*/}
-                {/*        } else {*/}
-                {/*          rowAction(selectedItem);*/}
-                {/*        }*/}
-                {/*      }}>*/}
-                {/*      Delete*/}
-                {/*    </Menu.Item>*/}
-                {/*  </Menu.Group>*/}
-                {/*</Menu>*/}
+                {edit &&
+                  <Menu
+                    trigger={triggerProps => (
+                      <Pressable {...triggerProps}>
+                        <Box p={2}>
+                          <ThreeDotsIcon size={4} color={"primary.900"}/>
+                        </Box>
+                      </Pressable>
+                    )}
+                    w={200}>
+                    <Menu.Group title={"Actions"}>
+                      <Divider bg={"coolGray.400"}/>
+                      <Menu.Item onPress={() => {
+                        edit.func(!edit.variable);
+                        setIndex(index);
+                      }}>
+                        Edit
+                      </Menu.Item>
+                      <Menu.Item
+                        onPress={() => {
+                          if (alertHeader) {
+                            showAlert(true);
+                          } else {
+                            rowAction(selectedItem);
+                          }
+                        }}>
+                        Delete
+                      </Menu.Item>
+                    </Menu.Group>
+                  </Menu>
+                }
               </HStack>
 
               {index !== data.length - 1 && <Divider bg={"coolGray.400"} />}

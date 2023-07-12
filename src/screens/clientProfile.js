@@ -17,8 +17,8 @@ import {
   useDeleteContactMutation,
   useDeleteProgramInfoMutation,
   useDeleteProgramPartsMutation,
-  useGetClientByIdQuery,
-  useUpdateApprovalsMutation, useUpdateClientMutation,
+  useGetClientByIdQuery, useUpdateAddressMutation,
+  useUpdateApprovalsMutation, useUpdateClientMutation, useUpdateContactMutation,
   useUpdateProgramsMutation,
   useUpdateStatusMutation,
 } from "../services/client";
@@ -31,8 +31,8 @@ import AddAddressForm from "../forms/addAddressForm";
 import AddProgramForm from "../forms/addProgramForm";
 import { useSelector } from "react-redux";
 import Picker from "../components/picker";
-import { useForm } from "react-hook-form";
-import { territories } from "../constants/dropdownValues";
+import { useFieldArray, useForm } from "react-hook-form";
+import { states, territories, types } from "../constants/dropdownValues";
 import Popup from "../components/popup";
 import TextInput from "../components/textInput";
 import { showNotification } from "../components/notification";
@@ -48,10 +48,10 @@ const statusColors = {
 export default function ClientProfile({ navigation, route }) {
   const clientId = route.params?.clientId;
   const user = useSelector(state => state.auth.user);
-  const { control, handleSubmit, errors, setValue } = useForm();
   const { data, error, isLoading } = useGetClientByIdQuery(clientId);
   const [openModal, setOpenModal] = React.useState(false);
-  const [loading, setLoading] = React.useState(false);
+  const [openAddressModal, setOpenAddressModal] = React.useState(false);
+  const [openContactModal, setOpenContactModal] = React.useState(false);
   const [files, setFiles] = React.useState([]);
   const [updateStatus, result] = useUpdateStatusMutation();
   const [updateApprovals, result1] = useUpdateApprovalsMutation();
@@ -60,18 +60,17 @@ export default function ClientProfile({ navigation, route }) {
   const [deleteContact, result4] = useDeleteContactMutation();
   const [deleteProgram, result5] = useDeleteProgramInfoMutation();
   const [deleteParts, result6] = useDeleteProgramPartsMutation();
-  const [updateInfo, result7] = useUpdateClientMutation();
+  const [updateIndex, setUpdateIndex] = React.useState(null);
 
   React.useEffect(() => {
-    const getFiles = async () =>
+    const getFiles = async () => {
       setFiles(await S3.getFiles(user, data.basicInfo.name));
+    };
 
   if (data) {
       getFiles();
-      setValue("client.name", data.basicInfo.name);
-      setValue("client.territory", data.basicInfo.territory);
     }
-  }, [data, user, setValue]);
+  }, [data, user]);
 
   if (data === undefined || isLoading) {
     return <Loading navigation={navigation} />;
@@ -115,29 +114,38 @@ export default function ClientProfile({ navigation, route }) {
       .map((x, index) => ({ selection: x, key: x }));
   };
 
-  const onSubmit = values => {
-    setLoading(true);
-    updateInfo({
-      id: clientId,
-      body: {
-        ...values.client
-      }
-    })
-      .unwrap()
-      .then(res => {
-        setLoading(false);
-        showNotification({
-          text: "Client Name & Territory Successfully Updated",
-        });
-        setOpenModal(false);
+  const EditInfo = ({open, setOpen }) => {
+    const { control, handleSubmit, errors, setValue, reset } = useForm();
+    const [updateInfo, result7] = useUpdateClientMutation();
+    const [loading, setLoading] = React.useState(false);
+
+    React.useEffect(() => {
+      setValue("client", {
+        name: data.basicInfo.name,
+        territory: data.basicInfo.territory,
+      });
+    }, [setValue, data])
+
+    const onSubmit = values => {
+      setLoading(!loading);
+      updateInfo({
+        id: clientId,
+        body: {
+          ...values.client
+        }
       })
-  }
+        .unwrap()
+        .then(res => {
+          setOpen(false);
+          setLoading(!loading);
+          showNotification({
+            text: "Client Name & Territory Successfully Updated",
+          });
+        })
+    }
 
-  return (
-    <HStack flex={1} justifyContent={"flex-start"} pt={5}>
-      <Toolbar navigation={navigation} />
-
-      <Popup open={openModal} setOpen={setOpenModal} header={"Edit Client Name & Territory"}>
+    return (
+      <Popup open={open} setOpen={setOpen} header={"Edit Client Name & Territory"}>
         <TextInput
           control={control}
           title={"Client Name"}
@@ -165,6 +173,176 @@ export default function ClientProfile({ navigation, route }) {
           </Button>
         </Center>
       </Popup>
+    );
+  }
+
+  const EditAddress = ({ open, setOpen, index }) => {
+    const { control, handleSubmit, errors, setValue, reset } = useForm();
+    const [updateAddress, result] = useUpdateAddressMutation();
+    const [loading, setLoading] = React.useState(false);
+
+    React.useEffect(() => {
+      setValue("addresses", data.addresses);
+    }, [setValue, data])
+
+    const onSubmit = values => {
+      setLoading(!loading);
+      updateAddress({
+        id: data.addresses[index].id,
+        clientId: clientId,
+        body: {
+          id: values.addresses[index].id,
+          clientId: values.addresses[index].clientId,
+          type: values.addresses[index].type,
+          address1: values.addresses[index].address1,
+          city: values.addresses[index].city,
+          state: values.addresses[index].state,
+          zip: values.addresses[index].zip,
+        }
+      })
+        .unwrap()
+        .then(res => {
+          setUpdateIndex(null)
+          setOpenAddressModal(false);
+          setLoading(!loading);
+          showNotification({
+            text: "Address Successfully Updated",
+          });
+        })
+    }
+
+    return (
+      <Popup open={open} setOpen={setOpen} header={"Edit Client Address"}>
+        <Picker
+          control={control}
+          title={"Type"}
+          field={`addresses[${index}].type`}
+          choices={types}
+        />
+        <TextInput
+          control={control}
+          title={"Street"}
+          field={`addresses[${index}].address`}
+        />
+        <TextInput
+          control={control}
+          title={"City"}
+          field={`addresses[${index}].city`}
+        />
+        <Picker
+          control={control}
+          title={"State"}
+          field={`addresses[${index}].state`}
+          choices={states}
+        />
+        <TextInput
+          control={control}
+          title={"Zip"}
+          field={`addresses[${index}].zip`}
+        />
+
+        <Center>
+          <Button
+            _loading={{
+              bg: "success.400",
+            }}
+            bg={"success.400"}
+            isLoading={loading}
+            isLoadingText={"Submitting"}
+            m={5}
+            onPress={handleSubmit(onSubmit)}
+            width={"35%"}>
+            Save
+          </Button>
+        </Center>
+      </Popup>
+    );
+  }
+
+  const EditContact = ({ open, setOpen, index }) => {
+    const { control, handleSubmit, errors, setValue, reset } = useForm();
+    const [updateContact, result] = useUpdateContactMutation();
+    const [loading, setLoading] = React.useState(false);
+
+    React.useEffect(() => {
+      setValue("contacts", data.contacts);
+    }, [setValue, data])
+
+    const onSubmit = values => {
+      setLoading(!loading);
+      updateContact({
+        id: data.contacts[index].id,
+        clientId: clientId,
+        body: {
+          id: values.contacts[index].id,
+          clientId: values.contacts[index].clientId,
+          name: values.contacts[index].name,
+          title: values.contacts[index].title,
+          phone: values.contacts[index].phone,
+          email: values.contacts[index].email,
+        }
+      })
+        .unwrap()
+        .then(res => {
+          setUpdateIndex(null)
+          setOpenContactModal(false);
+          setLoading(!loading);
+          showNotification({
+            text: "Contact Successfully Updated",
+          });
+        })
+    }
+
+    return (
+      <Popup open={open} setOpen={setOpen} header={"Edit Client Contact"}>
+        <TextInput
+          control={control}
+          title={"Name"}
+          field={`contacts[${index}].name`}
+        />
+        <TextInput
+          control={control}
+          title={"Title"}
+          field={`contacts[${index}].title`}
+        />
+        <TextInput
+          control={control}
+          title={"Phone"}
+          field={`contacts[${index}].phone`}
+        />
+        <TextInput
+          control={control}
+          title={"Email"}
+          field={`contacts[${index}].email`}
+        />
+
+        <Center>
+          <Button
+            _loading={{
+              bg: "success.400",
+            }}
+            bg={"success.400"}
+            isLoading={loading}
+            isLoadingText={"Submitting"}
+            m={5}
+            onPress={handleSubmit(onSubmit)}
+            width={"35%"}>
+            Save
+          </Button>
+        </Center>
+      </Popup>
+    );
+  }
+
+  return (
+    <HStack flex={1} justifyContent={"flex-start"} pt={5}>
+      <Toolbar navigation={navigation} />
+
+      <EditInfo open={openModal} setOpen={setOpenModal} index={updateIndex} />
+
+      <EditAddress open={openAddressModal} setOpen={setOpenAddressModal} index={updateIndex} />
+
+      <EditContact open={openContactModal} setOpen={setOpenContactModal} index={updateIndex} />
 
       <VStack flex={1}>
         <VStack mx={2}>
@@ -308,7 +486,6 @@ export default function ClientProfile({ navigation, route }) {
           data={data.addresses}
           title={"Addresses"}
           addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
-          editIcon={true}
           form={
             data.addresses.length !== 3 ? (
               <AddAddressForm
@@ -325,7 +502,11 @@ export default function ClientProfile({ navigation, route }) {
           rowAction={row =>
             deleteAddress({ clientId: row.clientId, id: row.id })
           }
-          editRow={true}
+          edit={{
+            func: setOpenAddressModal,
+            variable: openAddressModal,
+          }}
+          setIndex={setUpdateIndex}
         />
 
         <Table
@@ -350,6 +531,11 @@ export default function ClientProfile({ navigation, route }) {
             deleteContact({ clientId: row.clientId, id: row.id })
           }
           editRow={true}
+          edit={{
+            func: setOpenContactModal,
+            variable: openContactModal,
+          }}
+          setIndex={setUpdateIndex}
         />
 
         <HStack flex={1}>
@@ -406,6 +592,7 @@ export default function ClientProfile({ navigation, route }) {
               data={formatApprovalsArr(data.approvals)}
               fields={["name", "value"]}
               title={"Approvals"}
+              editIcon={false}
             />
           </VStack>
         </HStack>

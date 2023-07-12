@@ -114,6 +114,22 @@ export const clientApi = emptySplitApi.injectEndpoints({
       }),
       invalidatesTags: ["Approvals"],
     }),
+    updateAddress: builder.mutation({
+      query: ({ clientId, id, body }) => ({
+        url: `clients/${clientId}/addresses/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Addresses"],
+    }),
+    updateContact: builder.mutation({
+      query: ({ clientId, id, body }) => ({
+        url: `clients/${clientId}/contacts/${id}`,
+        method: "PUT",
+        body: body,
+      }),
+      invalidatesTags: ["Contacts"],
+    }),
     deleteAddress: builder.mutation({
       query: ({ clientId, id }) => ({
         url: `clients/${clientId}/addresses/${id}`,
@@ -170,6 +186,8 @@ export const {
   useUpdateStatusMutation,
   useUpdateApprovalsMutation,
   useUpdateClientMutation,
+  useUpdateAddressMutation,
+  useUpdateContactMutation,
   useDeleteAddressMutation,
   useDeleteContactMutation,
   useDeleteBillingPartsMutation,
