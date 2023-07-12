@@ -499,9 +499,12 @@ export default function ClientProfile({ navigation, route }) {
           alertBody={
             "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved."
           }
-          rowAction={row =>
-            deleteAddress({ clientId: row.clientId, id: row.id })
-          }
+          rowAction={row => {
+            deleteAddress({ clientId: row.clientId, id: row.id });
+            showNotification({
+              text: "Address Successfully Deleted."
+            });
+          }}
           edit={{
             func: setOpenAddressModal,
             variable: openAddressModal,
@@ -515,7 +518,7 @@ export default function ClientProfile({ navigation, route }) {
           data={data.contacts.map(item => ({
             name: item.name,
             title: item.title,
-            phone: item.phone.slice(0, 3).concat("-", item.phone.slice(4, 7), "-", item.phone.slice(8)),
+            phone: item.phone,
             email: item.email
           }))}
           title={"Contacts"}
@@ -527,9 +530,12 @@ export default function ClientProfile({ navigation, route }) {
           alertBody={
             "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved."
           }
-          rowAction={row =>
-            deleteContact({ clientId: row.clientId, id: row.id })
-          }
+          rowAction={row => {
+            deleteContact({ clientId: row.clientId, id: row.id });
+            showNotification({
+              text: "Contact Successfully Deleted."
+            });
+          }}
           editRow={true}
           edit={{
             func: setOpenContactModal,
@@ -569,6 +575,9 @@ export default function ClientProfile({ navigation, route }) {
                 deleteParts({
                   program: row.selection,
                   id: clientId,
+                });
+                showNotification({
+                  text: "Program Successfully Deleted."
                 });
               }}
             />
