@@ -136,9 +136,10 @@ export default function Table({
                       <Menu.Item
                         onPress={() => {
                           if (alertHeader) {
+                            setItem(item);
                             showAlert(true);
                           } else {
-                            rowAction(selectedItem);
+                            rowAction(item);
                           }
                         }}>
                         Delete
