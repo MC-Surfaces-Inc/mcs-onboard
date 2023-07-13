@@ -461,6 +461,25 @@ export default function ClientProfile({ navigation, route }) {
                         Submit Client
                       </Menu.Item>
                       <Menu.Item
+                        isDisabled={data.status.current !== "Queued"}
+                        onPress={() => {
+                          updateStatus({ id: clientId, body: { status: "Potential" } });
+                          updateApprovals({
+                            id: clientId,
+                            body: {
+                              edythc: null,
+                              lisak: null,
+                              kimn: null,
+                            },
+                          });
+                          showNotification({
+                            text: "Client Status Successfully Updated"
+                          })
+                        }
+                      }>
+                        Remove from Queue
+                      </Menu.Item>
+                      <Menu.Item
                         onPress={() => {
                           updateStatus({ id: clientId, body: { status: "Pushed" } });
                         }}
