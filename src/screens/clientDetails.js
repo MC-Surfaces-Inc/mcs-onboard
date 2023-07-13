@@ -17,8 +17,6 @@ export default function ClientDetails({ navigation, route }) {
   const clientId = route.params?.clientId;
   const { data, error, isLoading } = useGetClientDetailsQuery(clientId);
 
-  console.log(data);
-
   if (data === undefined || isLoading) {
     return <Loading navigation={navigation} />;
   }

@@ -414,11 +414,16 @@ export default function ClientProfile({ navigation, route }) {
                       <Menu.Item
                         onPress={() =>
                           navigation.push("ClientDetails", { clientId: clientId })
+                        }
+                        isDisabled={
+                          data.status.current !== "Potential" &&
+                          data.status.current !== "Declined" &&
+                          data.status.current !== "Updating"
                         }>
                         Client Details
                       </Menu.Item>
                       <Menu.Item
-                        isDisabled={!Object.values(data.programs).includes(1)}
+                        isDisabled={!Object.values(data.programs).includes(1) || (data.status.current !== "Potential" && data.status.current !== "Updating" && data.status.current !== "Declined")}
                         onPress={() =>
                           navigation.push("ProgramDetails", {
                             programs: data.programs,
@@ -428,7 +433,7 @@ export default function ClientProfile({ navigation, route }) {
                         Program Details
                       </Menu.Item>
                       <Menu.Item
-                        isDisabled={!Object.values(data.programs).includes(1)}
+                        isDisabled={!Object.values(data.programs).includes(1) || (data.status.current !== "Potential" && data.status.current !== "Updating" && data.status.current !== "Updating")}
                         onPress={() =>
                           navigation.push("ProgramPricing", {
                             programs: data.programs,
@@ -486,9 +491,9 @@ export default function ClientProfile({ navigation, route }) {
                         isDisabled={data.status.current !== "Approved"}>
                         Push Client
                       </Menu.Item>
-                      <Menu.Item isDisabled={data.status.current !== "Pushed" || data.status.current !== "Potential"}>
-                        Update Client
-                      </Menu.Item>
+                      {/*<Menu.Item isDisabled={data.status.current === "Potential"}>*/}
+                      {/*  Update Client*/}
+                      {/*</Menu.Item>*/}
                     </Menu.Group>
                   </Menu.Group>
                 </Menu>

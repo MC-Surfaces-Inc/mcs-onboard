@@ -86,7 +86,7 @@ export default function Home({ navigation }) {
       <StatusBar />
       <Toolbar navigation={navigation} />
 
-      <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
+      <VStack bg={"coolGray.800"} borderRadius={"md"} flex={2} m={2}>
         <HStack alignItems={"center"} justifyContent={"space-between"}>
           <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5}>
             Client List
@@ -121,7 +121,7 @@ export default function Home({ navigation }) {
 
       <VStack flex={1}>
         <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
-          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5}>
+          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1.5}>
             Notifications
           </Heading>
           <Divider />
@@ -132,7 +132,7 @@ export default function Home({ navigation }) {
         </VStack>
 
         <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
-          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5}>
+          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1.5}>
             Documents
           </Heading>
           <Divider />

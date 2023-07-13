@@ -13,11 +13,11 @@ import { showNotification } from "../components/notification";
 
 export default function AddClientForm() {
   const user = useSelector(state => state.auth.user);
-  const { control, errors, handleSubmit, reset } = useForm();
+  const { control, handleSubmit, reset, formState: { errors } } = useForm();
   const [createClient, { isLoading, isUpdating }] = useCreateClientMutation();
   const [createAddress, status] = useCreateAddressMutation();
   const [loading, setLoading] = React.useState(false);
-  const toast = useToast();
+  const toast = useToast()
 
   const onSubmit = values => {
     setLoading(true);
@@ -56,31 +56,45 @@ export default function AddClientForm() {
       });
   };
 
+  console.log(typeof(errors.client || {}))
+
   return (
     <Popover.Content>
       <Popover.Arrow />
       <Popover.CloseButton />
       <Popover.Header>Add Client</Popover.Header>
       <Popover.Body>
-        <FormControl>
+        <FormControl isRequired isInvalid={'name' in (errors.client || {})}>
           <TextInput
             control={control}
             field={"client.name"}
             title={"Client Name"}
+            rules={{
+              required: "Required Field"
+            }}
+            errorMessage={errors.client?.name?.message}
           />
-
+        </FormControl>
+        <FormControl isRequired isInvalid={'territory ' in (errors.client || {})}>
           <Picker
             choices={territories}
             control={control}
             field={"client.territory"}
             title={"Territory"}
+            rules={{
+              required: "Required Field"
+            }}
+            errorMessage={errors.client?.territory?.message}
           />
-
+        </FormControl>
+        <FormControl>
           <TextInput
             control={control}
             field={"address.address1"}
             title={"Corporate Address 1"}
           />
+        </FormControl>
+        <FormControl>
 
           <TextInput
             control={control}
