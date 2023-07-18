@@ -10,10 +10,17 @@ import {
 } from "../services/client";
 import { useSelector } from "react-redux";
 import { showNotification } from "../components/notification";
+import { ErrorMessage } from "@hookform/error-message";
 
 export default function AddClientForm() {
   const user = useSelector(state => state.auth.user);
-  const { control, handleSubmit, reset, formState: { errors } } = useForm();
+  const { control, handleSubmit, reset, formState: { errors } } = useForm({
+    defaultValues: {
+      address: {
+        state: "TX"
+      }
+    }
+  });
   const [createClient, { isLoading, isUpdating }] = useCreateClientMutation();
   const [createAddress, status] = useCreateAddressMutation();
   const [loading, setLoading] = React.useState(false);
@@ -56,15 +63,15 @@ export default function AddClientForm() {
       });
   };
 
-  console.log(typeof(errors.client || {}))
-
   return (
     <Popover.Content>
       <Popover.Arrow />
       <Popover.CloseButton />
       <Popover.Header>Add Client</Popover.Header>
       <Popover.Body>
-        <FormControl isRequired isInvalid={'name' in (errors.client || {})}>
+        <FormControl
+          isRequired
+          isInvalid={errors.client && 'name' in errors.client}>
           <TextInput
             control={control}
             field={"client.name"}
@@ -72,10 +79,10 @@ export default function AddClientForm() {
             rules={{
               required: "Required Field"
             }}
-            errorMessage={errors.client?.name?.message}
+            errorMessage={<ErrorMessage errors={errors} name={"client.name"} />}
           />
         </FormControl>
-        <FormControl isRequired isInvalid={'territory ' in (errors.client || {})}>
+        <FormControl isRequired isInvalid={'territory' in (errors.client || {})}>
           <Picker
             choices={territories}
             control={control}
@@ -84,7 +91,7 @@ export default function AddClientForm() {
             rules={{
               required: "Required Field"
             }}
-            errorMessage={errors.client?.territory?.message}
+            errorMessage={<ErrorMessage errors={errors} name={"client.territory"} />}
           />
         </FormControl>
         <FormControl>
@@ -93,8 +100,6 @@ export default function AddClientForm() {
             field={"address.address1"}
             title={"Corporate Address 1"}
           />
-        </FormControl>
-        <FormControl>
 
           <TextInput
             control={control}

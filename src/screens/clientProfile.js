@@ -3,7 +3,7 @@ import {
   Box,
   Button,
   Center,
-  Divider,
+  Divider, FormControl,
   HamburgerIcon,
   Heading,
   HStack,
@@ -36,6 +36,8 @@ import { states, territories, types } from "../constants/dropdownValues";
 import Popup from "../components/popup";
 import TextInput from "../components/textInput";
 import { showNotification } from "../components/notification";
+import { ErrorMessage } from "@hookform/error-message";
+import _ from "lodash";
 
 const statusColors = {
   Potential: "primary.900",
@@ -48,7 +50,7 @@ const statusColors = {
 export default function ClientProfile({ navigation, route }) {
   const clientId = route.params?.clientId;
   const user = useSelector(state => state.auth.user);
-  const { data, error, isLoading } = useGetClientByIdQuery(clientId);
+  const { data, isLoading } = useGetClientByIdQuery(clientId);
   const [openModal, setOpenModal] = React.useState(false);
   const [openAddressModal, setOpenAddressModal] = React.useState(false);
   const [openContactModal, setOpenContactModal] = React.useState(false);
@@ -99,6 +101,7 @@ export default function ClientProfile({ navigation, route }) {
 
     return Object.keys(arr).map(x => ({
       name: x,
+      key: x,
       value:
         data.approvals[x] === 1
           ? "Approved"
@@ -115,8 +118,8 @@ export default function ClientProfile({ navigation, route }) {
   };
 
   const EditInfo = ({open, setOpen }) => {
-    const { control, handleSubmit, errors, setValue, reset } = useForm();
-    const [updateInfo, result7] = useUpdateClientMutation();
+    const { control, handleSubmit, setValue, formState: { errors } } = useForm();
+    const [updateInfo, result] = useUpdateClientMutation();
     const [loading, setLoading] = React.useState(false);
 
     React.useEffect(() => {
@@ -144,19 +147,35 @@ export default function ClientProfile({ navigation, route }) {
         })
     }
 
+    if (errors.client === undefined) {
+      errors.client = {};
+    }
+
     return (
       <Popup open={open} setOpen={setOpen} header={"Edit Client Name & Territory"}>
-        <TextInput
-          control={control}
-          title={"Client Name"}
-          field={"client.name"}
-        />
-        <Picker
-          control={control}
-          title={"Territory"}
-          field={"client.territory"}
-          choices={territories}
-        />
+        <FormControl isRequired isInvalid={'name' in errors.client}>
+          <TextInput
+            control={control}
+            title={"Client Name"}
+            field={"client.name"}
+            rules={{
+              required: "Required Field"
+            }}
+            error={<ErrorMessage errors={errors} name={"client.name"} />}
+          />
+        </FormControl>
+        <FormControl isRequired isInvalid={'territory' in errors.client}>
+          <Picker
+            control={control}
+            title={"Territory"}
+            field={"client.territory"}
+            choices={territories}
+            rules={{
+              required: "Required Field"
+            }}
+            error={<ErrorMessage errors={errors} name={"client.territory"}  />}
+          />
+        </FormControl>
 
         <Center>
           <Button
@@ -177,12 +196,12 @@ export default function ClientProfile({ navigation, route }) {
   }
 
   const EditAddress = ({ open, setOpen, index }) => {
-    const { control, handleSubmit, errors, setValue, reset } = useForm();
+    const { control, handleSubmit, setValue, formState: { errors } } = useForm();
     const [updateAddress, result] = useUpdateAddressMutation();
     const [loading, setLoading] = React.useState(false);
 
     React.useEffect(() => {
-      setValue("addresses", data.addresses);
+      setValue("address", data.addresses[index]);
     }, [setValue, data])
 
     const onSubmit = values => {
@@ -191,13 +210,13 @@ export default function ClientProfile({ navigation, route }) {
         id: data.addresses[index].id,
         clientId: clientId,
         body: {
-          id: values.addresses[index].id,
-          clientId: values.addresses[index].clientId,
-          type: values.addresses[index].type,
-          address1: values.addresses[index].address1,
-          city: values.addresses[index].city,
-          state: values.addresses[index].state,
-          zip: values.addresses[index].zip,
+          id: values.address.id,
+          clientId: values.address.clientId,
+          type: values.address.type,
+          address1: values.address.address1,
+          city: values.address.city,
+          state: values.address.state,
+          zip: values.address.zip,
         }
       })
         .unwrap()
@@ -208,38 +227,76 @@ export default function ClientProfile({ navigation, route }) {
           showNotification({
             text: "Address Successfully Updated",
           });
-        })
+        });
+    }
+
+    if (errors.address === undefined) {
+      errors.address = {};
     }
 
     return (
       <Popup open={open} setOpen={setOpen} header={"Edit Client Address"}>
-        <Picker
-          control={control}
-          title={"Type"}
-          field={`addresses[${index}].type`}
-          choices={types}
-        />
-        <TextInput
-          control={control}
-          title={"Street"}
-          field={`addresses[${index}].address`}
-        />
-        <TextInput
-          control={control}
-          title={"City"}
-          field={`addresses[${index}].city`}
-        />
-        <Picker
-          control={control}
-          title={"State"}
-          field={`addresses[${index}].state`}
-          choices={states}
-        />
-        <TextInput
-          control={control}
-          title={"Zip"}
-          field={`addresses[${index}].zip`}
-        />
+        <FormControl isRequired isInvalid={'type' in errors.address}>
+          <Picker
+            control={control}
+            title={"Type"}
+            field={`address.type`}
+            choices={types}
+            rules={{
+              required: "Required Field"
+            }}
+            error={<ErrorMessage errors={errors} name={"address.type"} />}
+          />
+        </FormControl>
+        <FormControl isRequired isInvalid={'address' in errors.address}>
+          <TextInput
+            control={control}
+            title={"Street"}
+            field={"address.address"}
+            rules={{
+              required: "Required Field"
+            }}
+            error={<ErrorMessage errors={errors} name={"address.address"} />}
+          />
+        </FormControl>
+        <FormControl isRequired isInvalid={'city' in errors.address}>
+          <TextInput
+            control={control}
+            title={"City"}
+            field={`address.city`}
+            rules={{
+              required: "Required Field",
+            }}
+            error={<ErrorMessage errors={errors} name={"address.city"} />}
+          />
+        </FormControl>
+        <FormControl isRequired isInvalid={'state' in errors.address}>
+          <Picker
+            control={control}
+            title={"State"}
+            field={`address.state`}
+            choices={states}
+            rules={{
+              required: "Required Field"
+            }}
+            error={<ErrorMessage errors={errors} name={"address.state"} />}
+          />
+        </FormControl>
+        <FormControl isRequired isInvalid={'zip' in errors.address}>
+          <TextInput
+            control={control}
+            title={"Zip"}
+            field={`address.zip`}
+            rules={{
+              required: "Required Field",
+              pattern: {
+                value: /[0-9]{5}/,
+                message: "Must only contain 5 digits",
+              }
+            }}
+            error={<ErrorMessage errors={errors} name={"address.zip"} />}
+          />
+        </FormControl>
 
         <Center>
           <Button
@@ -260,12 +317,12 @@ export default function ClientProfile({ navigation, route }) {
   }
 
   const EditContact = ({ open, setOpen, index }) => {
-    const { control, handleSubmit, errors, setValue, reset } = useForm();
+    const { control, handleSubmit, setValue, formState: { errors } } = useForm();
     const [updateContact, result] = useUpdateContactMutation();
     const [loading, setLoading] = React.useState(false);
 
     React.useEffect(() => {
-      setValue("contacts", data.contacts);
+      setValue("contact", data.contacts[index]);
     }, [setValue, data])
 
     const onSubmit = values => {
@@ -276,10 +333,10 @@ export default function ClientProfile({ navigation, route }) {
         body: {
           id: values.contacts[index].id,
           clientId: values.contacts[index].clientId,
-          name: values.contacts[index].name,
-          title: values.contacts[index].title,
-          phone: values.contacts[index].phone,
-          email: values.contacts[index].email,
+          name: values.contact.name,
+          title: values.contact.title,
+          phone: values.contact.phone,
+          email: values.contact.email,
         }
       })
         .unwrap()
@@ -293,28 +350,63 @@ export default function ClientProfile({ navigation, route }) {
         })
     }
 
+    if (errors.contact === undefined) {
+      errors.contact = {};
+    }
+
     return (
       <Popup open={open} setOpen={setOpen} header={"Edit Client Contact"}>
-        <TextInput
-          control={control}
-          title={"Name"}
-          field={`contacts[${index}].name`}
-        />
-        <TextInput
-          control={control}
-          title={"Title"}
-          field={`contacts[${index}].title`}
-        />
-        <TextInput
-          control={control}
-          title={"Phone"}
-          field={`contacts[${index}].phone`}
-        />
-        <TextInput
-          control={control}
-          title={"Email"}
-          field={`contacts[${index}].email`}
-        />
+        <FormControl isRequired isInvalid={'name' in errors.contact}>
+          <TextInput
+            control={control}
+            title={"Name"}
+            field={`contact.name`}
+            rules={{
+              required: "Required Field"
+            }}
+            error={<ErrorMessage name={"contact.name"} errors={errors} />}
+          />
+        </FormControl>
+        <FormControl isRequired isInvalid={'title' in errors.contact}>
+          <TextInput
+            control={control}
+            title={"Title"}
+            field={`contact.title`}
+            rules={{
+              required: "Required Field"
+            }}
+            error={<ErrorMessage name={"contact.title"} errors={errors} />}
+          />
+        </FormControl>
+        <FormControl isInvalid={'phone' in errors.contact}>
+          <TextInput
+            control={control}
+            title={"Phone"}
+            field={`contact.phone`}
+            rules={{
+              pattern: {
+                value: /[0-9]{10}/,
+                message: "Must be a valid phone number"
+              }
+            }}
+            error={<ErrorMessage name={"contact.phone"} errors={errors} />}
+            helperText={"Must be formatted as all numbers (i.e. 1234567890)"}
+          />
+        </FormControl>
+        <FormControl isInvalid={'email' in errors.contact}>
+          <TextInput
+            control={control}
+            title={"Email"}
+            field={`contact.email`}
+            rules={{
+              pattern: {
+                value: /^[a-z0-9.]{1,64}@[a-z0-9.]{1,64}$/i,
+                message: "Must be a valid email address"
+              }
+            }}
+            error={<ErrorMessage name={"contact.email"} errors={errors} />}
+          />
+        </FormControl>
 
         <Center>
           <Button
@@ -358,6 +450,19 @@ export default function ClientProfile({ navigation, route }) {
             </HStack>
 
             <HStack flex={1} justifyContent={"flex-end"} alignItems={"center"}>
+              {/*<Box*/}
+              {/*  alignItems={"center"}*/}
+              {/*  borderColor={"green.500"}*/}
+              {/*  borderRadius={"lg"}*/}
+              {/*  borderWidth={1}*/}
+              {/*  bg={"green.500"}*/}
+              {/*  colorScheme={"info"}*/}
+              {/*  mx={2}*/}
+              {/*  p={2}*/}
+              {/*  w={"25%"}>*/}
+              {/*  <Text color={"white"}>{data.basicInfo.territory || "None Selected"}</Text>*/}
+              {/*</Box>*/}
+
               <Box
                 alignItems={"center"}
                 borderColor={"coolGray.500"}
@@ -619,15 +724,17 @@ export default function ClientProfile({ navigation, route }) {
               rowAction={S3.viewObject}
             />
           </VStack>
-          <VStack flex={1}>
-            <Table
-              columnNames={["Manager", "Decision"]}
-              data={formatApprovalsArr(data.approvals)}
-              fields={["name", "value"]}
-              title={"Approvals"}
-              editIcon={false}
-            />
-          </VStack>
+          {data.status.current !== "Potential" &&
+            <VStack flex={1}>
+              <Table
+                columnNames={["Manager", "Decision"]}
+                data={formatApprovalsArr(data.approvals)}
+                fields={["name", "value"]}
+                title={"Approvals"}
+                editIcon={false}
+              />
+            </VStack>
+          }
         </HStack>
       </VStack>
     </HStack>
