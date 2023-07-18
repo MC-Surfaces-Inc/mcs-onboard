@@ -77,6 +77,7 @@ export default function Toolbar({ navigation, route }) {
             color={"#dc2626"}
           />
         }
+        width={"100%"}
         m={2.5}
         mb={10}
         onPress={() => dispatch(clearToken())}
