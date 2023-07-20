@@ -14,13 +14,7 @@ import { ErrorMessage } from "@hookform/error-message";
 
 export default function AddClientForm() {
   const user = useSelector(state => state.auth.user);
-  const { control, handleSubmit, reset, formState: { errors } } = useForm({
-    defaultValues: {
-      address: {
-        state: "TX"
-      }
-    }
-  });
+  const { control, handleSubmit, reset, formState: { errors } } = useForm();
   const [createClient, { isLoading, isUpdating }] = useCreateClientMutation();
   const [createAddress, status] = useCreateAddressMutation();
   const [loading, setLoading] = React.useState(false);

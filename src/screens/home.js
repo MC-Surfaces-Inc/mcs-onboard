@@ -99,7 +99,7 @@ export default function Home({ navigation }) {
                   icon={
                     <FontAwesome5
                       name={"user-plus"}
-                      size={24}
+                      size={20}
                       color={"#fafaf9"}
                     />
                   }
@@ -121,7 +121,7 @@ export default function Home({ navigation }) {
 
       <VStack flex={1}>
         <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
-          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1.5}>
+          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1}>
             Notifications
           </Heading>
           <Divider />
@@ -132,7 +132,7 @@ export default function Home({ navigation }) {
         </VStack>
 
         <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
-          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1.5}>
+          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1}>
             Documents
           </Heading>
           <Divider />

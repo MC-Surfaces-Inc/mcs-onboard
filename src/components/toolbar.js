@@ -1,5 +1,5 @@
 import React from "react";
-import { Box, Center, Divider, IconButton, Image, VStack } from "native-base";
+import { Box, Divider, IconButton, Image, VStack } from "native-base";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useDispatch } from "react-redux";
 import { clearToken } from "../features/auth/authSlice";
@@ -11,19 +11,20 @@ export default function Toolbar({ navigation, route }) {
     if (
       (route !== undefined && route.name === "ClientDetails") ||
       (route !== undefined && route.name === "ProgramDetails") ||
-      (route !== undefined && route.name === "ProgramPricing")
+      (route !== undefined && route.name === "ProgramPricing") ||
+      (route !== undefined && route.name === "Help")
     ) {
       return (
         <IconButton
           icon={
             <FontAwesome5
               name={"arrow-left"}
-              size={24}
+              size={20}
               color={"#fafaf9"}
             />
           }
           width={"100%"}
-          my={2}
+          my={1}
           onPress={() => navigation.goBack()}
         />
       );
@@ -32,10 +33,10 @@ export default function Toolbar({ navigation, route }) {
     return (
       <IconButton
         icon={
-          <FontAwesome5 name={"home"} size={24} color={"#fafaf9"} />
+          <FontAwesome5 name={"home"} size={20} color={"#fafaf9"} />
         }
         width={"100%"}
-        my={2}
+        my={1}
         onPress={() => navigation.popToTop()}
       />
     );
@@ -47,6 +48,7 @@ export default function Toolbar({ navigation, route }) {
       bg={"coolGray.800"}
       borderRightRadius={"md"}
       my={2}
+      p={1}
       maxWidth={"5%"}>
 
       <Image
@@ -54,31 +56,32 @@ export default function Toolbar({ navigation, route }) {
         borderRadius={"md"}
         size={50}
         source={require("./logo.png")}
-        my={2}
+        my={1}
       />
 
       <Divider />
 
-      <NavIcon />
+      <React.Fragment>
+        <NavIcon />
 
-      <IconButton
-        icon={<FontAwesome5 name={"question"} size={24} color={"#fafaf9"} />}
-        width={"100%"}
-        my={2}
-      />
-
-      <Divider />
+        <IconButton
+          icon={<FontAwesome5 name={"question"} size={20} color={"#fafaf9"} />}
+          width={"100%"}
+          my={1}
+          onPress={() => navigation.push("Help")}
+        />
+      </React.Fragment>
 
       <IconButton
         icon={
           <FontAwesome5
             name={"sign-out-alt"}
-            size={24}
+            size={20}
             color={"#dc2626"}
           />
         }
         width={"100%"}
-        m={2.5}
+        my={1}
         mb={10}
         onPress={() => dispatch(clearToken())}
       />

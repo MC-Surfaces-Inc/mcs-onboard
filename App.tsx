@@ -25,6 +25,7 @@ import { saveToken, setUser } from "./src/features/auth/authSlice";
 import { useGetUserInfoQuery } from "./src/services/user";
 import { SSRProvider } from "@react-aria/ssr/src/SSRProvider";
 import codePush from "react-native-code-push";
+import Help from "./src/screens/help";
 
 
 const theme = extendTheme({
@@ -116,6 +117,7 @@ function App(): JSX.Element {
             ) : (
               <>
                 <NavStack.Screen name={"Home"} component={Home} />
+                <NavStack.Screen name={"Help"} component={Help} />
                 <NavStack.Screen name={"ClientProfile"} component={ClientProfile} />
                 <NavStack.Screen name={"ClientDetails"} component={ClientDetails} />
                 <NavStack.Screen
