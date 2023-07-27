@@ -1,7 +1,8 @@
 import React from "react";
 import {
   Box,
-  Divider, Fab,
+  Divider,
+  Fab,
   HStack,
   IconButton,
   Menu,
@@ -13,9 +14,6 @@ import {
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { FlatList } from "react-native";
 import { AlertNotification } from "./alert";
-import { useForm } from "react-hook-form";
-import { Controller, useFieldArray } from "react-hook-form";
-import TextInput from "./textInput";
 
 export default function Table({
   title,
@@ -31,6 +29,7 @@ export default function Table({
   position,
   edit,
   setIndex,
+  deleteRow,
 }) {
   const [alert, showAlert] = React.useState(false);
   const [selectedItem, setItem] = React.useState(null);
@@ -89,7 +88,7 @@ export default function Table({
             {column}
           </Text>
         ))}
-        {edit && <Text color="white" mr={1}>Test</Text>}
+        {edit && addIcon && <Text color="white" mr={1}>Test</Text>}
       </HStack>
 
       <Divider bg={"coolGray.400"} />
@@ -115,7 +114,7 @@ export default function Table({
                   </Text>
                 ))}
 
-                {edit &&
+                {edit && addIcon &&
                   <Menu
                     trigger={triggerProps => (
                       <Pressable {...triggerProps}>
@@ -133,6 +132,33 @@ export default function Table({
                       }}>
                         Edit
                       </Menu.Item>
+                      <Menu.Item
+                        onPress={() => {
+                          if (alertHeader) {
+                            setItem(item);
+                            showAlert(true);
+                          } else {
+                            rowAction(item);
+                          }
+                        }}>
+                        Delete
+                      </Menu.Item>
+                    </Menu.Group>
+                  </Menu>
+                }
+
+                {deleteRow && addIcon &&
+                  <Menu
+                    trigger={triggerProps => (
+                      <Pressable {...triggerProps}>
+                        <Box p={2}>
+                          <ThreeDotsIcon size={4} color={"primary.900"}/>
+                        </Box>
+                      </Pressable>
+                    )}
+                    w={200}>
+                    <Menu.Group title={"Actions"}>
+                      <Divider bg={"coolGray.400"}/>
                       <Menu.Item
                         onPress={() => {
                           if (alertHeader) {

@@ -3,7 +3,8 @@ import {
   Box,
   Button,
   Center,
-  Divider, FormControl,
+  Divider,
+  FormControl,
   HamburgerIcon,
   Heading,
   HStack,
@@ -17,8 +18,11 @@ import {
   useDeleteContactMutation,
   useDeleteProgramInfoMutation,
   useDeleteProgramPartsMutation,
-  useGetClientByIdQuery, useUpdateAddressMutation,
-  useUpdateApprovalsMutation, useUpdateClientMutation, useUpdateContactMutation,
+  useGetClientByIdQuery,
+  useUpdateAddressMutation,
+  useUpdateApprovalsMutation,
+  useUpdateClientMutation,
+  useUpdateContactMutation,
   useUpdateProgramsMutation,
   useUpdateStatusMutation,
 } from "../services/client";
@@ -29,7 +33,7 @@ import Loading from "./loading";
 import AddContactForm from "../forms/addContactForm";
 import AddAddressForm from "../forms/addAddressForm";
 import AddProgramForm from "../forms/addProgramForm";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import Picker from "../components/picker";
 import { useFieldArray, useForm } from "react-hook-form";
 import { states, territories, types } from "../constants/dropdownValues";
@@ -38,6 +42,7 @@ import TextInput from "../components/textInput";
 import { showNotification } from "../components/notification";
 import { ErrorMessage } from "@hookform/error-message";
 import _ from "lodash";
+import { setStatus } from "../features/client/clientSlice";
 
 const statusColors = {
   Potential: "primary.900",
@@ -51,6 +56,8 @@ export default function ClientProfile({ navigation, route }) {
   const clientId = route.params?.clientId;
   const user = useSelector(state => state.auth.user);
   const { data, isLoading } = useGetClientByIdQuery(clientId);
+  const dispatch = useDispatch();
+  const client = useSelector(state => state.client);
   const [openModal, setOpenModal] = React.useState(false);
   const [openAddressModal, setOpenAddressModal] = React.useState(false);
   const [openContactModal, setOpenContactModal] = React.useState(false);
@@ -69,7 +76,8 @@ export default function ClientProfile({ navigation, route }) {
       setFiles(await S3.getFiles(user, data.basicInfo.name));
     };
 
-  if (data) {
+    if (data) {
+      dispatch(setStatus(data.status.current));
       getFiles();
     }
   }, [data, user]);
@@ -116,6 +124,8 @@ export default function ClientProfile({ navigation, route }) {
       .filter(x => arr[x] === 1)
       .map((x, index) => ({ selection: x, key: x }));
   };
+
+  console.log(client)
 
   const EditInfo = ({open, setOpen }) => {
     const { control, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -503,11 +513,7 @@ export default function ClientProfile({ navigation, route }) {
 
                     <Menu.Group title={"Edit"}>
                       <Menu.Item
-                        isDisabled={
-                          data.status.current !== "Potential" &&
-                          data.status.current !== "Declined" &&
-                          data.status.current !== "Updating"
-                        }
+                        isDisabled={!client.permissions.name.edit && !client.permissions.territory.edit}
                         onPress={() => setOpenModal(!openModal)}>
                         Edit Name & Territory
                       </Menu.Item>
@@ -520,31 +526,27 @@ export default function ClientProfile({ navigation, route }) {
                         onPress={() =>
                           navigation.push("ClientDetails", { clientId: clientId })
                         }
-                        isDisabled={
-                          data.status.current !== "Potential" &&
-                          data.status.current !== "Declined" &&
-                          data.status.current !== "Updating"
-                        }>
+                        isDisabled={client.permissions.pages["ClientDetails"]}>
                         Client Details
                       </Menu.Item>
                       <Menu.Item
-                        isDisabled={!Object.values(data.programs).includes(1) || (data.status.current !== "Potential" && data.status.current !== "Updating" && data.status.current !== "Declined")}
                         onPress={() =>
                           navigation.push("ProgramDetails", {
                             programs: data.programs,
                             clientId: clientId,
                           })
-                        }>
+                        }
+                        isDisabled={client.permissions.pages["ProgramDetails"]}>
                         Program Details
                       </Menu.Item>
                       <Menu.Item
-                        isDisabled={!Object.values(data.programs).includes(1) || (data.status.current !== "Potential" && data.status.current !== "Updating" && data.status.current !== "Updating")}
                         onPress={() =>
                           navigation.push("ProgramPricing", {
                             programs: data.programs,
                             clientId: clientId,
                           })
-                        }>
+                        }
+                        isDisabled={client.permissions.pages["ProgramPricing"]}>
                         Program Pricing
                       </Menu.Item>
                     </Menu.Group>
@@ -614,7 +616,7 @@ export default function ClientProfile({ navigation, route }) {
           fields={["type", "address", "city", "state", "zip"]}
           data={data.addresses}
           title={"Addresses"}
-          addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
+          addIcon={client.permissions.addresses.edit}
           form={
             data.addresses.length !== 3 ? (
               <AddAddressForm
@@ -651,8 +653,8 @@ export default function ClientProfile({ navigation, route }) {
             email: item.email
           }))}
           title={"Contacts"}
-          addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
-          editIcon={true}
+          addIcon={client.permissions.contacts.edit}
+          editIcon={client.permissions.contacts.edit}
           form={<AddContactForm clientId={clientId} />}
           position={"left"}
           alertHeader={"Delete Contact"}
@@ -709,6 +711,7 @@ export default function ClientProfile({ navigation, route }) {
                   text: "Program Successfully Deleted."
                 });
               }}
+              deleteRow={true}
             />
           </VStack>
           <VStack flex={2}>
