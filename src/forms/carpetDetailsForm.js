@@ -17,6 +17,7 @@ import Picker from "../components/picker";
 import TextInput from "../components/textInput";
 import MultiLineText from "../components/multiLineText";
 import { showNotification } from "../components/notification";
+import { useSelector } from "react-redux";
 
 export default function CarpetDetailsForm({ programs, clientId }) {
   const { control, errors, handleSubmit, setValue } = useForm();
@@ -26,6 +27,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
   });
   const [updateInfo, result] = useUpdateProgramInfoMutation();
   const [loading, setLoading] = React.useState(false);
+  const client = useSelector(state => state.client);
 
   if (data === undefined || isLoading) {
     return <Loading />;
@@ -85,6 +87,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
             control={control}
             field={"carpet.preferredPadding"}
             title={"Preferred Padding Brand"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -98,6 +101,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
             control={control}
             field={"carpet.wasteFactor"}
             title={"Waste Percentage"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -112,6 +116,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
             control={control}
             field={"carpet.takeoffResponsibility"}
             title={"Who Will Be Doing Takeoffs?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <VStack mb={2}>
@@ -119,6 +124,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
               control={control}
               field={"carpet.notes"}
               title={"Notes"}
+              isDisabled={!client.permissions.pages["ProgramDetails"].edit}
             />
           </VStack>
         </VStack>

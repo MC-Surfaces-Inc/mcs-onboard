@@ -20,6 +20,7 @@ import { useForm } from "react-hook-form";
 import MultiLineText from "../components/multiLineText";
 import Picker from "../components/picker";
 import { showNotification } from "../components/notification";
+import { useSelector } from "react-redux";
 
 export default function CabinetDetailsForm({ navigation, programs, clientId }) {
   const { control, errors, handleSubmit, setValue } = useForm();
@@ -29,6 +30,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
   });
   const [updateInfo, result] = useUpdateProgramInfoMutation();
   const [loading, setLoading] = React.useState(false);
+  const client = useSelector(state => state.client);
 
   if (data === undefined || isLoading) {
     return <Loading />;
@@ -83,30 +85,35 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
             control={control}
             field={"cabinets.preferredColors"}
             title={"Preferred Colors"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"cabinets.preferredStyle"}
             title={"Preferred Style"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"cabinets.overlay"}
             title={"Overlay"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"cabinets.preferredColors"}
             title={"Preferred Colors"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"cabinets.preferredCrown"}
             title={"Preferences on Crown"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -114,6 +121,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
             control={control}
             field={"cabinets.bidType"}
             title={"Bid Type Preferences"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -126,12 +134,14 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
             control={control}
             field={"cabinets.upperCabinetSpecs"}
             title={"Upper Cabinet Standard Specs."}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"cabinets.vanityHeightSpecs"}
             title={"Vanity Height Standard Specs."}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -139,12 +149,14 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
             control={control}
             field={"cabinets.softCloseStandard"}
             title={"Is Soft Close Standard?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"cabinets.areasOptionedOut"}
             title={"Are Areas Optioned Out?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -159,6 +171,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
               control={control}
               field={"cabinets.notes"}
               title={"Notes"}
+              isDisabled={!client.permissions.pages["ProgramDetails"].edit}
             />
           </VStack>
         </VStack>

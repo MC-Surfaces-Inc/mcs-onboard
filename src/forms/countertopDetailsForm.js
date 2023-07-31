@@ -21,6 +21,7 @@ import { useForm } from "react-hook-form";
 import TextInput from "../components/textInput";
 import MultiLineText from "../components/multiLineText";
 import { showNotification } from "../components/notification";
+import { useSelector } from "react-redux";
 
 export default function CountertopDetailsForm({ programs, clientId }) {
   const { control, errors, handleSubmit, setValue } = useForm();
@@ -30,6 +31,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
   });
   const [updateInfo, result] = useUpdateProgramInfoMutation();
   const [loading, setLoading] = React.useState(false);
+  const client = useSelector(state => state.client);
 
   if (data === undefined || isLoading) {
     return <Loading />;
@@ -89,6 +91,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
             control={control}
             field={"countertops.preferredMaterialThickness"}
             title={"Preferred Material Thickness"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -96,6 +99,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
             control={control}
             field={"countertops.preferredEdge"}
             title={"Preferred Edge"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -110,6 +114,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
             control={control}
             field={"countertops.waterfallEdgeStandard"}
             title={"Waterfall Sides - Std. or Option?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -117,12 +122,14 @@ export default function CountertopDetailsForm({ programs, clientId }) {
             control={control}
             field={"countertops.faucetHoles"}
             title={"Faucet Holes?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"countertops.stoveRangeSpecifications"}
             title={"Stove Range Specs."}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -137,6 +144,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
             control={control}
             field={"countertops.takeoffResponsibility"}
             title={"Who Will Be Doing Takeoffs?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <FormControl.Label>Waste Factor Percentage</FormControl.Label>
@@ -147,6 +155,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
               control={control}
               field={"countertops.notes"}
               title={"Notes"}
+              isDisabled={!client.permissions.pages["ProgramDetails"].edit}
             />
           </VStack>
         </VStack>

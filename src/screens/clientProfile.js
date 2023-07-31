@@ -125,8 +125,6 @@ export default function ClientProfile({ navigation, route }) {
       .map((x, index) => ({ selection: x, key: x }));
   };
 
-  console.log(client.permissions.pages)
-
   const EditInfo = ({open, setOpen }) => {
     const { control, handleSubmit, setValue, formState: { errors } } = useForm();
     const [updateInfo, result] = useUpdateClientMutation();

@@ -17,6 +17,7 @@ import TextInput from "../components/textInput";
 import MultiLineText from "../components/multiLineText";
 import Picker from "../components/picker";
 import { showNotification } from "../components/notification";
+import { useSelector } from "react-redux";
 
 export default function WoodVinylDetailsForm({ navigation, programs, clientId }) {
   const { control, errors, handleSubmit, setValue } = useForm();
@@ -26,6 +27,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
   });
   const [updateInfo, result] = useUpdateProgramInfoMutation();
   const [loading, setLoading] = React.useState(false);
+  const client = useSelector(state => state.client);
 
   if (data === undefined || isLoading) {
     return <Loading />;
@@ -85,12 +87,14 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.preferredGlueProducts"}
             title={"Preferred Glue Products"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"wood_vinyl.otherGlueProducts"}
             title={"Other Glue Product"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -98,6 +102,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.stainedOrPrimed"}
             title={"Stained or Primed?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -112,6 +117,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.transitionStripsStandard"}
             title={"Are Transition Strips Standard?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -119,6 +125,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.hvacRequirement"}
             title={"HVAC Requirements?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -126,6 +133,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.MCInstalledTrim"}
             title={"MC Surfaces Install Wood Trim?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <Picker
@@ -133,6 +141,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.secondFloorConstruction"}
             title={"2nd Story Subfloor Construction"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
         </VStack>
 
@@ -147,12 +156,14 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.takeoffResponsibility"}
             title={"Who Will Be Doing Takeoffs?"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"wood_vinyl.wasteFactor"}
             title={"Waste Factor Percentage"}
+            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
 
           <VStack mb={2}>
@@ -160,6 +171,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
               control={control}
               field={"wood_vinyl.notes"}
               title={"Notes"}
+              isDisabled={!client.permissions.pages["ProgramDetails"].edit}
             />
           </VStack>
         </VStack>
