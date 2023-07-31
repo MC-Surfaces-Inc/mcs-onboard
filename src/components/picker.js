@@ -2,7 +2,7 @@ import React from "react";
 import { Box, FormControl, Select, WarningOutlineIcon } from "native-base";
 import { Controller } from "react-hook-form";
 
-export default function Picker({ choices, control, field, title, rules, error }) {
+export default function Picker({ choices, control, field, title, rules, error, disabled }) {
   return (
     <Box flex={1} mt={-2}>
       <FormControl.Label mt={2}>{title}</FormControl.Label>
@@ -15,7 +15,8 @@ export default function Picker({ choices, control, field, title, rules, error })
             <Select
               onValueChange={itemValue => onChange(itemValue)}
               placeholder={"Select"}
-              selectedValue={value}>
+              selectedValue={value}
+              isDisabled={disabled}>
               {choices.map(choice => (
                 <Select.Item
                   key={choice}

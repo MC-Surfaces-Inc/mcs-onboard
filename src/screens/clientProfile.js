@@ -125,7 +125,7 @@ export default function ClientProfile({ navigation, route }) {
       .map((x, index) => ({ selection: x, key: x }));
   };
 
-  console.log(client)
+  console.log(client.permissions.pages)
 
   const EditInfo = ({open, setOpen }) => {
     const { control, handleSubmit, setValue, formState: { errors } } = useForm();
@@ -525,8 +525,7 @@ export default function ClientProfile({ navigation, route }) {
                       <Menu.Item
                         onPress={() =>
                           navigation.push("ClientDetails", { clientId: clientId })
-                        }
-                        isDisabled={client.permissions.pages["ClientDetails"]}>
+                        }>
                         Client Details
                       </Menu.Item>
                       <Menu.Item
@@ -535,8 +534,7 @@ export default function ClientProfile({ navigation, route }) {
                             programs: data.programs,
                             clientId: clientId,
                           })
-                        }
-                        isDisabled={client.permissions.pages["ProgramDetails"]}>
+                        }>
                         Program Details
                       </Menu.Item>
                       <Menu.Item
@@ -545,8 +543,7 @@ export default function ClientProfile({ navigation, route }) {
                             programs: data.programs,
                             clientId: clientId,
                           })
-                        }
-                        isDisabled={client.permissions.pages["ProgramPricing"]}>
+                        }>
                         Program Pricing
                       </Menu.Item>
                     </Menu.Group>

@@ -12,6 +12,7 @@ import AccountingInfoForm from "../forms/accountingInfoForm";
 import ExpeditingInfoForm from "../forms/expeditingInfoForm";
 import { useGetClientDetailsQuery } from "../services/client";
 import Loading from "./loading";
+import { useSelector } from "react-redux";
 
 export default function ClientDetails({ navigation, route }) {
   const clientId = route.params?.clientId;

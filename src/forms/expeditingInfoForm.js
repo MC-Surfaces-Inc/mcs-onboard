@@ -17,11 +17,13 @@ import TextInput from "../components/textInput";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { showNotification } from "../components/notification";
+import { useSelector } from "react-redux";
 
 export default function ExpeditingInfoForm({ clientId, data }) {
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
+  const client = useSelector(state => state.client);
 
   React.useEffect(() => {
     setValue("expediting_details", data);
@@ -65,12 +67,14 @@ export default function ExpeditingInfoForm({ clientId, data }) {
               control={control}
               field={"expediting_details.vendorPortal"}
               title={"Is there a vendor portal?"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <TextInput
               control={control}
               field={"expediting_details.vendorPortalURL"}
               title={"Vendor Portal URL"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <Picker
@@ -78,18 +82,21 @@ export default function ExpeditingInfoForm({ clientId, data }) {
               control={control}
               field={"expediting_details.portalAccountCreated"}
               title={"Has the vendor portal account been created?"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <TextInput
               control={control}
               field={"expediting_details.portalUsername"}
               title={"Portal Username"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <TextInput
               control={control}
               field={"expediting_details.portalPassword"}
               title={"Portal Password"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
           </VStack>
 
@@ -101,6 +108,7 @@ export default function ExpeditingInfoForm({ clientId, data }) {
               control={control}
               field={"expediting_details.jobReleaseMethod"}
               title={"How are jobs released?"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <Picker
@@ -108,12 +116,14 @@ export default function ExpeditingInfoForm({ clientId, data }) {
               control={control}
               field={"expediting_details.poErrorHandling"}
               title={"PO Correction Handling?"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <TextInput
               control={control}
               field={"expediting_details.estimatedHomes"}
               title={"Estimated Number of Homes per Year"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             {/*<DatePicker*/}
@@ -127,6 +137,7 @@ export default function ExpeditingInfoForm({ clientId, data }) {
               control={control}
               field={"expediting_details.inHouseProgram"}
               title={"Is the client using the In-House Program?"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
           </VStack>
         </HStack>
@@ -138,6 +149,7 @@ export default function ExpeditingInfoForm({ clientId, data }) {
             control={control}
             title={"Notes"}
             field={"expediting_details.notes"}
+            disabled={!client.permissions.pages["ClientDetails"].edit}
           />
         </VStack>
 

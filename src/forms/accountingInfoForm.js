@@ -20,11 +20,13 @@ import TextInput from "../components/textInput";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { showNotification } from "../components/notification";
+import { useSelector } from "react-redux";
 
 export default function AccountingInfoForm({ clientId, data }) {
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
+  const client = useSelector(state => state.client);
 
   React.useEffect(() => {
     setValue("accounting_details", data);
@@ -68,6 +70,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               control={control}
               field={"accounting_details.paymentFrequency"}
               title={"Payment Frequency"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <Picker
@@ -75,12 +78,14 @@ export default function AccountingInfoForm({ clientId, data }) {
               control={control}
               field={"accounting_details.autopay"}
               title={"Autopay?"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <TextInput
               control={control}
               title={"Email for Submitting Invoices"}
               field={"accounting_details.invoiceEmailAddress"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <Picker
@@ -88,6 +93,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               title={"Payment Type"}
               field={"accounting_details.paymentType"}
               choices={paymentType}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
         {/*    <Picker*/}
@@ -101,6 +107,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               control={control}
               title={"Payment URL"}
               field={"accounting_details.paymentURL"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
           </VStack>
 
@@ -112,6 +119,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               title={"POs Required?"}
               field={"accounting_details.poRequired"}
               choices={yesOrNo}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <Picker
@@ -119,6 +127,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               title={"POs Required for Invoices?"}
               field={"accounting_details.poInvoiceRequired"}
               choices={yesOrNo}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <Picker
@@ -126,6 +135,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               title={"Approvals Required?"}
               field={"accounting_details.approvalsRequired"}
               choices={yesOrNo}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
 
             <Picker
@@ -133,6 +143,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               title={"Is the Contract Attached?"}
               field={"accounting_details.contractAttached"}
               choices={yesOrNo}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
           </VStack>
         </HStack>
@@ -145,6 +156,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               control={control}
               title={"Contact Name"}
               field={"accounting_details.contactName"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
           </VStack>
 
@@ -153,6 +165,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               control={control}
               title={"Contact Phone"}
               field={"accounting_details.contactPhone"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
           </VStack>
 
@@ -161,6 +174,7 @@ export default function AccountingInfoForm({ clientId, data }) {
               control={control}
               title={"Contact Email"}
               field={"accounting_details.contactEmail"}
+              disabled={!client.permissions.pages["ClientDetails"].edit}
             />
           </VStack>
         </HStack>
@@ -172,6 +186,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             control={control}
             title={"Notes"}
             field={"accounting_details.notes"}
+            disabled={!client.permissions.pages["ClientDetails"].edit}
           />
         </VStack>
 

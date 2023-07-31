@@ -2,7 +2,7 @@ import React from "react";
 import { FormControl, TextArea } from "native-base";
 import { Controller } from "react-hook-form";
 
-export default function MultiLineText({ control, field, title }) {
+export default function MultiLineText({ control, field, title, disabled }) {
   return (
     <React.Fragment>
       <FormControl.Label>{title}</FormControl.Label>
@@ -14,7 +14,7 @@ export default function MultiLineText({ control, field, title }) {
             onBlur={onBlur}
             value={value}
             onChangeText={text => onChange(text)}
-          />
+            isReadOnly={disabled}/>
         )}
       />
     </React.Fragment>
