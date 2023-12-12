@@ -32,14 +32,13 @@ export default function TileDetailsForm({ programs, clientId }) {
   const [loading, setLoading] = React.useState(false);
   const client = useSelector(state => state.client);
 
-  console.log(programs);
-  console.log(data);
-
-  if (data === undefined || isLoading) {
-    return <Loading />;
-  } else {
-    setValue("tile", data.program);
-  }
+  React.useEffect(() => {
+    if (data === undefined || isLoading) {
+      return <Loading />;
+    } else {
+      setValue("tile", data.program);
+    }
+  }, [data, isLoading])
 
   if (programs.Tile === 0 || programs.Tile === null || error) {
     return (

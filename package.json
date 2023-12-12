@@ -5,7 +5,7 @@
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "ios-dev": "react-native run-ios --scheme 'OnBoardDevelopment' --simulator='iPad Pro (12.9-inch) (5th generation)'",
+    "ios-dev": "react-native run-ios --scheme 'OnBoardDevelopment' --simulator='iPad Pro (12.9-inch) (6th generation)'",
     "lint": "eslint .",
     "start": "react-native start --openssl-legacy-provider start",
     "test": "jest"

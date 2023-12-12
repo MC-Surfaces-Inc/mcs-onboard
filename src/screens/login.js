@@ -1,6 +1,7 @@
 import React from "react";
 import Auth0 from "react-native-auth0";
 import {
+  Box,
   Button,
   Center,
   Divider,
@@ -12,11 +13,14 @@ import Config from "react-native-config";
 import { useDispatch, useSelector } from "react-redux";
 import { saveToken, setLoading, setUser } from "../features/auth/authSlice";
 import Layout from "../components/layout";
+import { ImageBackground } from "react-native";
 
 const auth0 = new Auth0({
   domain: Config.AUTH0_DOMAIN,
   clientId: Config.AUTH0_CLIENT_ID,
 });
+
+const backgroundImg = require('../assets/login_background.jpg');
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -43,33 +47,37 @@ export default function Login() {
   };
 
   return (
-    <Layout>
-      <Stack
-        bg={useColorModeValue("coolGray.800", "warmGray.50")}
-        borderRadius={"lg"}
-        h={"20%"}
-        justifyContent={"flex-end"}
-        w={"40%"}>
-        <Center flex={1}>
-          <Heading
-            color={useColorModeValue("white", "black")}
-            size={"2xl"}
-            textAlign={"center"}>
-            OnBoard by MCS
-          </Heading>
-        </Center>
+    // <Layout>
+      <ImageBackground source={backgroundImg} style={{ height: "100%" }}>
+        <Center h={"100%"}>
+          <Stack
+            bg={useColorModeValue("coolGray.800", "warmGray.50")}
+            borderRadius={"lg"}
+            h={"30%"}
+            justifyContent={"flex-end"}
+            w={"40%"}>
+            <Center flex={1}>
+              <Heading
+                color={useColorModeValue("white", "black")}
+                size={"2xl"}
+                textAlign={"center"}>
+                OnBoard by MCS
+              </Heading>
+            </Center>
 
-        <Button
-          size={"lg"}
-          onPress={() => login()}
-          bg={"success.400"}
-          _text={{ fontSize: "xl" }}
-          isLoading={auth.loading}
-          fontWeight={"bold"}
-          h={"30%"}>
-          Login
-        </Button>
-      </Stack>
-    </Layout>
+            <Button
+              size={"lg"}
+              onPress={() => login()}
+              bg={"success.400"}
+              _text={{ fontSize: "2xl" }}
+              isLoading={auth.loading}
+              fontWeight={"bold"}
+              h={"30%"}>
+              Login
+            </Button>
+          </Stack>
+        </Center>
+      </ImageBackground>
+    // </Layout>
   );
 }

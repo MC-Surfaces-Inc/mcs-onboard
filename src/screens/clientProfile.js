@@ -18,7 +18,7 @@ import {
   useDeleteContactMutation,
   useDeleteProgramInfoMutation,
   useDeleteProgramPartsMutation,
-  useGetClientByIdQuery,
+  useGetClientByIdQuery, useGetSageDataQuery,
   useUpdateAddressMutation,
   useUpdateApprovalsMutation,
   useUpdateClientMutation,
@@ -43,6 +43,7 @@ import { showNotification } from "../components/notification";
 import { ErrorMessage } from "@hookform/error-message";
 import _ from "lodash";
 import { setStatus } from "../features/client/clientSlice";
+import { useCreateSageClientMutation, useGetSagePartClassesQuery } from "../services/sage";
 
 const statusColors = {
   Potential: "primary.900",
@@ -61,6 +62,7 @@ export default function ClientProfile({ navigation, route }) {
   const [openModal, setOpenModal] = React.useState(false);
   const [openAddressModal, setOpenAddressModal] = React.useState(false);
   const [openContactModal, setOpenContactModal] = React.useState(false);
+  const [openPushClientModal, setOpenPushClientModal] = React.useState(false);
   const [files, setFiles] = React.useState([]);
   const [updateStatus, result] = useUpdateStatusMutation();
   const [updateApprovals, result1] = useUpdateApprovalsMutation();
@@ -434,6 +436,83 @@ export default function ClientProfile({ navigation, route }) {
     );
   }
 
+  const PushClient = ({ open, setOpen }) => {
+    const partClasses = useGetSagePartClassesQuery();
+    const { data, isLoading } = useGetSageDataQuery(clientId);
+    const [createSageClient, result] = useCreateSageClientMutation();
+    const [firstStatus, setFirstStatus] = React.useState(false);
+    const [secondStatus, setSecondStatus] = React.useState(false);
+
+    const createClient = async (loading, setLoading, status, setStatus) => {
+      setLoading(!loading);
+      createSageClient({ body: data })
+        .unwrap()
+        .then((result) => {
+          setStatus(!status);
+          showNotification({
+            text: "Client successfully created in Sage."
+          });
+        })
+        .catch((error) => {
+          console.error(error);
+        });
+      setLoading(!loading);
+    }
+
+    const createPartClasses = () => {
+      const territoryPartClasses = {
+        "Austin": ["10000", "20000"],
+        "Dallas": ["20000", "30000"],
+        "Houston": ["30000", "40000"],
+        "San Antonio": ["40000", "50000"]
+      }
+    }
+
+    // const onSubmit = values => {
+    //   setLoading(!loading);
+    //   updateContact({
+    //     id: data.contacts[index].id,
+    //     clientId: clientId,
+    //     body: {
+    //       id: values.contacts[index].id,
+    //       clientId: values.contacts[index].clientId,
+    //       name: values.contact.name,
+    //       title: values.contact.title,
+    //       phone: values.contact.phone,
+    //       email: values.contact.email,
+    //     }
+    //   })
+    //     .unwrap()
+    //     .then(res => {
+    //       setUpdateIndex(null)
+    //       setOpenContactModal(false);
+    //       setLoading(!loading);
+    //       showNotification({
+    //         text: "Contact Successfully Updated",
+    //       });
+    //     })
+    // }
+
+    return (
+      <Popup open={open} setOpen={setOpen} header={"Push Client"}>
+        <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
+          <Heading size={"md"}>Create Client</Heading>
+          <Button bg={"success.400"} isDisabled={firstStatus} onPress={() => createClient(firstStatus, setFirstStatus)} w={"30%"}>Submit</Button>
+        </HStack>
+        <Divider/>
+        <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
+          <Heading size={"md"}>Create Part Classes</Heading>
+          <Button bg={"success.400"} w={"30%"} isDisabled={!firstStatus} onPress={() => createPartClasses()}>Submit</Button>
+        </HStack>
+        <Divider/>
+        <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
+          <Heading size={"md"}>Export Parts to Excel</Heading>
+          <Button bg={"success.400"} w={"30%"} isDisabled={!secondStatus}>Submit</Button>
+        </HStack>
+      </Popup>
+    );
+  }
+
   return (
     <HStack flex={1} justifyContent={"flex-start"} pt={5}>
       <Toolbar navigation={navigation} />
@@ -443,6 +522,8 @@ export default function ClientProfile({ navigation, route }) {
       <EditAddress open={openAddressModal} setOpen={setOpenAddressModal} index={updateIndex} />
 
       <EditContact open={openContactModal} setOpen={setOpenContactModal} index={updateIndex} />
+
+      <PushClient open={openPushClientModal} setOpen={setOpenPushClientModal} />
 
       <VStack flex={1}>
         <VStack mx={2}>
@@ -560,6 +641,9 @@ export default function ClientProfile({ navigation, route }) {
                               kimn: null,
                             },
                           });
+                          showNotification({
+                            text: "Client Status Successfully Updated"
+                          });
                         }}
                         isDisabled={
                           data.status.current !== "Potential" &&
@@ -581,14 +665,15 @@ export default function ClientProfile({ navigation, route }) {
                           });
                           showNotification({
                             text: "Client Status Successfully Updated"
-                          })
+                          });
                         }
                       }>
                         Remove from Queue
                       </Menu.Item>
                       <Menu.Item
                         onPress={() => {
-                          updateStatus({ id: clientId, body: { status: "Pushed" } });
+                          setOpenPushClientModal(!openPushClientModal);
+                          // updateStatus({ id: clientId, body: { status: "Pushed" } });
                         }}
                         isDisabled={data.status.current !== "Approved"}>
                         Push Client

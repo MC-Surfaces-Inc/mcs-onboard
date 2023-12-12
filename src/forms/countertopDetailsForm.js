@@ -33,11 +33,13 @@ export default function CountertopDetailsForm({ programs, clientId }) {
   const [loading, setLoading] = React.useState(false);
   const client = useSelector(state => state.client);
 
-  if (data === undefined || isLoading) {
-    return <Loading />;
-  } else {
-    setValue("countertops", data.program);
-  }
+  React.useEffect(() => {
+    if (data === undefined || isLoading) {
+      return <Loading />;
+    } else {
+      setValue("countertops", data.program);
+    }
+  }, [data, isLoading])
 
   if (programs.Countertops === 0 || programs.Countertops === null || error) {
     return (

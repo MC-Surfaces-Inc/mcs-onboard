@@ -29,11 +29,13 @@ export default function CarpetDetailsForm({ programs, clientId }) {
   const [loading, setLoading] = React.useState(false);
   const client = useSelector(state => state.client);
 
-  if (data === undefined || isLoading) {
-    return <Loading />;
-  } else {
-    setValue("carpet", data.program);
-  }
+  React.useEffect(() => {
+    if (data === undefined || isLoading) {
+      return <Loading />;
+    } else {
+      setValue("carpet", data.program);
+    }
+  }, [data, isLoading])
 
   if (programs.Carpet === 0 || programs.Carpet === null || error) {
     return (

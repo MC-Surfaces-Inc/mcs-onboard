@@ -621,7 +621,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G69DA4AV8H;
+				DEVELOPMENT_TEAM = 4XKQU77DH7;
 				ENABLE_BITCODE = NO;
 				INFOPLIST_FILE = OnBoard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = OnBoard;
@@ -636,7 +636,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mcsurfaces.sales.onboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mcsurfaces.onboard;
 				PRODUCT_NAME = OnBoard;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;
@@ -655,7 +655,7 @@
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CLANG_ENABLE_MODULES = YES;
 				CURRENT_PROJECT_VERSION = 1;
-				DEVELOPMENT_TEAM = G69DA4AV8H;
+				DEVELOPMENT_TEAM = 4XKQU77DH7;
 				INFOPLIST_FILE = OnBoard/Info.plist;
 				INFOPLIST_KEY_CFBundleDisplayName = OnBoard;
 				INFOPLIST_KEY_LSApplicationCategoryType = "public.app-category.business";
@@ -669,7 +669,7 @@
 					"-ObjC",
 					"-lc++",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.mcsurfaces.sales.onboard;
+				PRODUCT_BUNDLE_IDENTIFIER = com.mcsurfaces.onboard;
 				PRODUCT_NAME = OnBoard;
 				SUPPORTED_PLATFORMS = "iphoneos iphonesimulator";
 				SUPPORTS_MACCATALYST = NO;

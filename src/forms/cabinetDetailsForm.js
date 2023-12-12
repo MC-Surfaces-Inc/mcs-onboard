@@ -32,11 +32,13 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
   const [loading, setLoading] = React.useState(false);
   const client = useSelector(state => state.client);
 
-  if (data === undefined || isLoading) {
-    return <Loading />;
-  } else {
-    setValue("cabinets", data.program);
-  }
+  React.useEffect(() => {
+    if (data === undefined || isLoading) {
+      return <Loading />;
+    } else {
+      setValue("cabinets", data.program);
+    }
+  }, [data, isLoading])
 
   if (programs.Cabinets === 0 || programs.Cabinets === null || error) {
     return (

@@ -34,6 +34,9 @@ export const clientApi = emptySplitApi.injectEndpoints({
     getCountertopOptions: builder.query({
       query: () => `pricing/countertop_options`,
     }),
+    getSageData: builder.query({
+      query: clientId => `clients/${clientId}/submittal-data`
+    }),
     createClient: builder.mutation({
       query: body => ({
         url: "clients",
@@ -104,7 +107,7 @@ export const clientApi = emptySplitApi.injectEndpoints({
         method: "PUT",
         body: body,
       }),
-      invalidatesTags: ["Status"],
+      invalidatesTags: ["Status", "Clients"],
     }),
     updateApprovals: builder.mutation({
       query: ({ id, body }) => ({
@@ -176,6 +179,7 @@ export const {
   useGetClientProgramDetailsQuery,
   useGetClientProgramPricingQuery,
   useGetCountertopOptionsQuery,
+  useGetSageDataQuery,
   useCreateClientMutation,
   useCreateAddressMutation,
   useCreateContactMutation,

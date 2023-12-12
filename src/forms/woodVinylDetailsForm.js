@@ -29,11 +29,13 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
   const [loading, setLoading] = React.useState(false);
   const client = useSelector(state => state.client);
 
-  if (data === undefined || isLoading) {
-    return <Loading />;
-  } else {
-    setValue("wood_vinyl", data.program);
-  }
+  React.useEffect(() => {
+    if (data === undefined || isLoading) {
+      return <Loading />;
+    } else {
+      setValue("wood_vinyl", data.program);
+    }
+  }, [data, isLoading])
 
   if ((programs.Wood === 0 && programs.Vinyl === 0) || error) {
     return (

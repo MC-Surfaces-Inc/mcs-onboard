@@ -22,6 +22,7 @@ import S3 from "../utils/S3";
 import { useDispatch, useSelector } from "react-redux";
 import { setUser } from "../features/auth/authSlice";
 import Loading from "./loading";
+import { useGetAllSageClientsQuery } from "../services/sage";
 
 const statusColors = {
   Potential: "primary.900",
