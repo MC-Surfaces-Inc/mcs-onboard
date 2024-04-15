@@ -23,10 +23,7 @@ import ProgramPricing from "./src/screens/programPricing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { saveToken, setUser } from "./src/features/auth/authSlice";
 import { useGetUserInfoQuery } from "./src/services/user";
-import { SSRProvider } from "@react-aria/ssr/src/SSRProvider";
-import codePush from "react-native-code-push";
 import Help from "./src/screens/help";
-
 
 const theme = extendTheme({
   fontConfig: {
@@ -79,7 +76,7 @@ const theme = extendTheme({
 
 const NavStack = createNativeStackNavigator();
 
-function App(): JSX.Element {
+function App(): React.JSX.Element {
   const isDarkMode = useColorScheme() === 'dark';
   const dispatch = useDispatch();
   const auth = useSelector((state: RootStateOrAny) => state.auth);
@@ -100,41 +97,39 @@ function App(): JSX.Element {
   }, [dispatch]);
 
   return (
-    <SSRProvider>
-      <NativeBaseProvider theme={theme}>
-        <NavigationContainer>
-          <NavStack.Navigator
-            initialRouteName={"Login"}
-            screenOptions={{ headerShown: false }}>
-            {auth.token === null ? (
+    <NativeBaseProvider theme={theme}>
+      <NavigationContainer>
+        <NavStack.Navigator
+          initialRouteName={"Login"}
+          screenOptions={{ headerShown: false }}>
+          {auth.token === null ? (
+            <NavStack.Screen
+              name={"Login"}
+              component={Login}
+              options={{
+                animationTypeForReplace: auth.token === null ? "pop" : "push",
+              }}
+            />
+          ) : (
+            <>
+              <NavStack.Screen name={"Home"} component={Home} />
+              <NavStack.Screen name={"Help"} component={Help} />
+              <NavStack.Screen name={"ClientProfile"} component={ClientProfile} />
+              <NavStack.Screen name={"ClientDetails"} component={ClientDetails} />
               <NavStack.Screen
-                name={"Login"}
-                component={Login}
-                options={{
-                  animationTypeForReplace: auth.token === null ? "pop" : "push",
-                }}
+                name={"ProgramDetails"}
+                component={ProgramDetails}
               />
-            ) : (
-              <>
-                <NavStack.Screen name={"Home"} component={Home} />
-                <NavStack.Screen name={"Help"} component={Help} />
-                <NavStack.Screen name={"ClientProfile"} component={ClientProfile} />
-                <NavStack.Screen name={"ClientDetails"} component={ClientDetails} />
-                <NavStack.Screen
-                  name={"ProgramDetails"}
-                  component={ProgramDetails}
-                />
-                <NavStack.Screen
-                  name={"ProgramPricing"}
-                  component={ProgramPricing}
-                />
-              </>
-            )}
-          </NavStack.Navigator>
-        </NavigationContainer>
-      </NativeBaseProvider>
-    </SSRProvider>
+              <NavStack.Screen
+                name={"ProgramPricing"}
+                component={ProgramPricing}
+              />
+            </>
+          )}
+        </NavStack.Navigator>
+      </NavigationContainer>
+    </NativeBaseProvider>
   );
 };
 
-export default codePush(App);
+export default App;

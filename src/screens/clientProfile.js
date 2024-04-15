@@ -223,7 +223,7 @@ export default function ClientProfile({ navigation, route }) {
           id: values.address.id,
           clientId: values.address.clientId,
           type: values.address.type,
-          address1: values.address.address1,
+          address1: values.address.address,
           city: values.address.city,
           state: values.address.state,
           zip: values.address.zip,
@@ -258,7 +258,7 @@ export default function ClientProfile({ navigation, route }) {
             error={<ErrorMessage errors={errors} name={"address.type"} />}
           />
         </FormControl>
-        <FormControl isRequired isInvalid={'address' in errors.address}>
+        <FormControl isRequired isInvalid={'address1' in errors.address}>
           <TextInput
             control={control}
             title={"Street"}

@@ -59,7 +59,7 @@ export default function Login() {
             <Center flex={1}>
               <Heading
                 color={useColorModeValue("white", "black")}
-                size={"2xl"}
+                size={"xl"}
                 textAlign={"center"}>
                 OnBoard by MCS
               </Heading>
@@ -69,7 +69,7 @@ export default function Login() {
               size={"lg"}
               onPress={() => login()}
               bg={"success.400"}
-              _text={{ fontSize: "2xl" }}
+              _text={{ fontSize: "lg" }}
               isLoading={auth.loading}
               fontWeight={"bold"}
               h={"30%"}>
