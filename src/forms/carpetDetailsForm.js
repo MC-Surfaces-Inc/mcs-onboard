@@ -30,11 +30,15 @@ export default function CarpetDetailsForm({ programs, clientId }) {
   const client = useSelector(state => state.client);
 
   React.useEffect(() => {
-    if (data === undefined || isLoading) {
-      return <Loading />;
-    } else {
-      setValue("carpet", data.program);
+    const setData = async() => {
+      if (data === undefined || isLoading) {
+        return <Loading />;
+      } else {
+        await setValue("carpet", data.program);
+      }
     }
+
+    setData();
   }, [data, isLoading])
 
   if (programs.Carpet === 0 || programs.Carpet === null || error) {
@@ -44,10 +48,6 @@ export default function CarpetDetailsForm({ programs, clientId }) {
         <Text>If you believe this is an error, please contact Support.</Text>
       </Center>
     );
-  }
-
-  if (data === undefined || isLoading) {
-    return <Loading />;
   }
 
   const onSubmit = values => {

@@ -33,11 +33,15 @@ export default function TileDetailsForm({ programs, clientId }) {
   const client = useSelector(state => state.client);
 
   React.useEffect(() => {
-    if (data === undefined || isLoading) {
-      return <Loading />;
-    } else {
-      setValue("tile", data.program);
+    const setData = async() => {
+      if (data === undefined || isLoading) {
+        return <Loading />;
+      } else {
+        await setValue("tile", data.program);
+      }
     }
+
+    setData();
   }, [data, isLoading])
 
   if (programs.Tile === 0 || programs.Tile === null || error) {
@@ -47,10 +51,6 @@ export default function TileDetailsForm({ programs, clientId }) {
         <Text>If you believe this is an error, please contact Support.</Text>
       </Center>
     );
-  }
-
-  if (data === undefined || isLoading) {
-    return <Loading />;
   }
 
   const onSubmit = values => {

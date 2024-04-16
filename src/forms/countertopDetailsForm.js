@@ -34,11 +34,15 @@ export default function CountertopDetailsForm({ programs, clientId }) {
   const client = useSelector(state => state.client);
 
   React.useEffect(() => {
-    if (data === undefined || isLoading) {
-      return <Loading />;
-    } else {
-      setValue("countertops", data.program);
+    const setData = async() => {
+      if (data === undefined || isLoading) {
+        return <Loading />;
+      } else {
+        await setValue("countertops", data.program);
+      }
     }
+
+    setData();
   }, [data, isLoading])
 
   if (programs.Countertops === 0 || programs.Countertops === null || error) {
@@ -48,10 +52,6 @@ export default function CountertopDetailsForm({ programs, clientId }) {
         <Text>If you believe this is an error, please contact Support.</Text>
       </Center>
     );
-  }
-
-  if (data === undefined || isLoading) {
-    return <Loading />;
   }
 
   const onSubmit = values => {

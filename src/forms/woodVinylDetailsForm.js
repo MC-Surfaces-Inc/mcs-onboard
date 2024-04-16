@@ -30,11 +30,15 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
   const client = useSelector(state => state.client);
 
   React.useEffect(() => {
-    if (data === undefined || isLoading) {
-      return <Loading />;
-    } else {
-      setValue("wood_vinyl", data.program);
+    const setData = async() => {
+      if (data === undefined || isLoading) {
+        return <Loading />;
+      } else {
+        await setValue("wood_vinyl", data.program);
+      }
     }
+
+    setData();
   }, [data, isLoading])
 
   if ((programs.Wood === 0 && programs.Vinyl === 0) || error) {
@@ -44,10 +48,6 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
         <Text>If you believe this is an error, please contact Support.</Text>
       </Center>
     );
-  }
-
-  if (data === undefined || isLoading) {
-    return <Loading />;
   }
 
   const onSubmit = values => {
