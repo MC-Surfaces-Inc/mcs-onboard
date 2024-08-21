@@ -4,7 +4,7 @@ import { useUpdateProgramsMutation } from "../services/client";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import { programs } from "../constants/dropdownValues";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 
 export default function AddProgramForm({ clientId, selectedPrograms }) {
   const { control, errors, handleSubmit, reset } = useForm();
@@ -31,8 +31,9 @@ export default function AddProgramForm({ clientId, selectedPrograms }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Program Successfully Added",
+        toast.success({
+          title: "Success!",
+          message: "Program Successfully Added",
         });
         reset({
           program: "",

@@ -1,9 +1,9 @@
 import React from "react";
 import { Button, FormControl, Input, Popover } from "native-base";
 import { useForm } from "react-hook-form";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import { useCreateContactMutation } from "../services/client";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 
 export default function AddContactForm({ clientId }) {
   const { control, errors, handleSubmit, reset } = useForm();
@@ -22,8 +22,9 @@ export default function AddContactForm({ clientId }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Contact Successfully Added",
+        toast.success({
+          title: "Success!",
+          message: "Contact Successfully Added",
         });
         reset({
           name: "",

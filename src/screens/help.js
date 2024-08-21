@@ -1,11 +1,13 @@
 import React from "react";
-import { Box, Divider, Heading, HStack, IconButton, Pressable, StatusBar, Text, VStack } from "native-base";
+import { SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import IconButton from "../components/iconButton";
 import Toolbar from "../components/toolbar";
 import { FlatList } from "react-native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Pdf from "react-native-pdf";
-import { openComposer, openInbox } from "react-native-email-link";
+import { openComposer } from "react-native-email-link";
 import Loading from "./loading";
+import Divider from "../components/divider";
 
 const articles = [
   {
@@ -49,6 +51,7 @@ const articles = [
   }
 ]
 
+// TODO:  - create divider component for FlatList
 export default function Help({ navigation, route }) {
   const [category, setCategory] = React.useState(null);
   const [pageSource, setPageSource] = React.useState(null);
@@ -57,47 +60,40 @@ export default function Help({ navigation, route }) {
   console.log(navigation)
 
   return (
-    <HStack flex={1} justifyContent={"flex-start"} pt={5}>
-      <StatusBar />
-      <Toolbar navigation={navigation} />
+    <SafeAreaView>
+      <View className={"flex-row h-full w-full justify-items-start"}>
+        <Toolbar navigation={navigation} />
 
-      <VStack flex={1}>
-        <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
-          <HStack alignItems={"center"} justifyContent={"space-between"}>
-            <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1.5}>
-              Help Articles & Documentation
-            </Heading>
+        <View className={"bg-gray-800 rounded-md mx-2 flex-1"}>
+          <View className={"items-center justify-between flex-row py-2 px-2"}>
+            <Text className={"font-quicksand text-4xl text-white"}>
+              Application Purpose & FAQs
+
+            </Text>
             <IconButton
               icon={<FontAwesome5 name={"flag"} size={24} color={"#dc2626"} solid/>}
-              my={2.5}
               onPress={() => openComposer({
                 to: "tech.admin@mcsurfacesinc.com",
                 subject: "OnBoard - Error",
                 body: ""
-              })}/>
-          </HStack>
-          <Divider />
+              })}
+            />
+          </View>
 
-          <VStack bg={"#fafaf9"} borderRadius={"md"} flex={1} m={2.5}>
-            <HStack h={"100%"}>
+          <View className={"bg-gray-100 rounded-md m-2"}>
+            <View className={"flex-row h-full"}>
               <FlatList
                 flex={1}
                 data={articles}
                 renderItem={({ item, index }) => (
-                  <Pressable onPress={() => setCategory(index)}>
-                    <HStack
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                      p={4}>
-                      <Box>
-                        <Text fontSize={"lg"}>{item.title}</Text>
-                      </Box>
-                      <HStack alignItems={"center"}>
-                        <FontAwesome5 name={"angle-right"} size={18} />
-                      </HStack>
-                    </HStack>
-                    <Divider/>
-                  </Pressable>
+                  <TouchableOpacity onPress={() => setCategory(index)}>
+                    <View className={"items-center justify-between flex-row p-4"}>
+                      <Text className={"font-quicksand size-18"}>{item.title}</Text>
+
+                      <FontAwesome5 name={"angle-right"} size={18} />
+                    </View>
+                    <Divider />
+                  </TouchableOpacity>
                 )}
               />
               <Divider orientation={"vertical"} />
@@ -105,27 +101,21 @@ export default function Help({ navigation, route }) {
                 flex={1}
                 data={articles[category]?.subtopics}
                 renderItem={({ item }) => (
-                  <Pressable onPress={() => {
+                  <TouchableOpacity onPress={() => {
                     setLoading(true);
                     setPageSource(item.url);
                   }}>
-                    <HStack
-                      alignItems={"center"}
-                      justifyContent={"space-between"}
-                      p={4}>
-                      <Box>
-                        <Text fontSize={"lg"}>{item.title}</Text>
-                      </Box>
-                      <HStack alignItems={"center"}>
-                        <FontAwesome5 name={"angle-right"} size={18} />
-                      </HStack>
-                    </HStack>
-                    <Divider/>
-                  </Pressable>
+                    <View className={"items-center justify-between flex-row p-4"}>
+                      <Text className={"font-quicksand size-18"}>{item.title}</Text>
+
+                      <FontAwesome5 name={"angle-right"} size={18} />
+                    </View>
+                    <Divider />
+                  </TouchableOpacity>
                 )}
               />
               <Divider orientation={"vertical"} />
-              <Box flex={2} justifyContent={"flex-start"}>
+              <View className={"w-1/2 justify-items-start"}>
                 { pageSource &&
                   <Pdf
                     source={{ uri: pageSource }}
@@ -152,12 +142,11 @@ export default function Help({ navigation, route }) {
                 { loading && !pageSource &&
                   <Loading navigation={null} />
                 }
-              </Box>
-            </HStack>
-          </VStack>
-        </VStack>
-      </VStack>
-
-    </HStack>
+              </View>
+            </View>
+          </View>
+        </View>
+      </View>
+    </SafeAreaView>
   )
 }

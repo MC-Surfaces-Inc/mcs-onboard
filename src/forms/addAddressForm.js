@@ -1,11 +1,11 @@
 import React from "react";
 import { Button, FormControl, HStack, Popover, VStack } from "native-base";
 import { states, types } from "../constants/dropdownValues";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import { useCreateAddressMutation } from "../services/client";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 
 export default function AddAddressForm({ clientId, selectedAddresses }) {
   const { control, errors, handleSubmit, reset } = useForm();
@@ -30,8 +30,9 @@ export default function AddAddressForm({ clientId, selectedAddresses }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Address Successfully Added",
+        toast.success({
+          title: "Success!",
+          message: "Address Successfully Added",
         });
         reset({
           type: "",

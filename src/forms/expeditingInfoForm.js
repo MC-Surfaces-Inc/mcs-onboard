@@ -13,10 +13,10 @@ import { jobReleaseChoices, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import DatePicker from "../components/datePicker";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 
 export default function ExpeditingInfoForm({ clientId, data }) {
@@ -42,8 +42,9 @@ export default function ExpeditingInfoForm({ clientId, data }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Expediting Data Successfully Updated",
+        toast.success({
+          title: "Success!",
+          message: "Expediting Data Successfully Updated",
         });
       });
   };

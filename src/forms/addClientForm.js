@@ -1,24 +1,31 @@
 import React from "react";
-import { Button, FormControl, HStack, Popover, useToast, VStack } from "native-base";
+import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { states, territories } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import Picker from "../components/picker";
 import {
   useCreateAddressMutation,
   useCreateClientMutation,
 } from "../services/client";
 import { useSelector } from "react-redux";
-import { showNotification } from "../components/notification";
 import { ErrorMessage } from "@hookform/error-message";
+import Animated, { useAnimatedStyle } from "react-native-reanimated";
+import { toast } from "../components/toast";
+import Button from "../components/button";
+import Divider from "../components/divider";
 
-export default function AddClientForm() {
+export default function AddClientForm({ progress, width, isOpen }) {
   const user = useSelector(state => state.auth.user);
   const { control, handleSubmit, reset, formState: { errors } } = useForm();
   const [createClient, { isLoading, isUpdating }] = useCreateClientMutation();
   const [createAddress, status] = useCreateAddressMutation();
   const [loading, setLoading] = React.useState(false);
-  const toast = useToast()
+  // const toast = useToast();
+
+  const sheetStyle = useAnimatedStyle(() => ({
+    transform: [{ translateX: progress.value * 2 * width.value }],
+  }));
 
   const onSubmit = values => {
     setLoading(true);
@@ -38,8 +45,9 @@ export default function AddClientForm() {
           },
         });
         setLoading(false);
-        showNotification({
-          text: "Client Successfully Created",
+        toast.success({
+          message: "Client Successfully Created",
+          title: "Success!",
         });
         reset({
           client: {
@@ -58,88 +66,101 @@ export default function AddClientForm() {
   };
 
   return (
-    <Popover.Content>
-      <Popover.Arrow />
-      <Popover.CloseButton />
-      <Popover.Header>Add Client</Popover.Header>
-      <Popover.Body>
-        <FormControl
-          isRequired
-          isInvalid={errors.client && 'name' in errors.client}>
-          <TextInput
-            control={control}
-            field={"client.name"}
-            title={"Client Name"}
-            rules={{
-              required: "Required Field"
-            }}
-            errorMessage={<ErrorMessage errors={errors} name={"client.name"} />}
-          />
-        </FormControl>
-        <FormControl isRequired isInvalid={'territory' in (errors.client || {})}>
-          <Picker
-            choices={territories}
-            control={control}
-            field={"client.territory"}
-            title={"Territory"}
-            rules={{
-              required: "Required Field"
-            }}
-            errorMessage={<ErrorMessage errors={errors} name={"client.territory"} />}
-          />
-        </FormControl>
-        <FormControl>
-          <TextInput
-            control={control}
-            field={"address.address1"}
-            title={"Corporate Address 1"}
-          />
-
-          <TextInput
-            control={control}
-            field={"address.address2"}
-            title={"Corporate Address 2"}
-          />
-
-          <TextInput
-            control={control}
-            field={"address.city"}
-            title={"Corporate City"}
-          />
-
-          <HStack>
-            <VStack flex={1} mr={2}>
-              <Picker
-                choices={states}
-                control={control}
-                field={"address.state"}
-                title={"Corporate State"}
-              />
-            </VStack>
-
-            <VStack flex={1}>
-              <TextInput
-                control={control}
-                field={"address.zip"}
-                title={"Corporate Zip"}
-              />
-            </VStack>
-          </HStack>
-        </FormControl>
-      </Popover.Body>
-      <Popover.Footer justifyContent="center">
-        <Button
-          _loading={{
-            bg: "success.400",
+    <Animated.View
+      className={"bg-gray-100 rounded-md border border-gray-400"}
+      onLayout={(e) => {
+        width.value = e.nativeEvent.layout.width;
+      }}
+      style={[sheetStyles.sheet, sheetStyle]}
+    >
+      <ScrollView className={"pr-2"}>
+        <Text className={"font-quicksand text-2xl text-gray-800 my-2"}>Add a Client</Text>
+        <Divider />
+        <TextInput
+          control={control}
+          field={"client.name"}
+          title={"Client Name"}
+          rules={{
+            required: "Required Field"
           }}
-          bg={"success.400"}
-          isLoading={loading}
-          isLoadingText={"Submitting"}
-          onPress={handleSubmit(onSubmit)}
-          width={"35%"}>
-          Save
-        </Button>
-      </Popover.Footer>
-    </Popover.Content>
+          errorMessage={<ErrorMessage errors={errors} name={"client.name"} />}
+        />
+
+        <Picker
+          choices={territories}
+          control={control}
+          field={"client.territory"}
+          title={"Territory"}
+        />
+
+        <TextInput
+          control={control}
+          field={"address.address1"}
+          title={"Corporate Address 1"}
+        />
+
+        <TextInput
+          control={control}
+          field={"address.address2"}
+          title={"Corporate Address 2"}
+        />
+
+        <TextInput
+          control={control}
+          field={"address.city"}
+          title={"Corporate City"}
+        />
+
+        <View>
+          <View>
+            <Picker
+              choices={states}
+              control={control}
+              field={"address.state"}
+              title={"Corporate State"}
+            />
+          </View>
+
+          <View>
+            <TextInput
+              control={control}
+              field={"address.zip"}
+              title={"Corporate Zip"}
+            />
+          </View>
+        </View>
+
+        <View className={"flex-row justify-between mt-5"}>
+          <Button
+            title={"Cancel"}
+            type={"outlined"}
+            size={"md"}
+            color={"error"}
+            onPress={() => {
+              isOpen.value = !isOpen.value;
+            }}
+          />
+          <Button
+            title={"Save"}
+            type={"contained"}
+            size={"md"}
+            color={"success"}
+            onPress={handleSubmit(onSubmit)}
+          />
+        </View>
+      </ScrollView>
+    </Animated.View>
   );
 }
+
+const sheetStyles = StyleSheet.create({
+  sheet: {
+    padding: 5,
+    paddingHorizontal: 10,
+    width: 400,
+    height: '100%',
+    position: 'absolute',
+    right: 0,
+    zIndex: 3,
+  },
+});

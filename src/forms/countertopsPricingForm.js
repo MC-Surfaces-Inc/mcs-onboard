@@ -10,7 +10,7 @@ import {
 } from "../services/client";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Loading from "../screens/loading";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 
 export default function CountertopsPricingForm({ programs, clientId }) {
   const { control, handleSubmit, errors, reset, setValue } = useForm();
@@ -155,8 +155,9 @@ export default function CountertopsPricingForm({ programs, clientId }) {
       });
     });
 
-    showNotification({
-      text: "Billing Parts Successfully Added",
+    toast.success({
+      title: "Success!",
+      message: "Billing Parts Successfully Added",
     });
   };
 

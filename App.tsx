@@ -1,14 +1,5 @@
 import React from 'react';
-import type {PropsWithChildren} from 'react';
-import {
-  SafeAreaView,
-  ScrollView,
-  StatusBar,
-  StyleSheet,
-  Text,
-  useColorScheme,
-  View,
-} from 'react-native';
+import { useColorScheme } from 'react-native';
 import { NativeBaseProvider, extendTheme } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -21,9 +12,10 @@ import ClientDetails from "./src/screens/clientDetails";
 import ProgramDetails from "./src/screens/programDetails";
 import ProgramPricing from "./src/screens/programPricing";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { saveToken, setUser } from "./src/features/auth/authSlice";
-import { useGetUserInfoQuery } from "./src/services/user";
+import { saveToken } from "./src/features/auth/authSlice";
 import Help from "./src/screens/help";
+import "./global.css";
+import { ToastComponent } from "./src/components/toast";
 
 const theme = extendTheme({
   fontConfig: {
@@ -98,6 +90,7 @@ function App(): React.JSX.Element {
 
   return (
     <NativeBaseProvider theme={theme}>
+      <ToastComponent />
       <NavigationContainer>
         <NavStack.Navigator
           initialRouteName={"Login"}

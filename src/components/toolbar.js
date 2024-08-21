@@ -1,90 +1,70 @@
 import React from "react";
-import { Box, Divider, IconButton, Image, VStack } from "native-base";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { Image, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { clearToken } from "../features/auth/authSlice";
+import Divider from "./divider";
+import Button from "./button";
+import { useRoute } from "@react-navigation/native";
 
-export default function Toolbar({ navigation, route }) {
+export default function Toolbar({ navigation }) {
   const dispatch = useDispatch();
+  const route = useRoute();
+  const [fontColor, setFontColor] = React.useState("");
 
-  const NavIcon = () => {
-    if (
-      (route !== undefined && route.name === "ClientDetails") ||
-      (route !== undefined && route.name === "ProgramDetails") ||
-      (route !== undefined && route.name === "ProgramPricing") ||
-      (route !== undefined && route.name === "Help")
-    ) {
-      return (
-        <IconButton
-          icon={
-            <FontAwesome5
-              name={"arrow-left"}
-              size={20}
-              color={"#fafaf9"}
-            />
-          }
-          width={"100%"}
-          my={1}
-          onPress={() => navigation.goBack()}
-        />
-      );
+  React.useEffect(() => {
+    if (route.name === "Home") {
+      setFontColor("text-white")
+    } else if (route.name === "Help") {
+      setFontColor("text-white")
     }
-
-    return (
-      <IconButton
-        icon={
-          <FontAwesome5 name={"home"} size={20} color={"#fafaf9"} />
-        }
-        width={"100%"}
-        my={1}
-        onPress={() => navigation.popToTop()}
-      />
-    );
-  };
+  }, [route.name, setFontColor]);
 
   return (
-    <VStack
-      alignItems={"center"}
-      bg={"coolGray.800"}
-      borderRightRadius={"md"}
-      my={2}
-      p={1}
-      maxWidth={"5%"}>
+    <View className={"bg-gray-800 items-center justify-between rounded-r-md p-1 w-36"}>
+      <View className={"w-full items-center"}>
+        <Image
+          alt={"Logo"}
+          className={"rounded-md size-24 my-2"}
+          source={require("./logo.png")}
+        />
 
-      <Image
-        alt={"Logo"}
-        borderRadius={"md"}
-        size={50}
-        source={require("./logo.png")}
-        my={1}
-      />
+        <Divider />
+        <Button
+          title={"Home"}
+          type={"text"}
+          size={"xl"}
+          color={"action"}
+          className={"my-1"}
+          fontClass={route.name === "Home" ? "text-white" : ""}
+          disabled={route.name === "Home"}
+          onPress={() => navigation.popToTop()}
+        />
 
-      <Divider />
+        <Divider />
 
-      <React.Fragment>
-        <NavIcon />
-
-        <IconButton
-          icon={<FontAwesome5 name={"question"} size={20} color={"#fafaf9"} />}
-          width={"100%"}
-          my={1}
+        <Button
+          title={"Help"}
+          type={"text"}
+          size={"xl"}
+          color={"action"}
+          className={"my-1"}
+          fontClass={route.name === "Help" ? "text-white" : ""}
+          disabled={route.name === "Help"}
           onPress={() => navigation.push("Help")}
         />
-      </React.Fragment>
+      </View>
 
-      <IconButton
-        icon={
-          <FontAwesome5
-            name={"sign-out-alt"}
-            size={20}
-            color={"#dc2626"}
-          />
-        }
-        width={"100%"}
-        my={1}
-        mb={10}
-        onPress={() => dispatch(clearToken())}
-      />
-    </VStack>
+      <View className={"w-full items-center"}>
+        <Divider />
+        <Button
+          title={"Sign Out"}
+          type={"text"}
+          size={"xl"}
+          color={"error"}
+          className={"my-1"}
+          onPress={() => dispatch(clearToken())}
+        />
+      </View>
+    </View>
   );
 }

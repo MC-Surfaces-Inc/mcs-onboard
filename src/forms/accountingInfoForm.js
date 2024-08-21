@@ -16,11 +16,11 @@ import {
 } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
-import { showNotification } from "../components/notification";
 import { useSelector } from "react-redux";
+import { toast } from "../components/toast";
 
 export default function AccountingInfoForm({ clientId, data }) {
   const { control, handleSubmit, errors, setValue } = useForm();
@@ -45,8 +45,9 @@ export default function AccountingInfoForm({ clientId, data }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Accounting Data Successfully Updated",
+        toast.success({
+          title: "Success!",
+          message: "Accounting Data Successfully Updated",
         });
       });
   };

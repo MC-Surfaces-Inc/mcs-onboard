@@ -1,148 +1,97 @@
 import React from "react";
-import { FlatList } from "react-native";
-import {
-  Badge,
-  Box,
-  Divider,
-  Heading,
-  HStack,
-  IconButton,
-  Popover,
-  Pressable,
-  StatusBar,
-  Text,
-  VStack,
-} from "native-base";
+import { FlatList, SafeAreaView, Text, TouchableOpacity, View } from "react-native";
+import IconButton from "../components/iconButton";
+import Badge from "../components/badge";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useGetClientsByUserQuery } from "../services/client";
-import { useGetUserInfoQuery } from "../services/user";
 import Toolbar from "../components/toolbar";
 import AddClientForm from "../forms/addClientForm";
-import S3 from "../utils/S3";
-import { useDispatch, useSelector } from "react-redux";
-import { setUser } from "../features/auth/authSlice";
+import { useSelector } from "react-redux";
 import Loading from "./loading";
-import { useGetAllSageClientsQuery } from "../services/sage";
+import {
+  useDerivedValue,
+  useSharedValue,
+  withTiming,
+} from "react-native-reanimated";
 
 const statusColors = {
-  Potential: "primary.900",
-  Queued: "warning.500",
-  Declined: "error.600",
-  Approved: "success.400",
-  Pushed: "darkBlue.500",
+  Potential: "bg-slate-600",
+  Queued: "bg-yellow-500",
+  Declined: "bg-red-600",
+  Approved: "bg-green-500",
+  Pushed: "bg-blue-950",
 };
 
+// TODO:  - create divider component (need to use in FlatList)
 export default function Home({ navigation }) {
   const user = useSelector(state => state.auth.user);
+  const { data = [], error, isLoading } = useGetClientsByUserQuery(user?.id);
+  const isOpen = useSharedValue(false);
+  const width = useSharedValue(0);
+  const progress = useDerivedValue(() =>
+    withTiming(isOpen.value ? 0 : 1, { duration: 500 })
+  );
 
-  React.useEffect(() => {
-    if (user) {
-      S3.createBucket(`${user.sageUserId}-${user.sageEmployeeNumber}`);
-    }
-  }, [user]);
-
-  const ClientList = ({ user }) => {
-    const { data = [], error, isLoading } = useGetClientsByUserQuery(user.id);
-
-    return (
-      <FlatList
-        data={data.clients}
-        renderItem={({ item }) => (
-          <Pressable
-            onPress={() => {
-              navigation.push("ClientProfile", { clientId: item.clientId });
-            }}>
-            <HStack
-              alignItems={"center"}
-              justifyContent={"space-between"}
-              p={4}>
-              <Box>
-                <Text fontSize={"lg"}>{item.name}</Text>
-              </Box>
-              <HStack alignItems={"center"}>
-                <Box>
-                  {item.territory && <Badge bg={"coolGray.500"} style={{ marginRight: 10 }} _text={{ color: "white" }}>{item.territory}</Badge>}
-                </Box>
-                <Box>
-                  {item.status && <Badge bg={statusColors[item.status]} style={{ marginRight: 10 }} _text={{ color: "white" }}>{item.status}</Badge>}
-                </Box>
-                <FontAwesome5 name={"angle-right"} size={18} />
-              </HStack>
-            </HStack>
-            <Divider />
-          </Pressable>
-        )}
-        keyExtractor={item => item.clientId}
-        flex={1}
-      />
-    );
-  };
-
-  if (user === null || user === undefined) {
+  if (isLoading) {
     return <Loading navigation={navigation} />;
   }
 
   return (
-    <HStack flex={1} justifyContent={"flex-start"} pt={5}>
-      <StatusBar />
-      <Toolbar navigation={navigation} />
+    <SafeAreaView style={{ zIndex: 5 }}>
+      <View className={"flex-row h-full"}>
+        <Toolbar navigation={navigation} />
 
-      <VStack bg={"coolGray.800"} borderRadius={"md"} flex={2} m={2}>
-        <HStack alignItems={"center"} justifyContent={"space-between"}>
-          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5}>
-            Client List
-          </Heading>
+        <View className={"bg-gray-800 flex-1 rounded-md p-2 mx-2"} style={{ zIndex: 5 }}>
+          <View className={"flex-row items-center justify-between p-2"}>
+            <Text className={"font-quicksand text-4xl text-white"}>
+              Client List
+            </Text>
 
-          <Box>
-            <Popover
-              trigger={triggerProps => (
-                <IconButton
-                  icon={
-                    <FontAwesome5
-                      name={"user-plus"}
-                      size={20}
-                      color={"#fafaf9"}
-                    />
-                  }
-                  my={2.5}
-                  {...triggerProps}
+            <IconButton
+              icon={
+                <FontAwesome5
+                  name={"user-plus"}
+                  size={20}
+                  color={"#fafaf9"}
+                  className={"m-2"}
                 />
-              )}>
-              <AddClientForm />
-            </Popover>
-          </Box>
-        </HStack>
+              }
+              onPress={() => {
+                isOpen.value = !isOpen.value;
+              }}
+            />
+          </View>
 
-        <Divider />
+          <View className={"flex-row flex-1 rounded-md bg-gray-100"}>
+            <FlatList
+              style={{ zIndex: 2 }}
+              data={data.clients}
+              renderItem={({ item }) => (
+                <TouchableOpacity
+                  onPress={() => {
+                    navigation.push("ClientProfile", { clientId: item.clientId });
+                  }}
+                >
+                  <View className={"flex-row items-center justify-between py-2 px-3 border-b border-gray-300"}>
+                    <Text className={"font-quicksand text-xl"}>{item.name}</Text>
 
-        <VStack bg={"#fafaf9"} borderRadius={"md"} flex={1} m={2.5}>
-          <ClientList user={user} />
-        </VStack>
-      </VStack>
+                    <View className={"flex-row justify-center items-center"}>
+                      {item.territory && <Badge label={item.territory} className={"bg-gray-800"}/> }
 
-      <VStack flex={1}>
-        <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
-          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1}>
-            Notifications
-          </Heading>
-          <Divider />
+                      {item.current && <Badge label={item.current} className={statusColors[item.current]}/> }
+                      <FontAwesome5 name={"angle-right"} size={18} className={"ml-2"} />
+                    </View>
+                  </View>
+                </TouchableOpacity>
+              )}
+              keyExtractor={item => item.clientId}
+              flex={1}
+            />
 
-          <VStack bg={"#fafaf9"} borderRadius={"md"} flex={1} m={2.5}>
-            <FlatList flex={1} />
-          </VStack>
-        </VStack>
-
-        <VStack bg={"coolGray.800"} borderRadius={"md"} flex={1} m={2}>
-          <Heading color={"#fafaf9"} pb={1} pl={5} pt={2.5} m={1}>
-            Documents
-          </Heading>
-          <Divider />
-
-          <VStack bg={"#fafaf9"} borderRadius={"md"} flex={1} m={2}>
-            <FlatList flex={1} />
-          </VStack>
-        </VStack>
-      </VStack>
-    </HStack>
+            <AddClientForm user={user} width={width} progress={progress} isOpen={isOpen} />
+          </View>
+        </View>
+      </View>
+    </SafeAreaView>
   );
 }

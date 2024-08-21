@@ -15,12 +15,12 @@ import {
   useUpdateProgramInfoMutation,
 } from "../services/client";
 import Loading from "../screens/loading";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import { useForm } from "react-hook-form";
 import MultiLineText from "../components/multiLineText";
 import Picker from "../components/picker";
-import { showNotification } from "../components/notification";
 import { useSelector } from "react-redux";
+import { toast } from "../components/toast";
 
 export default function CabinetDetailsForm({ navigation, programs, clientId }) {
   const { control, errors, handleSubmit, setValue } = useForm();
@@ -63,8 +63,9 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Program Data Successfully Updated",
+        toast.success({
+          title: "Success!",
+          message: "Program Data Successfully Updated",
         });
       });
   };

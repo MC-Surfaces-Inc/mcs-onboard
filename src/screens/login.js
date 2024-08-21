@@ -1,23 +1,15 @@
 import React from "react";
 import Auth0 from "react-native-auth0";
-import {
-  Button,
-  Center,
-  Heading,
-  Stack,
-  useColorModeValue,
-} from "native-base";
+import Button from "../components/button";
 import Config from "react-native-config";
 import { useDispatch, useSelector } from "react-redux";
 import { saveToken, setLoading, setUser } from "../features/auth/authSlice";
-import { ImageBackground } from "react-native";
+import { Text, View } from "react-native";
 
 const auth0 = new Auth0({
   domain: Config.AUTH0_DOMAIN,
   clientId: Config.AUTH0_CLIENT_ID,
 });
-
-const backgroundImg = require('../assets/login_background.jpg');
 
 export default function Login() {
   const dispatch = useDispatch();
@@ -44,35 +36,20 @@ export default function Login() {
   };
 
   return (
-    <ImageBackground source={backgroundImg} style={{ height: "100%" }}>
-      <Center h={"100%"}>
-        <Stack
-          bg={useColorModeValue("coolGray.800", "warmGray.50")}
-          borderRadius={"lg"}
-          h={"30%"}
-          justifyContent={"flex-end"}
-          w={"40%"}>
-          <Center flex={1}>
-            <Heading
-              color={useColorModeValue("white", "black")}
-              size={"xl"}
-              textAlign={"center"}>
-              OnBoard by MCS
-            </Heading>
-          </Center>
-
-          <Button
-            size={"lg"}
-            onPress={() => login()}
-            bg={"success.400"}
-            _text={{ fontSize: "lg" }}
-            isLoading={auth.loading}
-            fontWeight={"bold"}
-            h={"30%"}>
-            Login
-          </Button>
-        </Stack>
-      </Center>
-    </ImageBackground>
+    <View className={"min-w-full min-h-full justify-center items-center bg-gray-700"}>
+      <View className={"w-1/3 h-1/4 items-center justify-center rounded-lg bg-white"}>
+        <Text className={"font-quicksand font-bold text-3xl m-10"}>
+          OnBoard by MCS
+        </Text>
+        <Button
+          title={"Login"}
+          type={"contained"}
+          size={"xl"}
+          color={"action"}
+          className={"bg-orange-500 w-1/2 h-10 rounded-md items-center"}
+          onPress={login}
+        />
+      </View>
+    </View>
   );
 }

@@ -1,11 +1,12 @@
 import React from "react";
-import { Box, Divider, Heading, HStack, ScrollView, Select } from "native-base";
+import { Select } from "native-base";
 import Toolbar from "../components/toolbar";
 import CabinetDetailsForm from "../forms/cabinetDetailsForm";
 import CarpetDetailsForm from "../forms/carpetDetailsForm";
 import CountertopDetailsForm from "../forms/countertopDetailsForm";
 import TileDetailsForm from "../forms/tileDetailsForm";
 import WoodVinylDetailsForm from "../forms/woodVinylDetailsForm";
+import { ScrollView, Text, View } from "react-native";
 
 export default function ProgramDetails({ navigation, route }) {
   const clientId = route.params?.clientId;
@@ -13,12 +14,15 @@ export default function ProgramDetails({ navigation, route }) {
   const [programs, setPrograms] = React.useState(route.params.programs);
 
   return (
-    <HStack flex={1} justifyContent={"flex-start"} pt={5}>
+    <View className={"flex-row h-full justify-items-start pt-5"}>
       <Toolbar navigation={navigation} route={route} />
-      <ScrollView flex={1} p={5}>
-        <HStack justifyContent={"space-between"}>
-          <Heading>Program Details</Heading>
-          <Box alignItems={"flex-end"}>
+      <ScrollView className={"p-5"}>
+        <View className={"flex-row justify-between"}>
+          <Text className={"font-quicksand text-4xl text-gray-800 ml-2 mt-3"}>
+            Client Details
+          </Text>
+
+          <View className={"items-end mt-3 mr-3"}>
             <Select
               onValueChange={itemValue => setForm(itemValue)}
               placeholder={"Select Program"}
@@ -30,9 +34,8 @@ export default function ProgramDetails({ navigation, route }) {
               <Select.Item label={"Tile"} value={"Tile"} />
               <Select.Item label={"Wood and Vinyl"} value={"Wood and Vinyl"} />
             </Select>
-          </Box>
-        </HStack>
-        <Divider bg={"coolGray.400"} />
+          </View>
+        </View>
 
         {form === "Cabinets" && (
           <CabinetDetailsForm
@@ -70,6 +73,6 @@ export default function ProgramDetails({ navigation, route }) {
           />
         )}
       </ScrollView>
-    </HStack>
+    </View>
   );
 }

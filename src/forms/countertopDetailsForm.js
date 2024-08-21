@@ -18,9 +18,9 @@ import {
 } from "../services/client";
 import Picker from "../components/picker";
 import { useForm } from "react-hook-form";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 
 export default function CountertopDetailsForm({ programs, clientId }) {
@@ -64,8 +64,9 @@ export default function CountertopDetailsForm({ programs, clientId }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Program Data Successfully Updated",
+        toast.success({
+          title: "Success!",
+          message: "Program Data Successfully Updated",
         });
       });
   };

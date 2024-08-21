@@ -1,17 +1,10 @@
 import React from "react";
 import {
-  Box,
   Button,
   Center,
-  Divider,
   FormControl,
-  HamburgerIcon,
   Heading,
   HStack,
-  Menu,
-  Pressable,
-  Text,
-  VStack,
 } from "native-base";
 import {
   useDeleteAddressMutation,
@@ -28,7 +21,9 @@ import {
 } from "../services/client";
 import S3 from "../utils/S3";
 import Toolbar from "../components/toolbar";
+import Badge from "../components/badge";
 import Table from "../components/table";
+import Divider from "../components/divider";
 import Loading from "./loading";
 import AddContactForm from "../forms/addContactForm";
 import AddAddressForm from "../forms/addAddressForm";
@@ -38,51 +33,52 @@ import Picker from "../components/picker";
 import { useFieldArray, useForm } from "react-hook-form";
 import { states, territories, types } from "../constants/dropdownValues";
 import Popup from "../components/popup";
-import TextInput from "../components/textInput";
-import { showNotification } from "../components/notification";
+import TextInput from "../components/input";
+import { toast } from "../components/toast";
 import { ErrorMessage } from "@hookform/error-message";
 import _ from "lodash";
 import { setStatus } from "../features/client/clientSlice";
 import { useCreateSageClientMutation, useGetSagePartClassesQuery } from "../services/sage";
+import { Text, View } from "react-native";
 
 const statusColors = {
-  Potential: "primary.900",
-  Queued: "warning.500",
-  Declined: "error.600",
-  Approved: "success.400",
-  Pushed: "darkBlue.500",
+  Potential: "bg-slate-600",
+  Queued: "bg-yellow-500",
+  Declined: "bg-red-600",
+  Approved: "bg-green-500",
+  Pushed: "bg-blue-950",
 };
 
 export default function ClientProfile({ navigation, route }) {
   const clientId = route.params?.clientId;
-  const user = useSelector(state => state.auth.user);
+  // const user = useSelector(state => state.auth.user);
   const { data, isLoading } = useGetClientByIdQuery(clientId);
-  const dispatch = useDispatch();
-  const client = useSelector(state => state.client);
+  // const dispatch = useDispatch();
+  // const client = useSelector(state => state.client);
   const [openModal, setOpenModal] = React.useState(false);
   const [openAddressModal, setOpenAddressModal] = React.useState(false);
   const [openContactModal, setOpenContactModal] = React.useState(false);
   const [openPushClientModal, setOpenPushClientModal] = React.useState(false);
-  const [files, setFiles] = React.useState([]);
-  const [updateStatus, result] = useUpdateStatusMutation();
-  const [updateApprovals, result1] = useUpdateApprovalsMutation();
-  const [updatePrograms, result2] = useUpdateProgramsMutation();
-  const [deleteAddress, result3] = useDeleteAddressMutation();
-  const [deleteContact, result4] = useDeleteContactMutation();
-  const [deleteProgram, result5] = useDeleteProgramInfoMutation();
-  const [deleteParts, result6] = useDeleteProgramPartsMutation();
-  const [updateIndex, setUpdateIndex] = React.useState(null);
+  // const [files, setFiles] = React.useState([]);
+  // const [updateStatus, result] = useUpdateStatusMutation();
+  // const [updateApprovals, result1] = useUpdateApprovalsMutation();
+  // const [updatePrograms, result2] = useUpdateProgramsMutation();
+  // const [deleteAddress, result3] = useDeleteAddressMutation();
+  // const [deleteContact, result4] = useDeleteContactMutation();
+  // const [deleteProgram, result5] = useDeleteProgramInfoMutation();
+  // const [deleteParts, result6] = useDeleteProgramPartsMutation();
+  // const [updateIndex, setUpdateIndex] = React.useState(null);
 
-  React.useEffect(() => {
-    const getFiles = async () => {
-      setFiles(await S3.getFiles(user, data.basicInfo.name));
-    };
-
-    if (data) {
-      dispatch(setStatus(data.status.current));
-      getFiles();
-    }
-  }, [data, user]);
+  // React.useEffect(() => {
+  //   const getFiles = async () => {
+  //     setFiles(await S3.getFiles(user, data.basicInfo.name));
+  //   };
+  //
+  //   if (data) {
+  //     dispatch(setStatus(data.status.current));
+  //     getFiles();
+  //   }
+  // }, [data, user]);
 
   if (data === undefined || isLoading) {
     return <Loading navigation={navigation} />;
@@ -151,8 +147,9 @@ export default function ClientProfile({ navigation, route }) {
         .then(res => {
           setOpen(false);
           setLoading(!loading);
-          showNotification({
-            text: "Client Name & Territory Successfully Updated",
+          toast.success({
+            title: "Success!",
+            message: "Client Name & Territory Successfully Updated",
           });
         })
     }
@@ -513,313 +510,273 @@ export default function ClientProfile({ navigation, route }) {
     );
   }
 
+  console.log(data)
+
   return (
-    <HStack flex={1} justifyContent={"flex-start"} pt={5}>
-      <Toolbar navigation={navigation} />
+    <View className={"flex-row h-full justify-items-start pt-5 bg-gray-100"}>
+      {/*<Toolbar navigation={navigation} />*/}
 
-      <EditInfo open={openModal} setOpen={setOpenModal} index={updateIndex} />
+      {/*<EditInfo open={openModal} setOpen={setOpenModal} index={updateIndex} />*/}
 
-      <EditAddress open={openAddressModal} setOpen={setOpenAddressModal} index={updateIndex} />
+      {/*<EditAddress open={openAddressModal} setOpen={setOpenAddressModal} index={updateIndex} />*/}
 
-      <EditContact open={openContactModal} setOpen={setOpenContactModal} index={updateIndex} />
+      {/*<EditContact open={openContactModal} setOpen={setOpenContactModal} index={updateIndex} />*/}
 
-      <PushClient open={openPushClientModal} setOpen={setOpenPushClientModal} />
+      {/*<PushClient open={openPushClientModal} setOpen={setOpenPushClientModal} />*/}
 
-      <VStack flex={1}>
-        <VStack mx={2}>
-          <HStack
-            alignItems={"center"}
-            justifyContent={"space-between"}
-            my={2}
-            width={"100%"}>
-            <HStack flex={1} justifyContent={"flex-start"} alignItems={"center"} h={"100%"}>
-              <Heading color={"coolGray.800"} p={1}>
-                {data.basicInfo.name}
-              </Heading>
-            </HStack>
+      <View>
+        <View className={"mx-2"}>
+          <View className={"flex-row w-full items-center justify-between my-2"}>
+            <Text className={"font-quicksand text-4xl text-gray-800 ml-2 mt-3"}>
+              {data.basicInfo.name}
+            </Text>
 
-            <HStack flex={1} justifyContent={"flex-end"} alignItems={"center"}>
-              {/*<Box*/}
-              {/*  alignItems={"center"}*/}
-              {/*  borderColor={"green.500"}*/}
-              {/*  borderRadius={"lg"}*/}
-              {/*  borderWidth={1}*/}
-              {/*  bg={"green.500"}*/}
-              {/*  colorScheme={"info"}*/}
-              {/*  mx={2}*/}
-              {/*  p={2}*/}
-              {/*  w={"25%"}>*/}
-              {/*  <Text color={"white"}>{data.basicInfo.territory || "None Selected"}</Text>*/}
-              {/*</Box>*/}
+            <View className={"flex-row justify-end items-center"}>
+              <Badge label={data.basicInfo.territory} className={"bg-gray-800 w-1/4"}/>
+              <Badge label={data.status.current} className={`${statusColors[data.status.current]} w-1/4`}/>
 
-              <Box
-                alignItems={"center"}
-                borderColor={"coolGray.500"}
-                borderRadius={"lg"}
-                borderWidth={1}
-                bg={"coolGray.500"}
-                colorScheme={"info"}
-                mx={2}
-                p={2}
-                w={"25%"}>
-                <Text color={"white"}>{data.basicInfo.territory || "None Selected"}</Text>
-              </Box>
+              {/*<View className={"ml-2"}>*/}
+                {/*<Menu*/}
+                {/*  offset={10}*/}
+                {/*  placement={"bottom right"}*/}
+                {/*  trigger={triggerProps => (*/}
+                {/*    <Pressable {...triggerProps}>*/}
+                {/*      <HamburgerIcon size={8} color={"black"} />*/}
+                {/*    </Pressable>*/}
+                {/*  )}*/}
+                {/*  w={200}>*/}
+                {/*  <Menu.Group title={"Client Actions"}>*/}
+                {/*    <Divider className="my-2" />*/}
 
-              <Box
-                alignItems={"center"}
-                borderColor={statusColors[data.status.current]}
-                borderRadius={"lg"}
-                borderWidth={1}
-                bg={statusColors[data.status.current]}
-                mx={2}
-                p={2}
-                w={"25%"}>
-                <Text color={"white"}>{data.status.current}</Text>
-              </Box>
+                {/*    <Menu.Group title={"Edit"}>*/}
+                {/*      <Menu.Item*/}
+                {/*        isDisabled={!client.permissions.name.edit && !client.permissions.territory.edit}*/}
+                {/*        onPress={() => setOpenModal(!openModal)}>*/}
+                {/*        Edit Name & Territory*/}
+                {/*      </Menu.Item>*/}
+                {/*    </Menu.Group>*/}
 
-              <Box ml={2}>
-                <Menu
-                  offset={10}
-                  placement={"bottom right"}
-                  trigger={triggerProps => (
-                    <Pressable {...triggerProps}>
-                      <HamburgerIcon size={8} color={"black"} />
-                    </Pressable>
-                  )}
-                  w={200}>
-                  <Menu.Group title={"Client Actions"}>
-                    <Divider bg={"coolGray.400"} />
+                {/*    <Divider bg={"coolGray.400"} />*/}
 
-                    <Menu.Group title={"Edit"}>
-                      <Menu.Item
-                        isDisabled={!client.permissions.name.edit && !client.permissions.territory.edit}
-                        onPress={() => setOpenModal(!openModal)}>
-                        Edit Name & Territory
-                      </Menu.Item>
-                    </Menu.Group>
+                {/*    <Menu.Group title={"Client Pages"}>*/}
+                {/*      <Menu.Item*/}
+                {/*        onPress={() =>*/}
+                {/*          navigation.push("ClientDetails", { clientId: clientId })*/}
+                {/*        }>*/}
+                {/*        Client Details*/}
+                {/*      </Menu.Item>*/}
+                {/*      <Menu.Item*/}
+                {/*        onPress={() =>*/}
+                {/*          navigation.push("ProgramDetails", {*/}
+                {/*            programs: data.programs,*/}
+                {/*            clientId: clientId,*/}
+                {/*          })*/}
+                {/*        }>*/}
+                {/*        Program Details*/}
+                {/*      </Menu.Item>*/}
+                {/*      <Menu.Item*/}
+                {/*        onPress={() =>*/}
+                {/*          navigation.push("ProgramPricing", {*/}
+                {/*            programs: data.programs,*/}
+                {/*            clientId: clientId,*/}
+                {/*          })*/}
+                {/*        }>*/}
+                {/*        Program Pricing*/}
+                {/*      </Menu.Item>*/}
+                {/*    </Menu.Group>*/}
 
-                    <Divider bg={"coolGray.400"} />
+                {/*    <Divider bg={"coolGray.400"} />*/}
 
-                    <Menu.Group title={"Client Pages"}>
-                      <Menu.Item
-                        onPress={() =>
-                          navigation.push("ClientDetails", { clientId: clientId })
-                        }>
-                        Client Details
-                      </Menu.Item>
-                      <Menu.Item
-                        onPress={() =>
-                          navigation.push("ProgramDetails", {
-                            programs: data.programs,
-                            clientId: clientId,
-                          })
-                        }>
-                        Program Details
-                      </Menu.Item>
-                      <Menu.Item
-                        onPress={() =>
-                          navigation.push("ProgramPricing", {
-                            programs: data.programs,
-                            clientId: clientId,
-                          })
-                        }>
-                        Program Pricing
-                      </Menu.Item>
-                    </Menu.Group>
-
-                    <Divider bg={"coolGray.400"} />
-
-                    <Menu.Group title={"Edit Status"}>
-                      <Menu.Item
-                        onPress={() => {
-                          updateStatus({ id: clientId, body: { status: "Queued" } });
-                          updateApprovals({
-                            id: clientId,
-                            body: {
-                              edythc: null,
-                              lisak: null,
-                              kimn: null,
-                            },
-                          });
-                          showNotification({
-                            text: "Client Status Successfully Updated"
-                          });
-                        }}
-                        isDisabled={
-                          data.status.current !== "Potential" &&
-                          data.status.current !== "Declined"
-                        }>
-                        Submit Client
-                      </Menu.Item>
-                      <Menu.Item
-                        isDisabled={data.status.current !== "Queued"}
-                        onPress={() => {
-                          updateStatus({ id: clientId, body: { status: "Potential" } });
-                          updateApprovals({
-                            id: clientId,
-                            body: {
-                              edythc: null,
-                              lisak: null,
-                              kimn: null,
-                            },
-                          });
-                          showNotification({
-                            text: "Client Status Successfully Updated"
-                          });
-                        }
-                      }>
-                        Remove from Queue
-                      </Menu.Item>
-                      <Menu.Item
-                        onPress={() => {
-                          setOpenPushClientModal(!openPushClientModal);
-                          // updateStatus({ id: clientId, body: { status: "Pushed" } });
-                        }}
-                        isDisabled={data.status.current !== "Approved"}>
-                        Push Client
-                      </Menu.Item>
-                      {/*<Menu.Item isDisabled={data.status.current === "Potential"}>*/}
-                      {/*  Update Client*/}
-                      {/*</Menu.Item>*/}
-                    </Menu.Group>
-                  </Menu.Group>
-                </Menu>
-              </Box>
-            </HStack>
-          </HStack>
+                {/*    <Menu.Group title={"Edit Status"}>*/}
+                {/*      <Menu.Item*/}
+                {/*        onPress={() => {*/}
+                {/*          updateStatus({ id: clientId, body: { status: "Queued" } });*/}
+                {/*          updateApprovals({*/}
+                {/*            id: clientId,*/}
+                {/*            body: {*/}
+                {/*              edythc: null,*/}
+                {/*              lisak: null,*/}
+                {/*              kimn: null,*/}
+                {/*            },*/}
+                {/*          });*/}
+                {/*          showNotification({*/}
+                {/*            text: "Client Status Successfully Updated"*/}
+                {/*          });*/}
+                {/*        }}*/}
+                {/*        isDisabled={*/}
+                {/*          data.status.current !== "Potential" &&*/}
+                {/*          data.status.current !== "Declined"*/}
+                {/*        }>*/}
+                {/*        Submit Client*/}
+                {/*      </Menu.Item>*/}
+                {/*      <Menu.Item*/}
+                {/*        isDisabled={data.status.current !== "Queued"}*/}
+                {/*        onPress={() => {*/}
+                {/*          updateStatus({ id: clientId, body: { status: "Potential" } });*/}
+                {/*          updateApprovals({*/}
+                {/*            id: clientId,*/}
+                {/*            body: {*/}
+                {/*              edythc: null,*/}
+                {/*              lisak: null,*/}
+                {/*              kimn: null,*/}
+                {/*            },*/}
+                {/*          });*/}
+                {/*          showNotification({*/}
+                {/*            text: "Client Status Successfully Updated"*/}
+                {/*          });*/}
+                {/*        }*/}
+                {/*      }>*/}
+                {/*        Remove from Queue*/}
+                {/*      </Menu.Item>*/}
+                {/*      <Menu.Item*/}
+                {/*        onPress={() => {*/}
+                {/*          setOpenPushClientModal(!openPushClientModal);*/}
+                {/*          // updateStatus({ id: clientId, body: { status: "Pushed" } });*/}
+                {/*        }}*/}
+                {/*        isDisabled={data.status.current !== "Approved"}>*/}
+                {/*        Push Client*/}
+                {/*      </Menu.Item>*/}
+                {/*      /!*<Menu.Item isDisabled={data.status.current === "Potential"}>*!/*/}
+                {/*      /!*  Update Client*!/*/}
+                {/*      /!*</Menu.Item>*!/*/}
+                {/*    </Menu.Group>*/}
+                {/*  </Menu.Group>*/}
+                {/*</Menu>*/}
+              {/*</View>*/}
+            </View>
+          </View>
 
           <Divider bg={"coolGray.800"} mb={5} />
-        </VStack>
+        </View>
 
         <Table
           columnNames={["Type", "Street", "City", "State", "Zip"]}
           fields={["type", "address", "city", "state", "zip"]}
           data={data.addresses}
           title={"Addresses"}
-          addIcon={client.permissions.addresses.edit}
-          form={
-            data.addresses.length !== 3 ? (
-              <AddAddressForm
-                clientId={clientId}
-                selectedAddresses={data.addresses}
-              />
-            ) : null
-          }
-          position={"left"}
-          alertHeader={"Delete Address"}
-          alertBody={
-            "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved."
-          }
-          rowAction={row => {
-            deleteAddress({ clientId: row.clientId, id: row.id });
-            showNotification({
-              text: "Address Successfully Deleted."
-            });
-          }}
-          edit={{
-            func: setOpenAddressModal,
-            variable: openAddressModal,
-          }}
-          setIndex={setUpdateIndex}
+          addIcon={true}
+          // form={
+          //   data.addresses.length !== 3 ? (
+          //     <AddAddressForm
+          //       clientId={clientId}
+          //       selectedAddresses={data.addresses}
+          //     />
+          //   ) : null
+          // }
+          // position={"left"}
+          // alertHeader={"Delete Address"}
+          // alertBody={
+          //   "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved."
+          // }
+          // rowAction={row => {
+          //   deleteAddress({ clientId: row.clientId, id: row.id });
+          //   showNotification({
+          //     text: "Address Successfully Deleted."
+          //   });
+          // }}
+          // edit={{
+          //   func: setOpenAddressModal,
+          //   variable: openAddressModal,
+          // }}
+          // setIndex={setUpdateIndex}
         />
 
-        <Table
-          columnNames={["Name", "Title", "Phone", "Email"]}
-          fields={["name", "title", "phone", "email"]}
-          data={data.contacts.map(item => ({
-            name: item.name,
-            title: item.title,
-            phone: item.phone,
-            email: item.email
-          }))}
-          title={"Contacts"}
-          addIcon={client.permissions.contacts.edit}
-          editIcon={client.permissions.contacts.edit}
-          form={<AddContactForm clientId={clientId} />}
-          position={"left"}
-          alertHeader={"Delete Contact"}
-          alertBody={
-            "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved."
-          }
-          rowAction={row => {
-            deleteContact({ clientId: row.clientId, id: row.id });
-            showNotification({
-              text: "Contact Successfully Deleted."
-            });
-          }}
-          editRow={true}
-          edit={{
-            func: setOpenContactModal,
-            variable: openContactModal,
-          }}
-          setIndex={setUpdateIndex}
-        />
+        {/*<Table*/}
+        {/*  columnNames={["Name", "Title", "Phone", "Email"]}*/}
+        {/*  fields={["name", "title", "phone", "email"]}*/}
+        {/*  data={data.contacts.map(item => ({*/}
+        {/*    name: item.name,*/}
+        {/*    title: item.title,*/}
+        {/*    phone: item.phone,*/}
+        {/*    email: item.email*/}
+        {/*  }))}*/}
+        {/*  title={"Contacts"}*/}
+        {/*  addIcon={client.permissions.contacts.edit}*/}
+        {/*  editIcon={client.permissions.contacts.edit}*/}
+        {/*  form={<AddContactForm clientId={clientId} />}*/}
+        {/*  position={"left"}*/}
+        {/*  alertHeader={"Delete Contact"}*/}
+        {/*  alertBody={*/}
+        {/*    "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved."*/}
+        {/*  }*/}
+        {/*  rowAction={row => {*/}
+        {/*    deleteContact({ clientId: row.clientId, id: row.id });*/}
+        {/*    showNotification({*/}
+        {/*      text: "Contact Successfully Deleted."*/}
+        {/*    });*/}
+        {/*  }}*/}
+        {/*  editRow={true}*/}
+        {/*  edit={{*/}
+        {/*    func: setOpenContactModal,*/}
+        {/*    variable: openContactModal,*/}
+        {/*  }}*/}
+        {/*  setIndex={setUpdateIndex}*/}
+        {/*/>*/}
 
-        <HStack flex={1}>
-          <VStack flex={1}>
-            <Table
-              columnNames={["Selected"]}
-              data={formatPrograms(data.programs)}
-              fields={["selection"]}
-              title={"Programs"}
-              addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
-              editIcon={true}
-              form={
-                <AddProgramForm
-                  clientId={clientId}
-                  selectedPrograms={formatPrograms(data.programs)}
-                />
-              }
-              alertHeader={"Delete Program"}
-              alertBody={
-                "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved and all related information (pricing and details) will be deleted."
-              }
-              rowAction={row => {
-                updatePrograms({
-                  id: clientId,
-                  body: { [row.selection.toLowerCase()]: 0 },
-                });
-                deleteProgram({
-                  program: row.selection.toLowerCase(),
-                  id: clientId,
-                });
-                deleteParts({
-                  program: row.selection,
-                  id: clientId,
-                });
-                showNotification({
-                  text: "Program Successfully Deleted."
-                });
-              }}
-              deleteRow={true}
-            />
-          </VStack>
-          <VStack flex={2}>
-            <Table
-              columnNames={["Name", "Type", "Size"]}
-              data={formatFileArray(files)}
-              fields={["name", "type", "size"]}
-              title={"Files"}
-              addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}
-              editIcon={true}
-              action={async () => await S3.putObject(user, data.basicInfo.name)}
-              link={true}
-              rowAction={S3.viewObject}
-            />
-          </VStack>
-          {data.status.current !== "Potential" &&
-            <VStack flex={1}>
-              <Table
-                columnNames={["Manager", "Decision"]}
-                data={formatApprovalsArr(data.approvals)}
-                fields={["name", "value"]}
-                title={"Approvals"}
-                editIcon={false}
-              />
-            </VStack>
-          }
-        </HStack>
-      </VStack>
-    </HStack>
+        <View className={"flex-row flex-1"}>
+          <View className={"w-1/4"}>
+            {/*<Table*/}
+            {/*  data={formatPrograms(data.programs)}*/}
+            {/*  fields={["selection"]}*/}
+            {/*  title={"Programs"}*/}
+            {/*  addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}*/}
+            {/*  editIcon={true}*/}
+            {/*  form={*/}
+            {/*    <AddProgramForm*/}
+            {/*      clientId={clientId}*/}
+            {/*      selectedPrograms={formatPrograms(data.programs)}*/}
+            {/*    />*/}
+            {/*  }*/}
+            {/*  alertHeader={"Delete Program"}*/}
+            {/*  alertBody={*/}
+            {/*    "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved and all related information (pricing and details) will be deleted."*/}
+            {/*  }*/}
+            {/*  rowAction={row => {*/}
+            {/*    updatePrograms({*/}
+            {/*      id: clientId,*/}
+            {/*      body: {[row.selection.toLowerCase()]: 0 },*/}
+            {/*    });*/}
+            {/*    deleteProgram({*/}
+            {/*      program: row.selection.toLowerCase(),*/}
+            {/*      id: clientId,*/}
+            {/*    });*/}
+            {/*    deleteParts({*/}
+            {/*      program: row.selection,*/}
+            {/*      id: clientId,*/}
+            {/*    });*/}
+            {/*    showNotification({*/}
+            {/*      text: "Program Successfully Deleted."*/}
+            {/*    });*/}
+            {/*  }}*/}
+            {/*  deleteRow={true}*/}
+            {/*/>*/}
+          </View>
+          <View className={"w-3/4"}>
+            {/*<Table*/}
+            {/*  columnNames={["Name", "Type", "Size"]}*/}
+            {/*  data={formatFileArray(files)}*/}
+            {/*  fields={["name", "type", "size"]}*/}
+            {/*  title={"Files"}*/}
+            {/*  addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}*/}
+            {/*  editIcon={true}*/}
+            {/*  action={async () => await S3.putObject(user, data.basicInfo.name)}*/}
+            {/*  link={true}*/}
+            {/*  rowAction={S3.viewObject}*/}
+            {/*/>*/}
+          </View>
+          {/*{data.status.current !== "Potential" &&*/}
+          {/*  <View className={"flex-1"}>*/}
+          {/*    <Table*/}
+          {/*      columnNames={["Manager", "Decision"]}*/}
+          {/*      data={formatApprovalsArr(data.approvals)}*/}
+          {/*      fields={["name", "value"]}*/}
+          {/*      title={"Approvals"}*/}
+          {/*      editIcon={false}*/}
+          {/*    />*/}
+          {/*  </View>*/}
+          {/*}*/}
+        </View>
+      </View>
+    </View>
   );
 }

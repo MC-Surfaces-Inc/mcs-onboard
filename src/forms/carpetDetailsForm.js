@@ -14,9 +14,9 @@ import { useGetClientProgramDetailsQuery, useUpdateProgramInfoMutation } from ".
 import Loading from "../screens/loading";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 
 export default function CarpetDetailsForm({ programs, clientId }) {
@@ -60,8 +60,9 @@ export default function CarpetDetailsForm({ programs, clientId }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Program Data Successfully Updated",
+        toast.success({
+          title: "Success!",
+          message: "Program Data Successfully Updated",
         });
       });
   };

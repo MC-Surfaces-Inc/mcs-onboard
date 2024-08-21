@@ -8,13 +8,11 @@ import App from './App';
 import {name as appName} from './app.json';
 import { Provider } from "react-redux";
 import { store } from "./src/app/store";
-import { HoldMenuProvider } from "react-native-hold-menu";
+import "./global.css";
 
 const AppComp = () => (
   <Provider store={store}>
-    {/*<HoldMenuProvider safeAreaInsets={}>*/}
-      <App />
-    {/*</HoldMenuProvider>*/}
+    <App />
   </Provider>
 );
 

@@ -16,10 +16,10 @@ import {
 } from "../services/client";
 import Loading from "../screens/loading";
 import { useForm } from "react-hook-form";
-import TextInput from "../components/textInput";
+import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import Picker from "../components/picker";
-import { showNotification } from "../components/notification";
+import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 
 export default function TileDetailsForm({ programs, clientId }) {
@@ -63,8 +63,9 @@ export default function TileDetailsForm({ programs, clientId }) {
       .unwrap()
       .then(res => {
         setLoading(false);
-        showNotification({
-          text: "Program Data Successfully Updated",
+        toast.success({
+          title: "Success!",
+          message: "Program Data Successfully Updated",
         });
       });
   };

@@ -1,10 +1,10 @@
 import React from "react";
-import { Box, Center, Text } from "native-base";
+import { Text, View } from "react-native";
 
 export default function CabinetPricingForm({ programs }) {
   return (
-    <Center h={"100%"}>
-      <Text>Program does not have pricing structure yet.</Text>
-    </Center>
+    <View className={"flex-1 items-center"}>
+      <Text className={"font-quicksand text-lg"}>Program does not have pricing structure yet.</Text>
+    </View>
   );
 }
