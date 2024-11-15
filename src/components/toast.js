@@ -85,7 +85,7 @@ export const ToastComponent = () => {
   }
 
   return (
-    <Animated.View className={"absolute z-10 rounded left-5 bottom-5 pt-3 pb-5 px-5 bg-black/60"}>
+    <Animated.View className={"absolute z-10 rounded left-5 bottom-5 pt-3 pb-5 px-5 bg-black/20"}>
       <View className={"flex flex-row justify-center items-center"}>
         <View className={"justify-center mr-2"}>
           { messageType === "danger" &&

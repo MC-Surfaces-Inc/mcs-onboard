@@ -17,11 +17,35 @@ import Divider from "../components/divider";
 
 export default function AddClientForm({ progress, width, isOpen }) {
   const user = useSelector(state => state.auth.user);
-  const { control, handleSubmit, reset, formState: { errors } } = useForm();
+  const {
+    control,
+    handleSubmit,
+    reset,
+    formState: { errors }
+  } = useForm({
+    defaultValues: {
+      client: {
+        name: "",
+        territory: "",
+      },
+      address: {
+        address1: "",
+        address2: "",
+        city: "",
+        state: "",
+        zip: "",
+      },
+    }
+  });
   const [createClient, { isLoading, isUpdating }] = useCreateClientMutation();
   const [createAddress, status] = useCreateAddressMutation();
   const [loading, setLoading] = React.useState(false);
-  // const toast = useToast();
+
+  React.useEffect(() => {
+    if (!isOpen) {
+      reset();
+    }
+  }, [isOpen, reset]);
 
   const sheetStyle = useAnimatedStyle(() => ({
     transform: [{ translateX: progress.value * 2 * width.value }],
@@ -36,6 +60,7 @@ export default function AddClientForm({ progress, width, isOpen }) {
     })
       .unwrap()
       .then(res => {
+        console.log(res);
         createAddress({
           id: res.data.insertId,
           body: {
@@ -91,6 +116,7 @@ export default function AddClientForm({ progress, width, isOpen }) {
           control={control}
           field={"client.territory"}
           title={"Territory"}
+          containerStyle={"bg-gray-100 w-full h-16"}
         />
 
         <TextInput
@@ -111,24 +137,19 @@ export default function AddClientForm({ progress, width, isOpen }) {
           title={"Corporate City"}
         />
 
-        <View>
-          <View>
-            <Picker
-              choices={states}
-              control={control}
-              field={"address.state"}
-              title={"Corporate State"}
-            />
-          </View>
+        <Picker
+          choices={states}
+          control={control}
+          field={"address.state"}
+          title={"Corporate State"}
+          containerStyle={"bg-gray-100 w-full h-16"}
+        />
 
-          <View>
-            <TextInput
-              control={control}
-              field={"address.zip"}
-              title={"Corporate Zip"}
-            />
-          </View>
-        </View>
+        <TextInput
+          control={control}
+          field={"address.zip"}
+          title={"Corporate Zip"}
+        />
 
         <View className={"flex-row justify-between mt-5"}>
           <Button
@@ -138,6 +159,7 @@ export default function AddClientForm({ progress, width, isOpen }) {
             color={"error"}
             onPress={() => {
               isOpen.value = !isOpen.value;
+              reset();
             }}
           />
           <Button

@@ -8,7 +8,7 @@ let territories = [
 let types = [
   { label: "Corporate", value: "Corporate" },
   { label: "Billing", value: "Billing" },
-  { label: "Shipping", value: "Shipping" },
+  { label: "Shipping", value: "Shipping" }
 ];
 
 let states = [

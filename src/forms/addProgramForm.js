@@ -1,21 +1,23 @@
 import React from "react";
-import { Button, FormControl, Input, Popover, Select } from "native-base";
 import { useUpdateProgramsMutation } from "../services/client";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import { programs } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
+import { View } from "react-native";
+import Button from "../components/button";
+import { ErrorMessage } from "@hookform/error-message";
 
-export default function AddProgramForm({ clientId, selectedPrograms }) {
+export default function AddProgramForm({ clientId, selections }) {
   const { control, errors, handleSubmit, reset } = useForm();
   const [updatePrograms, result] = useUpdateProgramsMutation();
   const [loading, setLoading] = React.useState(false);
   const [choices, setChoices] = React.useState([]);
 
   React.useEffect(() => {
-    let currentData = selectedPrograms.map(program => program.selection);
+    let currentData = selections.map(program => program.selection);
     setChoices(programs.filter(type => !currentData.includes(type.value)));
-  }, [selectedPrograms]);
+  }, [selections]);
 
   const onSubmit = values => {
     setLoading(true);
@@ -42,33 +44,38 @@ export default function AddProgramForm({ clientId, selectedPrograms }) {
   };
 
   return (
-    <Popover.Content>
-      <Popover.Arrow />
-      <Popover.CloseButton />
-      <Popover.Header>Add Program</Popover.Header>
-      <Popover.Body>
-        <FormControl>
-          <Picker
-            choices={choices}
-            control={control}
-            field={"program"}
-            title={"Programs"}
-          />
-        </FormControl>
-      </Popover.Body>
-      <Popover.Footer justifyContent="center">
+    <View>
+      <View className={"flex-row flex-1 gap-1 z-10"}>
+        <Picker
+          choices={choices}
+          control={control}
+          field={"program"}
+          title={"Programs"}
+          textStyle={"color-white"}
+          containerStyle={"w-full h-16"}
+          inputStyle={"bg-gray-100"}
+        />
+      </View>
+
+      <View className={"flex-row justify-end gap-2"}>
+        {/*<Button*/}
+        {/*  title={"Cancel"}*/}
+        {/*  type={"outlined"}*/}
+        {/*  size={"xs"}*/}
+        {/*  color={"error"}*/}
+        {/*  onPress={() => {*/}
+        {/*    isOpen.value = !isOpen.value;*/}
+        {/*    reset();*/}
+        {/*  }}*/}
+        {/*/>*/}
         <Button
-          _loading={{
-            bg: "success.400",
-          }}
-          bg={"success.400"}
-          isLoading={loading}
-          isLoadingText={"Submitting"}
+          title={"Save"}
+          type={"contained"}
+          size={"md"}
+          color={"success"}
           onPress={handleSubmit(onSubmit)}
-          width={"35%"}>
-          Save
-        </Button>
-      </Popover.Footer>
-    </Popover.Content>
+        />
+      </View>
+    </View>
   );
 }

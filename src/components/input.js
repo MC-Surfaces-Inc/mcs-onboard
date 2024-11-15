@@ -2,10 +2,21 @@ import React from "react";
 import { Text, TextInput, View } from "react-native";
 import { Controller } from "react-hook-form";
 
-export default function Input({ control, field, title, rules, error, helperText, disabled }) {
+export default function Input({
+  control,
+  field,
+  title,
+  rules,
+  error,
+  helperText,
+  disabled,
+  textStyle,
+  inputStyle,
+  containerStyle
+}) {
   return (
-    <View className={"my-2"}>
-      {title && <Text className={"font-quicksand mb-1"}>{title}</Text>}
+    <View className={`my-2 z-10 ${containerStyle}`}>
+      {title && <Text className={`font-quicksand mb-1 ${textStyle}`}>{title}</Text>}
       <Controller
         control={control}
         name={field}
@@ -14,10 +25,10 @@ export default function Input({ control, field, title, rules, error, helperText,
           return (
             <React.Fragment>
               <TextInput
-                className={"border border-gray-300 h-10 p-2 rounded-md focus:border-orange-500 font-quicksand"}
+                className={`border border-gray-300 h-10 p-2 rounded-md focus:border-orange-500 font-quicksand ${inputStyle}`}
                 onBlur={onBlur}
                 onChangeText={onChange}
-                readOnly={disabled}
+                editable={disabled}
                 value={value}
               />
               {/*{helperText &&*/}

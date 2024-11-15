@@ -1,9 +1,11 @@
 import React from "react";
-import { Button, FormControl, Input, Popover } from "native-base";
 import { useForm } from "react-hook-form";
-import TextInput from "../components/input";
+import Input from "../components/input";
+import Button from "../components/button";
 import { useCreateContactMutation } from "../services/client";
 import { toast } from "../components/toast";
+import { View } from "react-native";
+import { ErrorMessage } from "@hookform/error-message";
 
 export default function AddContactForm({ clientId }) {
   const { control, errors, handleSubmit, reset } = useForm();
@@ -36,34 +38,68 @@ export default function AddContactForm({ clientId }) {
   };
 
   return (
-    <Popover.Content>
-      <Popover.Arrow />
-      <Popover.CloseButton />
-      <Popover.Header>Add Contact</Popover.Header>
-      <Popover.Body>
-        <FormControl>
-          <TextInput control={control} field={"name"} title={"Name"} />
-
-          <TextInput control={control} field={"title"} title={"Title"} />
-
-          <TextInput control={control} field={"phone"} title={"Phone"} />
-
-          <TextInput control={control} field={"email"} title={"Email"} />
-        </FormControl>
-      </Popover.Body>
-      <Popover.Footer justifyContent="center">
-        <Button
-          _loading={{
-            bg: "success.400",
+    <View>
+      <View className={"flex-row flex-1 gap-1 pr-3 z-10"}>
+        <Input
+          control={control}
+          field={"name"}
+          title={"Name"}
+          rules={{
+            required: "Required Field"
           }}
-          bg={"success.400"}
-          isLoading={loading}
-          isLoadingText={"Submitting"}
+          errorMessage={<ErrorMessage errors={errors} name={"name"} />}
+          textStyle={"color-white"}
+          inputStyle={"bg-gray-100"}
+          containerStyle={"w-1/4"}
+        />
+        <Input
+          control={control}
+          field={"title"}
+          title={"Title"}
+          rules={{
+            required: "Required Field"
+          }}
+          textStyle={"color-white"}
+          inputStyle={"bg-gray-100"}
+          containerStyle={"w-1/4"}
+        />
+        <Input
+          control={control}
+          field={"phone"}
+          title={"Phone"}
+          textStyle={"color-white"}
+          inputStyle={"bg-gray-100"}
+          containerStyle={"w-1/4"}
+        />
+        <Input
+          control={control}
+          field={"email"}
+          title={"Email"}
+          textStyle={"color-white"}
+          inputStyle={"bg-gray-100"}
+          containerStyle={"w-1/4"}
+        />
+      </View>
+
+      <View className={"flex-row justify-end gap-2"}>
+        {/*<Button*/}
+        {/*  title={"Cancel"}*/}
+        {/*  type={"outlined"}*/}
+        {/*  size={"xs"}*/}
+        {/*  color={"error"}*/}
+        {/*  onPress={() => {*/}
+        {/*    isOpen.value = !isOpen.value;*/}
+        {/*    reset();*/}
+        {/*  }}*/}
+        {/*/>*/}
+        <Button
+          title={"Save"}
+          type={"contained"}
+          size={"xs"}
+          color={"success"}
           onPress={handleSubmit(onSubmit)}
-          width={"35%"}>
-          Save
-        </Button>
-      </Popover.Footer>
-    </Popover.Content>
+        />
+      </View>
+    </View>
   );
 }

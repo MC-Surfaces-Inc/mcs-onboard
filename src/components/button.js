@@ -1,7 +1,8 @@
 import React from "react";
-import { Text, TouchableOpacity } from "react-native";
+import { Text, TouchableOpacity, View } from "react-native";
 
 const sizes = {
+  xs: "w-1/6",
   sm: "w-1/4",
   md: "w-1/3",
   lg: "w-1/2",
@@ -44,14 +45,21 @@ const text = {
   }
 }
 
-export default function Button({ title, type, size, color, onPress, className, fontClass, disabled }) {
+export default function Button({
+  title, type, size, color, onPress, className, fontClass, disabled, icon
+}) {
   return (
     <TouchableOpacity
       title={title}
-      className={`items-center justify-center ${sizes[size]} ${types[type][color]} p-2 ${className}`}
+      className={`flex-row items-center my-1 justify-center ${sizes[size]} ${types[type][color]} p-2 ${className}`}
       onPress={onPress}
       disabled={disabled}
     >
+      {icon && (
+        <View className={"flex-1 items-center -ml-10"}>
+          {icon}
+        </View>
+      )}
       <Text className={`font-quicksand font-semibold ${text[type][color]} ${fontClass}`}>{title}</Text>
     </TouchableOpacity>
   )
