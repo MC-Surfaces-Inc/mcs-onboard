@@ -93,7 +93,7 @@ export default function Picker({
                   {/*  )}*/}
                   {/*/>*/}
 
-              <Animated.View className={"flex-row z-50"} style={[collapsibleStyle, { overflow: "hidden", zIndex: 100 }]}>
+              <Animated.View className={"flex-row max-h-80 z-50"} style={[collapsibleStyle, { overflow: "hidden", zIndex: 100 }]}>
                 <View
                   style={{ zIndex: 100 }}
                   onLayout={onLayout}
@@ -101,7 +101,7 @@ export default function Picker({
                 >
                   <FlatList
                     className={"z-50"}
-                    overScrollMode={"always"}
+                    // overScrollMode={"always"}
                     style={{ zIndex: 100 }}
                     data={choices}
                     renderItem={({ item, index }) => (

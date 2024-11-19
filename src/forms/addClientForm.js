@@ -92,7 +92,7 @@ export default function AddClientForm({ progress, width, isOpen }) {
 
   return (
     <Animated.View
-      className={"bg-gray-100 rounded-md border border-gray-400"}
+      className={"bg-gray-100 rounded-md border border-gray-400 shadow-md"}
       onLayout={(e) => {
         width.value = e.nativeEvent.layout.width;
       }}

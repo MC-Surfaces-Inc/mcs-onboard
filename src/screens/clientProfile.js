@@ -1,8 +1,6 @@
 import React from "react";
 import {
   Button,
-  Center,
-  FormControl,
   Heading,
   HStack,
 } from "native-base";
@@ -28,8 +26,6 @@ import Loading from "./loading";
 import AddContactForm from "../forms/addContactForm";
 import AddAddressForm from "../forms/addAddressForm";
 import AddProgramForm from "../forms/addProgramForm";
-import { useDispatch, useSelector } from "react-redux";
-import Picker from "../components/picker";
 import { useFieldArray, useForm } from "react-hook-form";
 import { states, territories, types } from "../constants/dropdownValues";
 import Popup from "../components/popup";
@@ -39,11 +35,10 @@ import { ErrorMessage } from "@hookform/error-message";
 import _ from "lodash";
 import { setStatus } from "../features/client/clientSlice";
 import { useCreateSageClientMutation, useGetSagePartClassesQuery } from "../services/sage";
-import { SafeAreaView, Text, View } from "react-native";
-import IconButton from "../components/iconButton";
-import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import { Modal, SafeAreaView, Text, View } from "react-native";
 import Menu from "../components/menu";
 import { useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
+import EditClientForm from "../forms/editClientForm";
 
 const statusColors = {
   Potential: "bg-slate-600",
@@ -68,26 +63,19 @@ const tableColumns = {
  */
 export default function ClientProfile({ navigation, route }) {
   const clientId = route.params?.clientId
-  // const user = useSelector(state => state.auth.user);
   const { data, isLoading } = useGetClientByIdQuery(clientId);
-  // const dispatch = useDispatch();
-  // const client = useSelector(state => state.client);
-  const openMenu = useSharedValue(false);
-  const [openModal, setOpenModal] = React.useState(false);
   const [editInfo, setEditInfo] = React.useState(false);
   const [deleteInfo, setDeleteInfo] = React.useState(false);
-  const [openAddressModal, setOpenAddressModal] = React.useState(false);
-  const [openContactModal, setOpenContactModal] = React.useState(false);
   const [openPushClientModal, setOpenPushClientModal] = React.useState(false);
-
   // const [files, setFiles] = React.useState([]);
   const [updateStatus, result] = useUpdateStatusMutation();
   const [updateApprovals, result1] = useUpdateApprovalsMutation();
-  // const [updatePrograms, result2] = useUpdateProgramsMutation();
-  // const [deleteContact, result4] = useDeleteContactMutation();
-  // const [deleteProgram, result5] = useDeleteProgramInfoMutation();
-  // const [deleteParts, result6] = useDeleteProgramPartsMutation();
   // const [updateIndex, setUpdateIndex] = React.useState(null);
+  const open = useSharedValue(false);
+  const width = useSharedValue(0);
+  const progress = useDerivedValue(() =>
+    withTiming(open.value ? 0 : 1, { duration: 500 })
+  );
 
   const menuLinks = [
     {
@@ -134,124 +122,6 @@ export default function ClientProfile({ navigation, route }) {
 
   if (data === undefined || isLoading) {
     return <Loading navigation={navigation} />;
-  }
-
-  const formatFileArray = arr => {
-    if (arr === undefined) {
-      return [];
-    }
-
-    let newArr = arr.map((file, index) => ({
-      name: file.Name,
-      type: file.Name.split(".")[file.Name.split(".").length - 1],
-      size: (file.Size / 1024).toFixed(2) + " KBs",
-      Bucket: file.Bucket,
-      Key: file.Key,
-    }));
-
-    return newArr;
-  };
-
-  const formatApprovalsArr = arr => {
-    if (arr === undefined) {
-      return [];
-    }
-
-    return Object.keys(arr).map(x => ({
-      name: x,
-      key: x,
-      value:
-        data.approvals[x] === 1
-          ? "Approved"
-          : data.approvals[x] === 0
-            ? "Declined"
-            : "No Response",
-    }));
-  };
-
-  const formatPrograms = arr => {
-    return Object.keys(arr)
-      .filter(x => arr[x] === 1)
-      .map((x, index) => ({ selection: x, key: x }));
-  };
-
-  const EditInfo = ({open, setOpen }) => {
-    const { control, handleSubmit, setValue, formState: { errors } } = useForm();
-    const [updateInfo, result] = useUpdateClientMutation();
-    const [loading, setLoading] = React.useState(false);
-
-    React.useEffect(() => {
-      setValue("client", {
-        name: data.basicInfo.name,
-        territory: data.basicInfo.territory,
-      });
-    }, [setValue, data])
-
-    const onSubmit = values => {
-      setLoading(!loading);
-      updateInfo({
-        id: clientId,
-        body: {
-          ...values.client
-        }
-      })
-        .unwrap()
-        .then(res => {
-          setOpen(false);
-          setLoading(!loading);
-          toast.success({
-            title: "Success!",
-            message: "Client Name & Territory Successfully Updated",
-          });
-        })
-    }
-
-    if (errors.client === undefined) {
-      errors.client = {};
-    }
-
-    return (
-      <Popup open={open} setOpen={setOpen} header={"Edit Client Name & Territory"}>
-        <FormControl isRequired isInvalid={'name' in errors.client}>
-          <TextInput
-            control={control}
-            title={"Client Name"}
-            field={"client.name"}
-            rules={{
-              required: "Required Field"
-            }}
-            error={<ErrorMessage errors={errors} name={"client.name"} />}
-          />
-        </FormControl>
-        <FormControl isRequired isInvalid={'territory' in errors.client}>
-          <Picker
-            control={control}
-            title={"Territory"}
-            field={"client.territory"}
-            choices={territories}
-            rules={{
-              required: "Required Field"
-            }}
-            error={<ErrorMessage errors={errors} name={"client.territory"}  />}
-          />
-        </FormControl>
-
-        <Center>
-          <Button
-            _loading={{
-              bg: "success.400",
-            }}
-            bg={"success.400"}
-            isLoading={loading}
-            isLoadingText={"Submitting"}
-            m={5}
-            onPress={handleSubmit(onSubmit)}
-            width={"35%"}>
-            Save
-          </Button>
-        </Center>
-      </Popup>
-    );
   }
 
   const PushClient = ({ open, setOpen }) => {
@@ -354,14 +224,24 @@ export default function ClientProfile({ navigation, route }) {
             console.log(res);
             toast.success({
               title: "Success!",
-              message: "Address Successfully Added",
+              message: "Address Successfully Deleted",
             });
           });
       });
     }
 
     const onEdit = values => {
-      console.log(values);
+      values.addresses.forEach((item, index) => {
+        updateAddress({ clientId: item.clientId, id: item.id, body: item })
+          .unwrap()
+          .then(res => {
+            console.log(res);
+            toast.success({
+              title: "Success!",
+              message: "Address Successfully Updated",
+            });
+          });
+      });
     }
 
     return (
@@ -370,18 +250,19 @@ export default function ClientProfile({ navigation, route }) {
         data={fields}
         columns={tableColumns.addresses}
         columnStyle={["w-2/12", "w-3/12", "w-2/12", "w-2/12", "w-1/12", "w-2/12"]}
-        Form={<AddAddressForm clientId={clientId} selections={data.addresses} />}
-        editInfo={editInfo}
         control={control}
-        onEdit={() => handleSubmit(onEdit)}
+        Form={<AddAddressForm clientId={clientId} selections={data.addresses} />}
+        fieldTypes={[{type: "picker", choices: types}, {type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
+        editInfo={editInfo}
+        onEdit={handleSubmit(onEdit)}
         onDelete={onDelete}
-        onCancel={() => reset(data.addresses)}
+        onCancel={() => console.log(data.addresses)}
       />
     )
   }
 
   const ContactTable = ({ data, clientId }) => {
-    const { control, register, setValue } = useForm({
+    const { control, register, setValue, handleSubmit } = useForm({
       defaultValues: {
         contacts: data.contacts
       }
@@ -391,31 +272,35 @@ export default function ClientProfile({ navigation, route }) {
       name: "contacts"
     });
     const [updateContact, result] = useUpdateContactMutation();
+    const [deleteContact, result4] = useDeleteContactMutation();
     const [loading, setLoading] = React.useState(false);
 
-    const onSubmit = values => {
-      // setLoading(!loading);
-      // updateContact({
-      //   id: data.contacts[index].id,
-      //   clientId: clientId,
-      //   body: {
-      //     id: values.contacts[index].id,
-      //     clientId: values.contacts[index].clientId,
-      //     name: values.contact.name,
-      //     title: values.contact.title,
-      //     phone: values.contact.phone,
-      //     email: values.contact.email,
-      //   }
-      // })
-      //   .unwrap()
-      //   .then(res => {
-      //     setUpdateIndex(null)
-      //     setOpenContactModal(false);
-      //     setLoading(!loading);
-      //     showNotification({
-      //       text: "Contact Successfully Updated",
-      //     });
-      //   })
+    const onDelete = values => {
+      values.forEach((item, index) => {
+        deleteContact({ clientId: item.clientId, id: item.id })
+          .unwrap()
+          .then(res => {
+            console.log(res);
+            toast.success({
+              title: "Success!",
+              message: "Contact Successfully Deleted",
+            });
+          });
+      });
+    }
+
+    const onEdit = values => {
+      values.contacts.forEach((item, index) => {
+        updateContact({ clientId: item.clientId, id: item.id, body: item })
+          .unwrap()
+          .then(res => {
+            console.log(res);
+            toast.success({
+              title: "Success!",
+              message: "Contact Successfully Updated",
+            });
+          });
+      });
     }
 
     return (
@@ -424,10 +309,41 @@ export default function ClientProfile({ navigation, route }) {
         data={data.contacts}
         columns={tableColumns.contacts}
         columnStyle={["w-3/12", "w-2/12", "w-4/12", "w-2/12"]}
-        Form={<AddContactForm />}
+        Form={<AddContactForm clientId={clientId} />}
+        fieldTypes={[{type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
         editInfo={editInfo}
         control={control}
-        onSubmit={onSubmit}
+        onEdit={handleSubmit(onEdit)}
+        onDelete={onDelete}
+        onCancel={() => console.log(data.contacts)}
+      />
+    );
+  }
+
+  const ApprovalsTable = ({ data }) => {
+    const formatApprovalsArr = arr => {
+      if (arr === undefined) {
+        return [];
+      }
+
+      return Object.keys(arr).map(x => ({
+        name: x,
+        key: x,
+        value:
+          data.approvals[x] === 1
+            ? "Approved"
+            : data.approvals[x] === 0
+              ? "Declined"
+              : "No Response",
+      }));
+    };
+
+    return (
+      <Table
+        title={"Approvals"}
+        data={formatApprovalsArr(data.approvals)}
+        columns={tableColumns.approvals}
+        columnStyle={["w-1/2", "w-1/2"]}
       />
     );
   }
@@ -442,6 +358,46 @@ export default function ClientProfile({ navigation, route }) {
       control,
       name: "programs"
     });
+    const [updatePrograms, result2] = useUpdateProgramsMutation();
+    const [deleteParts, result6] = useDeleteProgramPartsMutation();
+    const [deleteProgram, result5] = useDeleteProgramInfoMutation();
+
+    const formatPrograms = arr => {
+      return Object.keys(arr)
+        .filter(x => arr[x] === 1)
+        .map((x, index) => ({ id: index, selection: x, key: x }));
+    };
+
+    const onDelete = values => {
+      values.forEach((item, index) => {
+        console.log(item)
+        updatePrograms({
+          id: clientId,
+          body: {[item.selection.toLowerCase()]: 0 },
+        })
+          .unwrap()
+          .then(res1 => {
+            deleteProgram({
+              program: item.selection.toLowerCase(),
+              id: clientId,
+            })
+              .unwrap()
+              .then(res2 => {
+                deleteParts({
+                  program: item.selection,
+                  id: clientId,
+                })
+                  .unwrap()
+                  .then(res3 => {
+                    toast.success({
+                      title: "Success!",
+                      message: "Program Successfully Deleted",
+                    });
+                  });
+              });
+          });
+      });
+    }
 
     return (
       <Table
@@ -450,23 +406,35 @@ export default function ClientProfile({ navigation, route }) {
         columns={tableColumns.programs}
         columnStyle={["w-full"]}
         Form={<AddProgramForm clientId={clientId} selections={formatPrograms(data.programs)} />}
-        // edit={editInfo}
+        edit={editInfo}
         control={control}
-        deleteInfo={deleteInfo}
+        onDelete={onDelete}
       />
     )
+  }
+
+  const FileTable = ({ data, clientId }) => {
+    const formatFileArray = arr => {
+      if (arr === undefined) {
+        return [];
+      }
+
+      let newArr = arr.map((file, index) => ({
+        name: file.Name,
+        type: file.Name.split(".")[file.Name.split(".").length - 1],
+        size: (file.Size / 1024).toFixed(2) + " KBs",
+        Bucket: file.Bucket,
+        Key: file.Key,
+      }));
+
+      return newArr;
+    };
   }
 
   return (
     <SafeAreaView>
       <View className={"flex-row h-full"}>
         <Toolbar navigation={navigation} />
-
-        {/*<EditInfo open={openModal} setOpen={setOpenModal} index={updateIndex} />*/}
-
-        {/*<EditAddress open={openAddressModal} setOpen={setOpenAddressModal} index={updateIndex} />*/}
-
-        {/*<EditContact open={openContactModal} setOpen={setOpenContactModal} index={updateIndex} />*/}
 
         {/*<PushClient open={openPushClientModal} setOpen={setOpenPushClientModal} />*/}
 
@@ -486,7 +454,9 @@ export default function ClientProfile({ navigation, route }) {
                   <Menu.Item
                     title={"Edit Name & Territory"}
                     // isDisabled={!client.permissions.name.edit && !client.permissions.territory.edit}
-                    onPress={() => console.log("1")}
+                    onPress={() => {
+                      open.value = !open.value;
+                    }}
                   />
                   <Divider />
                   <Menu.Title title={"Client Pages"} />
@@ -579,56 +549,28 @@ export default function ClientProfile({ navigation, route }) {
             </View>
 
             <View className={"flex-row"}>
-              <View className={"w-1/4"}>
-                <Table
-                  title={"Approvals"}
-                  data={formatApprovalsArr(data.approvals)}
-                  columns={tableColumns.approvals}
-                  columnStyle={["w-1/2", "w-1/2"]}
-                />
-              </View>
+              { data.approvals &&
+                <View className={"w-1/4 z-20"}>
+                  <ApprovalsTable clientId={clientId} data={data} />
+                </View>
+              }
               <View className={"w-1/4"}>
                 <ProgramTable clientId={clientId} data={data} />
-                {/*<Table*/}
-                {/*  data={formatPrograms(data.programs)}*/}
-                {/*  fields={["selection"]}*/}
-                {/*  title={"Programs"}*/}
-                {/*  addIcon={data.status.current === "Potential" || data.status.current === "Updating" && true}*/}
-                {/*  editIcon={true}*/}
-                {/*  form={*/}
-                {/*    <AddProgramForm*/}
-                {/*      clientId={clientId}*/}
-                {/*      selectedPrograms={formatPrograms(data.programs)}*/}
-                {/*    />*/}
-                {/*  }*/}
-                {/*  alertHeader={"Delete Program"}*/}
-                {/*  alertBody={*/}
-                {/*    "Are you sure you would like to delete this record? Once deleted, this record can not be retrieved and all related information (pricing and details) will be deleted."*/}
-                {/*  }*/}
-                {/*  rowAction={row => {*/}
-                {/*    updatePrograms({*/}
-                {/*      id: clientId,*/}
-                {/*      body: {[row.selection.toLowerCase()]: 0 },*/}
-                {/*    });*/}
-                {/*    deleteProgram({*/}
-                {/*      program: row.selection.toLowerCase(),*/}
-                {/*      id: clientId,*/}
-                {/*    });*/}
-                {/*    deleteParts({*/}
-                {/*      program: row.selection,*/}
-                {/*      id: clientId,*/}
-                {/*    });*/}
-                {/*    showNotification({*/}
-                {/*      text: "Program Successfully Deleted."*/}
-                {/*    });*/}
-                {/*  }}*/}
-                {/*  deleteRow={true}*/}
-                {/*/>*/}
               </View>
-              </View>
+            </View>
           </View>
         </View>
+        <View className={"items-center justify-center h-full"}>
+          <EditClientForm
+            data={data}
+            clientId={clientId}
+            width={width}
+            progress={progress}
+            isOpen={open}
+          />
+        </View>
       </View>
+
     </SafeAreaView>
   );
 }

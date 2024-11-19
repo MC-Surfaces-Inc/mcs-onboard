@@ -7,6 +7,7 @@ import { AlertNotification } from "./alert";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import Input from "../components/input";
 import { ErrorMessage } from "@hookform/error-message";
+import Picker from "../components/picker";
 
 // TODO:
 //        - add functionality to "add" row
@@ -17,32 +18,29 @@ export default function Table({
   columns,
   data,
   columnStyle,
-  action,
-  rowAction,
-  alertHeader,
-  alertBody,
-  fields,
-  position,
-  setIndex,
-  deleteRow,
-  children,
   Form,
-  editInfo,
-  deleteInfo,
   control,
-  onSubmit,
-  onAdd,
   onEdit,
   onDelete,
   onCancel,
+  fieldTypes
 }) {
   const [alert, showAlert] = React.useState(false);
   const [selectedItems, setSelectedItems] = React.useState([]);
   const [height, setHeight] = React.useState(0);
   const animatedHeight = useSharedValue(0);
-  const [isOpen, setIsOpen] = React.useState(false);
+  const [isAdding, setIsAdding] = React.useState(false);
   const [isEditing, setIsEditing] = React.useState(false);
-
+  const [isDeleting, setIsDeleting] = React.useState(false);
+  
+  React.useEffect(() => {
+    if (selectedItems.length > 0) {
+      setIsDeleting(true);
+    } else {
+      setIsDeleting(false);
+    }
+  }, [setIsDeleting, selectedItems]);
+  
   const onLayout = (event) => {
     const onLayoutHeight = event.nativeEvent.layout.height;
 
@@ -52,12 +50,12 @@ export default function Table({
   };
 
   const collapsibleStyle = useAnimatedStyle(() => {
-    animatedHeight.value = isOpen ? withTiming(height) : withTiming(0);
+    animatedHeight.value = isAdding ? withTiming(height) : withTiming(0);
 
     return {
       height: animatedHeight.value,
     };
-  }, [isOpen, height]);
+  }, [isAdding, height]);
 
   const TableEnd = () => (
     <View className={"bg-gray-800 items-center rounded-r-lg -ml-2 pl-2 flex-1"}>
@@ -89,32 +87,40 @@ export default function Table({
         }
       })}
 
-      {isOpen && <Divider />}
+      {isAdding && <Divider />}
     </View>
   );
 
   return (
     <View className={"flex-col"}>
       <View className={"flex-row z-20"}>
-        <View className={`${isEditing ? "border-orange-500" : "border-gray-800"} bg-gray-100 border rounded-lg flex-1 m-1 mt-2 ${isOpen ? "-mb-2" : "mb-0"}`}>
+        <View className={`"border-gray-800" bg-gray-100 border rounded-lg flex-1 m-1 mt-2 ${isAdding ? "-mb-2" : "mb-0"}`}>
           <FlatList
             data={data}
             ListHeaderComponent={
               <Header
                 title={title}
                 columns={columns}
-                addAction={() => setIsOpen(!isOpen)}
                 style={columnStyle}
                 Form={Form}
-                isOpen={isOpen}
-                editInfo={editInfo}
-                isEditing={isEditing}
-                editAction={() => setIsEditing(!isEditing)}
-                selectedItems={selectedItems}
-                deleteInfo={deleteInfo}
-                onDelete={onDelete}
-                onEdit={onEdit}
-                onCancel={onCancel}
+                add={{
+                  isAdding,
+                  setIsAdding,
+                }}
+                edit={{
+                  isEditing,
+                  setIsEditing,
+                  onEdit,
+                  onCancel
+                }}
+                delete={{
+                  isDeleting,
+                  setIsDeleting,
+                  onDelete,
+                  selectedItems
+                }}
+                dataExists={data.length > 0}
+                fieldTypes={fieldTypes}
               />
             }
             ItemSeparatorComponent={<Divider />}
@@ -132,7 +138,7 @@ export default function Table({
 
               return (
                 <View className={rowStyle} key={index}>
-                  {(editInfo || deleteInfo) &&
+                  {(onEdit || onDelete) &&
                     <React.Fragment>
                       <IconButton
                         icon={
@@ -157,40 +163,54 @@ export default function Table({
 
                   {columns.map((cell, cellIndex) => {
                     if (isEditing) {
+                      if (fieldTypes[cellIndex].type === "input") {
+                        return (
+                          <Input
+                            key={cell.id}
+                            control={control}
+                            field={`${title.toLowerCase()}.${index}.${cell.toLowerCase().replace(/\s/g, "")}`}
+                            textStyle={"color-white"}
+                            inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 border-0 m-0`}
+                            containerStyle={`${columnStyle[cellIndex]} mr-2 p-0 my-0`}
+                            cursorColor={"#F97316"}
+                          />
+                        );
+                      } else if (fieldTypes[cellIndex].type === "picker") {
+                        return (
+                          <Picker
+                            key={cell.id}
+                            choices={fieldTypes[cellIndex].choices}
+                            control={control}
+                            field={`${title.toLowerCase()}.${index}.${cell.toLowerCase().replace(/\s/g, "")}`}
+                            textStyle={"color-white"}
+                            containerStyle={`${columnStyle[cellIndex]} mr-2 p-0 my-0`}
+                            inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 m-0`}
+                          />
+                        )
+                      }
+                    } else {
                       return (
-                        <Input
-                          control={control}
-                          field={`${title.toLowerCase()}.${index}.${cell.toLowerCase().replace(/\s/g, "")}`}
-                          textStyle={"color-white"}
-                          inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 border-0`}
-                          containerStyle={`${columnStyle[cellIndex]} mr-2 p-0 my-0`}
-                          cursorColor={"#F97316"}
+                        <Cell
+                          data={item[cell.toLowerCase().replace(/\s/g, "")]}
+                          index={cellIndex}
+                          key={cell.id}
+                          style={columnStyle[cellIndex]}
                         />
-                      )
+                      );
                     }
-                    return (
-                      <Cell
-                        data={item[cell.toLowerCase().replace(/\s/g, "")]}
-                        index={cellIndex}
-                        key={cellIndex}
-                        style={columnStyle[cellIndex]}
-                      />
-                    );
                   })}
                 </View>
               );
             }}
           />
         </View>
-
-        {/*<TableEnd />*/}
       </View>
 
       <AnimatedDropdown
         onLayout={onLayout}
         collapsibleStyle={collapsibleStyle}
         form={Form}
-        isOpen={isOpen}
+        isAdding={isAdding}
       />
     </View>
   );
@@ -206,59 +226,94 @@ const Header = (props) => (
           </Text>
 
           <View className={"flex-row"}>
-            {props.selectedItems.length > 0 &&
+            {/*Trash Can*/}
+            {props.delete.selectedItems.length > 0 &&
               <IconButton
                 icon={
                   <FontAwesome5
                     name={"trash"}
-                    size={22}
+                    size={24}
                     color={"#ef4444"}
                     className={"mx-2"}
                   />
                 }
-                onPress={() => props.onDelete(props.selectedItems)}
+                onPress={() => {
+                  props.delete.onDelete(props.delete.selectedItems);
+                }}
+                disabled={props.add.isAdding || props.edit.isEditing}
               />
             }
 
-            {props.editInfo &&
+            {/*Edit*/}
+            {!props.edit.isEditing && props.edit.onEdit && props.dataExists &&
               <IconButton
                 icon={
                   <FontAwesome5
-                    name={props.isEditing ? "save" : "edit"}
-                    size={22}
-                    color={props.isEditing ? "#4ade80": "#172554"}
-                    className={props.Form && "mx-2"}
+                    name={"edit"}
+                    size={24}
+                    color={"#172554"}
+                    className={"mx-2"}
                   />
                 }
-                onPress={props}
+                onPress={() => {
+                  props.edit.setIsEditing(!props.edit.isEditing);
+                }}
+                disabled={props.add.isAdding || props.edit.isDeleting}
               />
             }
 
-            {props.isEditing &&
+            {/*Save*/}
+            {props.edit.isEditing &&
+              <IconButton
+                icon={
+                  <FontAwesome5
+                    name={"save"}
+                    size={24}
+                    color={"#4ade80"}
+                    className={"mx-2"}
+                  />
+                }
+                onPress={() => {
+                  props.edit.onEdit();
+                  props.edit.setIsEditing(!props.edit.isEditing);
+                }}
+                disabled={props.add.isAdding || props.edit.isDeleting}
+              />
+            }
+
+            {/*Exit Edit*/}
+            {props.edit.isEditing &&
               <IconButton
                 icon={
                   <FontAwesome5
                     name={"times"}
-                    size={22}
+                    size={24}
                     color={"#ef4444"}
-                    className={props.Form && "mx-2"}
+                    className={"mx-2"}
                   />
                 }
-                onPress={props.onCancel}
+                onPress={() => {
+                  props.edit.setIsEditing(false);
+                }}
+                disabled={props.add.isAdding || props.edit.isDeleting}
               />
             }
 
+            {/*Add or Exit Add*/}
             {props.Form &&
               <IconButton
                 icon={
                   <FontAwesome5
-                    name={props.isOpen ? "times" : "plus"}
-                    size={22}
-                    color={props.isOpen ? "#ef4444": "#172554"}
-                    className={props.Form && "mx-2"}
+                    name={props.add.isAdding ? "times" : "plus"}
+                    size={24}
+                    color={props.add.isAdding ? "#ef4444": "#172554"}
+                    className={"mx-2"}
                   />
                 }
-                onPress={props.addAction}
+                onPress={() => {
+                  props.add.setIsAdding(!props.add.isAdding);
+                }}
+                disabled={props.add.isDeleting || props.edit.isEditing}
               />
             }
           </View>
@@ -269,8 +324,8 @@ const Header = (props) => (
     }
 
     <View className={"flex-row bg-gray-100 items-center"}>
-      {(props.editInfo || props.deleteInfo) &&
-        <View className={"w-6 mx-2"}>
+      {(props.edit.onEdit || props.delete.onDelete) &&
+        <View className={"mx-5"}>
         </View>
       }
       {props.columns.map((column, index) => (

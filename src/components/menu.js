@@ -9,7 +9,7 @@ export default function Menu({ children }) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <View className={"z-50"}>
+    <View className={"z-50 shadow-sm"}>
       <IconButton
         icon={
           <FontAwesome5
@@ -34,7 +34,7 @@ export default function Menu({ children }) {
 };
 
 const Item = (props) => (
-  <Pressable disabled={props.disabled} className={"mx-2 my-2"} onPress={props.action}>
+  <Pressable disabled={props.disabled} className={"mx-2 ml-6 my-2 active:opacity-50"} onPress={props.onPress}>
     <Text className={"font-quicksand text-slate-800"}>{props.title}</Text>
   </Pressable>
 );

@@ -1,14 +1,15 @@
 import React from "react";
-import { TouchableOpacity } from "react-native";
+import { Pressable, TouchableOpacity } from "react-native";
 
 export default function IconButton(props) {
   return (
-    <TouchableOpacity
+    <Pressable
       // title={props.title}
-      className={props.className}
-      onPress={props.onPress}
+      className={`${props.className} active:opacity-50`}
+      onPress={!props.disabled && props.onPress}
+      disabled={props.disabled}
     >
       {props.icon}
-    </TouchableOpacity>
+    </Pressable>
   )
 }

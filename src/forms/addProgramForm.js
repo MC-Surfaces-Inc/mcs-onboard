@@ -52,7 +52,7 @@ export default function AddProgramForm({ clientId, selections }) {
           field={"program"}
           title={"Programs"}
           textStyle={"color-white"}
-          containerStyle={"w-full h-16"}
+          containerStyle={"w-full"}
           inputStyle={"bg-gray-100"}
         />
       </View>
