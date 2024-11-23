@@ -1,18 +1,13 @@
 import React from "react";
 import {
-  Button,
-  Heading,
-  HStack,
-} from "native-base";
-import {
   useDeleteAddressMutation,
   useDeleteContactMutation,
   useDeleteProgramInfoMutation,
   useDeleteProgramPartsMutation,
-  useGetClientByIdQuery, useGetSageDataQuery,
+  useGetClientByIdQuery,
+  useGetSageDataQuery,
   useUpdateAddressMutation,
   useUpdateApprovalsMutation,
-  useUpdateClientMutation,
   useUpdateContactMutation,
   useUpdateProgramsMutation,
   useUpdateStatusMutation,
@@ -124,37 +119,37 @@ export default function ClientProfile({ navigation, route }) {
     return <Loading navigation={navigation} />;
   }
 
-  const PushClient = ({ open, setOpen }) => {
-    const partClasses = useGetSagePartClassesQuery();
-    const { data, isLoading } = useGetSageDataQuery(clientId);
-    const [createSageClient, result] = useCreateSageClientMutation();
-    const [firstStatus, setFirstStatus] = React.useState(false);
-    const [secondStatus, setSecondStatus] = React.useState(false);
-
-    const createClient = async (loading, setLoading, status, setStatus) => {
-      setLoading(!loading);
-      createSageClient({ body: data })
-        .unwrap()
-        .then((result) => {
-          setStatus(!status);
-          showNotification({
-            text: "Client successfully created in Sage."
-          });
-        })
-        .catch((error) => {
-          console.error(error);
-        });
-      setLoading(!loading);
-    }
-
-    const createPartClasses = () => {
-      const territoryPartClasses = {
-        "Austin": ["10000", "20000"],
-        "Dallas": ["20000", "30000"],
-        "Houston": ["30000", "40000"],
-        "San Antonio": ["40000", "50000"]
-      }
-    }
+  // const PushClient = ({ open, setOpen }) => {
+  //   const partClasses = useGetSagePartClassesQuery();
+  //   const { data, isLoading } = useGetSageDataQuery(clientId);
+  //   const [createSageClient, result] = useCreateSageClientMutation();
+  //   const [firstStatus, setFirstStatus] = React.useState(false);
+    // const [secondStatus, setSecondStatus] = React.useState(false);
+    //
+    // const createClient = async (loading, setLoading, status, setStatus) => {
+    //   setLoading(!loading);
+    //   createSageClient({ body: data })
+    //     .unwrap()
+    //     .then((result) => {
+    //       setStatus(!status);
+    //       showNotification({
+    //         text: "Client successfully created in Sage."
+    //       });
+    //     })
+    //     .catch((error) => {
+    //       console.error(error);
+    //     });
+    //   setLoading(!loading);
+    // }
+    //
+    // const createPartClasses = () => {
+    //   const territoryPartClasses = {
+    //     "Austin": ["10000", "20000"],
+    //     "Dallas": ["20000", "30000"],
+    //     "Houston": ["30000", "40000"],
+    //     "San Antonio": ["40000", "50000"]
+    //   }
+    // }
 
     // const onSubmit = values => {
     //   setLoading(!loading);
@@ -181,25 +176,25 @@ export default function ClientProfile({ navigation, route }) {
     //     })
     // }
 
-    return (
-      <Popup open={open} setOpen={setOpen} header={"Push Client"}>
-        <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
-          <Heading size={"md"}>Create Client</Heading>
-          <Button bg={"success.400"} isDisabled={firstStatus} onPress={() => createClient(firstStatus, setFirstStatus)} w={"30%"}>Submit</Button>
-        </HStack>
-        <Divider/>
-        <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
-          <Heading size={"md"}>Create Part Classes</Heading>
-          <Button bg={"success.400"} w={"30%"} isDisabled={!firstStatus} onPress={() => createPartClasses()}>Submit</Button>
-        </HStack>
-        <Divider/>
-        <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
-          <Heading size={"md"}>Export Parts to Excel</Heading>
-          <Button bg={"success.400"} w={"30%"} isDisabled={!secondStatus}>Submit</Button>
-        </HStack>
-      </Popup>
-    );
-  }
+  //   return (
+  //     <Popup open={open} setOpen={setOpen} header={"Push Client"}>
+  //       <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
+  //         <Heading size={"md"}>Create Client</Heading>
+  //         <Button bg={"success.400"} isDisabled={firstStatus} onPress={() => createClient(firstStatus, setFirstStatus)} w={"30%"}>Submit</Button>
+  //       </HStack>
+  //       <Divider/>
+  //       <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
+  //         <Heading size={"md"}>Create Part Classes</Heading>
+  //         <Button bg={"success.400"} w={"30%"} isDisabled={!firstStatus} onPress={() => createPartClasses()}>Submit</Button>
+  //       </HStack>
+  //       <Divider/>
+  //       <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
+  //         <Heading size={"md"}>Export Parts to Excel</Heading>
+  //         <Button bg={"success.400"} w={"30%"} isDisabled={!secondStatus}>Submit</Button>
+  //       </HStack>
+  //     </Popup>
+  //   );
+  // }
 
   const AddressTable = ({ data, clientId }) => {
     const { control, register, setValue, handleSubmit, reset } = useForm({
@@ -453,7 +448,7 @@ export default function ClientProfile({ navigation, route }) {
                   <Menu.Title title={"Client Actions"} />
                   <Menu.Item
                     title={"Edit Name & Territory"}
-                    // isDisabled={!client.permissions.name.edit && !client.permissions.territory.edit}
+                    isDisabled={editInfo}
                     onPress={() => {
                       open.value = !open.value;
                     }}

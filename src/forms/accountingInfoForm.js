@@ -1,14 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  FormControl,
-  Heading,
-  HStack,
-  VStack,
-} from "native-base";
+import { Text, View } from "react-native";
 import {
   paymentFrequency,
   paymentType,
@@ -17,10 +8,12 @@ import {
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import TextInput from "../components/input";
+import Divider from "../components/divider";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { useSelector } from "react-redux";
 import { toast } from "../components/toast";
+import Button from "../components/button";
 
 export default function AccountingInfoForm({ clientId, data }) {
   const { control, handleSubmit, errors, setValue } = useForm();
@@ -53,161 +46,149 @@ export default function AccountingInfoForm({ clientId, data }) {
   };
 
   return (
-    <Box
-      alignItems={"center"}
-      borderColor={"coolGray.600"}
-      borderRadius={"md"}
-      borderWidth={1}
-      m={2}
-      mb={50}>
-      <Heading p={2}>Accounting Details</Heading>
-      <Divider bg={"coolGray.400"} />
+    <View className={"flex-1 mx-2"}>
+      <View className={"flex-row justify-between items-center my-2"}>
+        <Text className={"font-quicksand text-3xl text-gray-800 mx-3"}>
+          Accounting
+        </Text>
 
-      <FormControl p={2}>
-        <HStack>
-          <VStack flex={1} m={2}>
-            <Picker
-              choices={paymentFrequency}
-              control={control}
-              field={"accounting_details.paymentFrequency"}
-              title={"Payment Frequency"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
+        <Button
+          title={"Save"}
+          type={"contained"}
+          size={"xs"}
+          color={"success"}
+          onPress={handleSubmit(onSubmit)}
+          // className={"my-50"}
+        />
+      </View>
 
-            <Picker
-              choices={yesOrNo}
-              control={control}
-              field={"accounting_details.autopay"}
-              title={"Autopay?"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
+      <Divider />
 
-            <TextInput
-              control={control}
-              title={"Email for Submitting Invoices"}
-              field={"accounting_details.invoiceEmailAddress"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <Picker
-              control={control}
-              title={"Payment Type"}
-              field={"accounting_details.paymentType"}
-              choices={paymentType}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-        {/*    <Picker*/}
-        {/*      control={control}*/}
-        {/*      title={"Payment Portal"}*/}
-        {/*      field={"accounting_details.paymentPortal"}*/}
-        {/*      choices={yesOrNo}*/}
-        {/*    />*/}
-
-            <TextInput
-              control={control}
-              title={"Payment URL"}
-              field={"accounting_details.paymentURL"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-          </VStack>
-
-          <Divider bg={"coolGray.400"} orientation={"vertical"} />
-
-          <VStack flex={1} m={2}>
-            <Picker
-              control={control}
-              title={"POs Required?"}
-              field={"accounting_details.poRequired"}
-              choices={yesOrNo}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <Picker
-              control={control}
-              title={"POs Required for Invoices?"}
-              field={"accounting_details.poInvoiceRequired"}
-              choices={yesOrNo}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <Picker
-              control={control}
-              title={"Approvals Required?"}
-              field={"accounting_details.approvalsRequired"}
-              choices={yesOrNo}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <Picker
-              control={control}
-              title={"Is the Contract Attached?"}
-              field={"accounting_details.contractAttached"}
-              choices={yesOrNo}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-          </VStack>
-        </HStack>
-
-        <Divider bg={"coolGray.400"} />
-
-        <HStack m={2}>
-          <VStack flex={1} mx={2}>
-            <TextInput
-              control={control}
-              title={"Contact Name"}
-              field={"accounting_details.contactName"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-          </VStack>
-
-          <VStack flex={1} mx={2}>
-            <TextInput
-              control={control}
-              title={"Contact Phone"}
-              field={"accounting_details.contactPhone"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-          </VStack>
-
-          <VStack flex={1} mx={2}>
-            <TextInput
-              control={control}
-              title={"Contact Email"}
-              field={"accounting_details.contactEmail"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-          </VStack>
-        </HStack>
-
-        <Divider bg={"coolGray.400"} />
-
-        <VStack m={2}>
-          <MultiLineText
+      <View className={"flex-row m-2"}>
+        <View className={"flex-1 mx-1"}>
+          <Picker
+            choices={paymentFrequency}
             control={control}
-            title={"Notes"}
-            field={"accounting_details.notes"}
-            disabled={!client.permissions.pages["ClientDetails"].edit}
+            field={"accounting_details.paymentFrequency"}
+            title={"Payment Frequency"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
-        </VStack>
 
-        <Divider bg={"coolGray.400"} />
+          <Picker
+            choices={yesOrNo}
+            control={control}
+            field={"accounting_details.autopay"}
+            title={"Autopay?"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
 
-        <Center>
-          <Button
-            _loading={{
-              bg: "success.400",
-            }}
-            bg={"success.400"}
-            isLoading={loading}
-            isLoadingText={"Submitting"}
-            m={5}
-            onPress={handleSubmit(onSubmit)}
-            width={"35%"}>
-            Save
-          </Button>
-        </Center>
-      </FormControl>
-    </Box>
+          <TextInput
+            control={control}
+            title={"Email for Submitting Invoices"}
+            field={"accounting_details.invoiceEmailAddress"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <Picker
+            control={control}
+            title={"Payment Type"}
+            field={"accounting_details.paymentType"}
+            choices={paymentType}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+      {/*    <Picker*/}
+      {/*      control={control}*/}
+      {/*      title={"Payment Portal"}*/}
+      {/*      field={"accounting_details.paymentPortal"}*/}
+      {/*      choices={yesOrNo}*/}
+      {/*    />*/}
+
+          <TextInput
+            control={control}
+            title={"Payment URL"}
+            field={"accounting_details.paymentURL"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+        </View>
+
+        <Divider orientation={"vertical"} />
+
+        <View className={"flex-1 mx-1"}>
+          <Picker
+            control={control}
+            title={"POs Required?"}
+            field={"accounting_details.poRequired"}
+            choices={yesOrNo}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <Picker
+            control={control}
+            title={"POs Required for Invoices?"}
+            field={"accounting_details.poInvoiceRequired"}
+            choices={yesOrNo}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <Picker
+            control={control}
+            title={"Approvals Required?"}
+            field={"accounting_details.approvalsRequired"}
+            choices={yesOrNo}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <Picker
+            control={control}
+            title={"Is the Contract Attached?"}
+            field={"accounting_details.contractAttached"}
+            choices={yesOrNo}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+        </View>
+      </View>
+
+      <Divider />
+
+      <View className={"flex-row mx-3 my-2 justify-between"}>
+        <TextInput
+          control={control}
+          title={"Contact Name"}
+          field={"accounting_details.contactName"}
+          containerStyle={"flex-1 mr-1"}
+          // disabled={!client.permissions.pages["ClientDetails"].edit}
+        />
+
+        <TextInput
+          control={control}
+          title={"Contact Phone"}
+          field={"accounting_details.contactPhone"}
+          containerStyle={"flex-1"}
+          // disabled={!client.permissions.pages["ClientDetails"].edit}
+        />
+
+        <TextInput
+          control={control}
+          title={"Contact Email"}
+          field={"accounting_details.contactEmail"}
+          containerStyle={"flex-1 ml-1"}
+          // disabled={!client.permissions.pages["ClientDetails"].edit}
+        />
+      </View>
+
+      <Divider />
+
+      <View className={"my-2 mx-3"}>
+        <MultiLineText
+          control={control}
+          title={"Notes"}
+          field={"accounting_details.notes"}
+          // disabled={!client.permissions.pages["ClientDetails"].edit}
+        />
+      </View>
+
+      <Divider />
+    </View>
   );
 }

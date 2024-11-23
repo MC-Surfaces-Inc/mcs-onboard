@@ -1,23 +1,16 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  FormControl,
-  Heading,
-  HStack,
-  VStack,
-} from "native-base";
-import { jobReleaseChoices, yesOrNo } from "../constants/dropdownValues";
+import { jobReleaseChoices, paymentFrequency, paymentType, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import DatePicker from "../components/datePicker";
+import Divider from "../components/divider";
+import Button from "../components/button";
 import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
+import { Text, View } from "react-native";
 
 export default function ExpeditingInfoForm({ clientId, data }) {
   const { control, handleSubmit, errors, setValue } = useForm();
@@ -50,127 +43,116 @@ export default function ExpeditingInfoForm({ clientId, data }) {
   };
 
   return (
-    <Box
-      alignItems={"center"}
-      borderColor={"coolGray.600"}
-      borderRadius={"md"}
-      borderWidth={1}
-      m={2}
-      mb={50}>
-      <Heading p={2}>Expediting Details</Heading>
-      <Divider bg={"coolGray.400"} />
+    <View className={"flex-1 mx-2"}>
+      <View className={"flex-row justify-between items-center my-2"}>
+        <Text className={"font-quicksand text-3xl text-gray-800 mx-3"}>
+          Expediting
+        </Text>
 
-      <FormControl p={2}>
-        <HStack>
-          <VStack flex={1} m={2}>
-            <Picker
-              choices={yesOrNo}
-              control={control}
-              field={"expediting_details.vendorPortal"}
-              title={"Is there a vendor portal?"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
+        <Button
+          title={"Save"}
+          type={"contained"}
+          size={"xs"}
+          color={"success"}
+          onPress={handleSubmit(onSubmit)}
+          // className={"my-50"}
+        />
+      </View>
 
-            <TextInput
-              control={control}
-              field={"expediting_details.vendorPortalURL"}
-              title={"Vendor Portal URL"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
+      <Divider />
 
-            <Picker
-              choices={yesOrNo}
-              control={control}
-              field={"expediting_details.portalAccountCreated"}
-              title={"Has the vendor portal account been created?"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <TextInput
-              control={control}
-              field={"expediting_details.portalUsername"}
-              title={"Portal Username"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <TextInput
-              control={control}
-              field={"expediting_details.portalPassword"}
-              title={"Portal Password"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-          </VStack>
-
-          <Divider bg={"coolGray.400"} orientation={"vertical"} />
-
-          <VStack flex={1} m={2}>
-            <Picker
-              choices={jobReleaseChoices}
-              control={control}
-              field={"expediting_details.jobReleaseMethod"}
-              title={"How are jobs released?"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <Picker
-              choices={yesOrNo}
-              control={control}
-              field={"expediting_details.poErrorHandling"}
-              title={"PO Correction Handling?"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            <TextInput
-              control={control}
-              field={"expediting_details.estimatedHomes"}
-              title={"Estimated Number of Homes per Year"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-
-            {/*<DatePicker*/}
-            {/*  control={control}*/}
-            {/*  field={"expediting_details.estimatedStartDate"}*/}
-            {/*  title={"Estimated Start Date"}*/}
-            {/*/>*/}
-
-            <Picker
-              choices={yesOrNo}
-              control={control}
-              field={"expediting_details.inHouseProgram"}
-              title={"Is the client using the In-House Program?"}
-              disabled={!client.permissions.pages["ClientDetails"].edit}
-            />
-          </VStack>
-        </HStack>
-
-        <Divider bg={"coolGray.400"} />
-
-        <VStack m={2}>
-          <MultiLineText
+      <View className={"flex-row m-2"}>
+        <View className={"flex-1 mx-1"}>
+          <Picker
+            choices={yesOrNo}
             control={control}
-            title={"Notes"}
-            field={"expediting_details.notes"}
-            disabled={!client.permissions.pages["ClientDetails"].edit}
+            field={"expediting_details.vendorPortal"}
+            title={"Is there a vendor portal?"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
-        </VStack>
 
-        <Divider bg={"coolGray.400"} />
+          <TextInput
+            control={control}
+            field={"expediting_details.vendorPortalURL"}
+            title={"Vendor Portal URL"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
 
-        <Center>
-          <Button
-            _loading={{
-              bg: "success.400",
-            }}
-            bg={"success.400"}
-            isLoading={loading}
-            isLoadingText={"Submitting"}
-            m={5}
-            onPress={handleSubmit(onSubmit)}
-            width={"35%"}>
-            Save
-          </Button>
-        </Center>
-      </FormControl>
-    </Box>
+          <Picker
+            choices={yesOrNo}
+            control={control}
+            field={"expediting_details.portalAccountCreated"}
+            title={"Has the vendor portal account been created?"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <TextInput
+            control={control}
+            field={"expediting_details.portalUsername"}
+            title={"Portal Username"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <TextInput
+            control={control}
+            field={"expediting_details.portalPassword"}
+            title={"Portal Password"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+        </View>
+
+        <Divider orientation={"vertical"} />
+
+        <View className={"flex-1 mx-1"}>
+          <Picker
+            choices={jobReleaseChoices}
+            control={control}
+            field={"expediting_details.jobReleaseMethod"}
+            title={"How are jobs released?"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <Picker
+            choices={yesOrNo}
+            control={control}
+            field={"expediting_details.poErrorHandling"}
+            title={"PO Correction Handling?"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          <TextInput
+            control={control}
+            field={"expediting_details.estimatedHomes"}
+            title={"Estimated Number of Homes per Year"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+
+          {/*<DatePicker*/}
+          {/*  control={control}*/}
+          {/*  field={"expediting_details.estimatedStartDate"}*/}
+          {/*  title={"Estimated Start Date"}*/}
+          {/*/>*/}
+
+          <Picker
+            choices={yesOrNo}
+            control={control}
+            field={"expediting_details.inHouseProgram"}
+            title={"Is the client using the In-House Program?"}
+            // disabled={!client.permissions.pages["ClientDetails"].edit}
+          />
+        </View>
+      </View>
+
+      <Divider />
+
+      <View className={"my-2 mx-3"}>
+        <MultiLineText
+          control={control}
+          title={"Notes"}
+          field={"expediting_details.notes"}
+          // disabled={!client.permissions.pages["ClientDetails"].edit}
+        />
+      </View>
+    </View>
   );
 }

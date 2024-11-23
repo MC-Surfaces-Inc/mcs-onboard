@@ -4,7 +4,8 @@ import AccountingInfoForm from "../forms/accountingInfoForm";
 import ExpeditingInfoForm from "../forms/expeditingInfoForm";
 import { useGetClientDetailsQuery } from "../services/client";
 import Loading from "./loading";
-import { ScrollView, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import Divider from "../components/divider";
 
 export default function ClientDetails({ navigation, route }) {
   const clientId = route.params?.clientId;
@@ -33,16 +34,19 @@ export default function ClientDetails({ navigation, route }) {
   }
 
   return (
-    <View className={"w-full flex-row justify-items-start pt-5"}>
-      <Toolbar navigation={navigation} route={route} />
-      <ScrollView>
-        <Text className={"font-quicksand text-4xl text-gray-800 ml-2 mt-3"}>
-          Client Details
-        </Text>
+    <SafeAreaView>
+      <View className={"h-full flex-row"}>
+        <Toolbar navigation={navigation} route={route} />
+        <ScrollView>
+          <Text className={"font-quicksand text-4xl text-gray-800 ml-2"}>
+            Client Details
+          </Text>
+          <Divider />
 
-        <AccountingInfoForm data={data.tables.accounting_details} clientId={clientId} />
-        <ExpeditingInfoForm data={data.tables.expediting_details} clientId={clientId} />
-      </ScrollView>
-    </View>
+          <AccountingInfoForm data={data.tables.accounting_details} clientId={clientId} />
+          <ExpeditingInfoForm data={data.tables.expediting_details} clientId={clientId} />
+        </ScrollView>
+      </View>
+    </SafeAreaView>
   );
 }
