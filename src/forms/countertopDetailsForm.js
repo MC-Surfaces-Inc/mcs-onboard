@@ -1,15 +1,5 @@
 import React from "react";
-import {
-  Box,
-  Button,
-  Center,
-  Divider,
-  FormControl,
-  Heading,
-  Input,
-  Text,
-  VStack,
-} from "native-base";
+import { Text, View } from "react-native";
 import { countertops, yesOrNo } from "../constants/dropdownValues";
 import Loading from "../screens/loading";
 import {
@@ -17,11 +7,13 @@ import {
   useUpdateProgramInfoMutation,
 } from "../services/client";
 import Picker from "../components/picker";
+import Divider from "../components/divider";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
+import Button from "../components/button";
 
 export default function CountertopDetailsForm({ programs, clientId }) {
   const { control, errors, handleSubmit, setValue } = useForm();
@@ -45,20 +37,20 @@ export default function CountertopDetailsForm({ programs, clientId }) {
     setData();
   }, [data, isLoading])
 
-  if (programs.Countertops === 0 || programs.Countertops === null || error) {
-    return (
-      <Center h={"100%"}>
-        <Text>Program has not been included in client selections.</Text>
-        <Text>If you believe this is an error, please contact Support.</Text>
-      </Center>
-    );
-  }
+  // if (programs.Countertops === 0 || programs.Countertops === null || error) {
+  //   return (
+  //     <Center h={"100%"}>
+  //       <Text>Program has not been included in client selections.</Text>
+  //       <Text>If you believe this is an error, please contact Support.</Text>
+  //     </Center>
+  //   );
+  // }
 
   const onSubmit = values => {
     setLoading(true);
 
     updateInfo({
-      type: "countertops",
+      type: "countertop",
       body: { ...values.countertops, clientId: clientId },
     })
       .unwrap()
@@ -72,114 +64,104 @@ export default function CountertopDetailsForm({ programs, clientId }) {
   };
 
   return (
-    <Box
-      alignItems={"center"}
-      borderColor={"coolGray.600"}
-      borderRadius={"md"}
-      borderWidth={1}
-      m={2}
-      mb={20}>
-      <Heading p={2}>Countertop Program Details</Heading>
-      <Divider bg={"coolGray.400"} />
+    <View className={"border border-gray-500 rounded-md m-5 p-2 mb-20"}>
+      <Text className={"font-quicksand text-3xl text-gray-800 mx-3"}>
+        Countertop Program Information
+      </Text>
+      <Divider />
 
-      <FormControl>
-        <VStack p={4}>
-          <Text fontSize={"lg"} fontWeight={"bold"}>
-            Preferences
-          </Text>
-          <Divider bg={"coolGray.400"} my={2} />
+      <View className={"p-2"}>
+        <Text className={"font-quicksand text-lg text-gray-800"}>
+          Preferences
+        </Text>
+        <Divider />
 
-          <Picker
-            choices={countertops.materialThickness}
+        <Picker
+          choices={countertops.materialThickness}
+          control={control}
+          field={"countertops.preferredMaterialThickness"}
+          title={"Preferred Material Thickness"}
+          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+        />
+
+        <Picker
+          choices={countertops.edges}
+          control={control}
+          field={"countertops.preferredEdge"}
+          title={"Preferred Edge"}
+          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+        />
+      </View>
+
+      <View className={"p-2"}>
+        <Text className={"font-quicksand text-lg text-gray-800"}>
+          Specifications
+        </Text>
+        <Divider />
+
+        <Picker
+          choices={countertops.standardOrOption}
+          control={control}
+          field={"countertops.waterfallEdgeStandard"}
+          title={"Waterfall Sides - Std. or Option?"}
+          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+        />
+
+        <Picker
+          choices={yesOrNo}
+          control={control}
+          field={"countertops.faucetHoles"}
+          title={"Faucet Holes?"}
+          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+        />
+
+        <TextInput
+          control={control}
+          field={"countertops.stoveRangeSpecifications"}
+          title={"Stove Range Specs."}
+          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+        />
+      </View>
+
+      <View className={"p-2"}>
+        <Text className={"font-quicksand text-lg text-gray-800"}>
+          General
+        </Text>
+        <Divider />
+
+        <Picker
+          choices={countertops.takeoffResp}
+          control={control}
+          field={"countertops.takeoffResponsibility"}
+          title={"Who Will Be Doing Takeoffs?"}
+          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+        />
+
+        {/*<FormControl.Label>Waste Factor Percentage</FormControl.Label>*/}
+        {/*<Input />*/}
+
+        <View className={"pb-2"}>
+          <MultiLineText
             control={control}
-            field={"countertops.preferredMaterialThickness"}
-            title={"Preferred Material Thickness"}
-            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+            field={"countertops.notes"}
+            title={"Notes"}
+            // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
           />
+        </View>
+      </View>
 
-          <Picker
-            choices={countertops.edges}
-            control={control}
-            field={"countertops.preferredEdge"}
-            title={"Preferred Edge"}
-            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
-          />
-        </VStack>
+      <Divider />
 
-        <VStack p={4}>
-          <Text fontSize={"lg"} fontWeight={"bold"}>
-            Specifications
-          </Text>
-          <Divider bg={"coolGray.400"} mb={2} />
-
-          <Picker
-            choices={countertops.standardOrOption}
-            control={control}
-            field={"countertops.waterfallEdgeStandard"}
-            title={"Waterfall Sides - Std. or Option?"}
-            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
-          />
-
-          <Picker
-            choices={yesOrNo}
-            control={control}
-            field={"countertops.faucetHoles"}
-            title={"Faucet Holes?"}
-            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
-          />
-
-          <TextInput
-            control={control}
-            field={"countertops.stoveRangeSpecifications"}
-            title={"Stove Range Specs."}
-            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
-          />
-        </VStack>
-
-        <VStack p={4}>
-          <Text fontSize={"lg"} fontWeight={"bold"}>
-            General
-          </Text>
-          <Divider bg={"coolGray.400"} mb={2} />
-
-          <Picker
-            choices={countertops.takeoffResp}
-            control={control}
-            field={"countertops.takeoffResponsibility"}
-            title={"Who Will Be Doing Takeoffs?"}
-            isDisabled={!client.permissions.pages["ProgramDetails"].edit}
-          />
-
-          <FormControl.Label>Waste Factor Percentage</FormControl.Label>
-          <Input />
-
-          <VStack mb={2}>
-            <MultiLineText
-              control={control}
-              field={"countertops.notes"}
-              title={"Notes"}
-              isDisabled={!client.permissions.pages["ProgramDetails"].edit}
-            />
-          </VStack>
-        </VStack>
-
-        <Divider bg={"coolGray.400"} />
-
-        <Center>
-          <Button
-            _loading={{
-              bg: "success.400",
-            }}
-            bg={"success.400"}
-            isLoading={loading}
-            isLoadingText={"Submitting"}
-            m={5}
-            onPress={handleSubmit(onSubmit)}
-            width={"35%"}>
-            Save
-          </Button>
-        </Center>
-      </FormControl>
-    </Box>
+      <View className={"items-center"}>
+        <Button
+          title={"Save"}
+          type={"contained"}
+          size={"md"}
+          color={"success"}
+          onPress={handleSubmit(onSubmit)}
+          // className={"my-50"}
+        />
+      </View>
+    </View>
   );
 }
