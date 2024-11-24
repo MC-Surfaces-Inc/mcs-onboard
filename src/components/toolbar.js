@@ -10,6 +10,8 @@ export default function Toolbar({ navigation }) {
   const dispatch = useDispatch();
   const route = useRoute();
 
+  console.log("route", route);
+
   return (
     <View className={"bg-gray-800 items-center justify-between rounded-r-md p-1 w-52"}>
       <View className={"w-full p-2"}>
@@ -22,7 +24,8 @@ export default function Toolbar({ navigation }) {
           <Text className={"font-quicksand text-white font-semibold"}>MC Surfaces, Inc.</Text>
         </View>
 
-        <TouchableOpacity onPress={() => navigation.popToTop()} className={"h-12"}>
+        { (route.name === "Home" || route.name === "ClientProfile") &&
+          <TouchableOpacity onPress={() => navigation.popToTop()} className={"h-12"}>
           <View className={`flex-row items-center ${route.name === "Home" && "bg-gray-100/45 rounded-md"} px-1`}>
             <View className={"mr-5 my-2 w-8 items-center"}>
               <FontAwesome5
@@ -33,7 +36,23 @@ export default function Toolbar({ navigation }) {
             </View>
             <Text className={"font-quicksand text-white font-semibold flex-1"}>Home</Text>
           </View>
-        </TouchableOpacity>
+          </TouchableOpacity>
+        }
+
+        { (route.name !== "Home" && route.name !== "ClientProfile") &&
+          <TouchableOpacity onPress={() => navigation.pop()} className={"h-12"}>
+            <View className={`flex-row items-center ${route.name !== "Home" && "bg-gray-100/45 rounded-md"} px-1`}>
+              <View className={"mr-5 my-2 w-8 items-center"}>
+                <FontAwesome5
+                  name={"arrow-left"}
+                  size={20}
+                  color={"#ffffff"}
+                />
+              </View>
+              <Text className={"font-quicksand text-white font-semibold flex-1"}>Back</Text>
+            </View>
+          </TouchableOpacity>
+        }
 
         <TouchableOpacity onPress={() => navigation.push("Help")} className={"h-12"}>
           <View className={`flex-row items-center ${route.name === "Help" && "bg-gray-100/45 rounded-md"} px-1`}>
