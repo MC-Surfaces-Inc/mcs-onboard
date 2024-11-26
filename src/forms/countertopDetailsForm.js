@@ -24,7 +24,6 @@ export default function CountertopDetailsForm({ programs, clientId }) {
   });
   const [updateInfo, result] = useUpdateProgramInfoMutation();
   const [loading, setLoading] = React.useState(false);
-  const client = useSelector(state => state.client);
 
   React.useEffect(() => {
     const setData = async() => {
@@ -36,16 +35,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
     }
 
     setData();
-  }, [data, isLoading])
-
-  // if (programs.Countertops === 0 || programs.Countertops === null || error) {
-  //   return (
-  //     <Center h={"100%"}>
-  //       <Text>Program has not been included in client selections.</Text>
-  //       <Text>If you believe this is an error, please contact Support.</Text>
-  //     </Center>
-  //   );
-  // }
+  }, [data, isLoading]);
 
   const onSubmit = values => {
     setLoading(true);
@@ -138,9 +128,6 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           disabled={isLocked}
         />
 
-        {/*<FormControl.Label>Waste Factor Percentage</FormControl.Label>*/}
-        {/*<Input />*/}
-
         <View className={"pb-2"}>
           <MultiLineText
             control={control}
@@ -161,7 +148,6 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           color={"success"}
           onPress={handleSubmit(onSubmit)}
           disabled={isLocked}
-          // className={"my-50"}
         />
       </View>
     </View>

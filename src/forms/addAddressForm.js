@@ -5,13 +5,11 @@ import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import { useCreateAddressMutation } from "../services/client";
 import { toast } from "../components/toast";
-import { ErrorMessage } from "@hookform/error-message";
-import Input from "../components/input";
 import Button from "../components/button";
 import TextInput from "../components/input";
 
 export default function AddAddressForm({ clientId, selections }) {
-  const { control, errors, handleSubmit, reset, getValues } = useForm({
+  const { control, handleSubmit, reset, } = useForm({
     defaultValues: {
       type: "",
       address1: "",

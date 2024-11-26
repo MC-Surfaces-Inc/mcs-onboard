@@ -1,7 +1,7 @@
 import React from "react";
 import { FlatList, Text, View } from "react-native";
 import { useFieldArray, useForm } from "react-hook-form";
-import { countertops, levels, units } from "../constants/dropdownValues";
+import { units } from "../constants/dropdownValues";
 import {
   useDeleteBillingPartsMutation,
   useGetClientProgramPricingQuery,
@@ -243,21 +243,18 @@ export default function CountertopsPricingForm({ programs, clientId }) {
                 field={`countertops[${item.index}].programTable`}
                 containerStyle={"w-1/5 my-0"}
                 inputStyle={"rounded-none"}
-                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
               />
               <TextInput
                 control={control}
                 field={`countertops[${item.index}].level`}
                 containerStyle={"w-1/5 my-0"}
                 inputStyle={"rounded-none"}
-                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
               />
               <TextInput
                 control={control}
                 field={`countertops[${item.index}].description`}
                 containerStyle={"w-1/5 my-0"}
                 inputStyle={"rounded-none"}
-                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
               />
               <Picker
                 choices={units}
@@ -265,7 +262,6 @@ export default function CountertopsPricingForm({ programs, clientId }) {
                 field={`countertops[${item.index}].unit`}
                 containerStyle={"w-1/5 my-0"}
                 inputStyle={"rounded-none"}
-                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
               />
               <TextInput
                 control={control}
@@ -273,7 +269,6 @@ export default function CountertopsPricingForm({ programs, clientId }) {
                 containerStyle={"w-1/5 my-0"}
                 leftIcon={<FontAwesome5 name={"dollar-sign"} size={20} className={"mr-5"} color={"#172554"} />}
                 inputStyle={`${index === (fields.length - 1) ? "rounded-none" : "rounded-r-none rounded-br-md rounded-l-none"}`}
-                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
               />
             </View>
           );
@@ -289,7 +284,6 @@ export default function CountertopsPricingForm({ programs, clientId }) {
                   textStyle={"text-gray-100"}
                   containerStyle={"w-1/3 my-0"}
                   inputStyle={"bg-gray-100"}
-                  // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
                 />
                 <View className={"flex-row justify-end items-center"}>
                   <Button

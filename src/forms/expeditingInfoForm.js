@@ -1,5 +1,5 @@
 import React from "react";
-import { jobReleaseChoices, paymentFrequency, paymentType, yesOrNo } from "../constants/dropdownValues";
+import { jobReleaseChoices, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import Divider from "../components/divider";
@@ -8,14 +8,12 @@ import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { toast } from "../components/toast";
-import { useSelector } from "react-redux";
 import { Text, View } from "react-native";
 
 export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
-  const client = useSelector(state => state.client);
 
   React.useEffect(() => {
     setValue("expediting_details", data);
@@ -55,7 +53,6 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
           color={"success"}
           onPress={handleSubmit(onSubmit)}
           disabled={isLocked}
-          // className={"my-50"}
         />
       </View>
 
@@ -68,14 +65,12 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.vendorPortal"}
             title={"Is there a vendor portal?"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.vendorPortalURL"}
             title={"Vendor Portal URL"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
 
           <Picker
@@ -83,21 +78,18 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.portalAccountCreated"}
             title={"Has the vendor portal account been created?"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.portalUsername"}
             title={"Portal Username"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.portalPassword"}
             title={"Portal Password"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
         </View>
 
@@ -109,7 +101,6 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.jobReleaseMethod"}
             title={"How are jobs released?"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
 
           <Picker
@@ -117,28 +108,19 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.poErrorHandling"}
             title={"PO Correction Handling?"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.estimatedHomes"}
             title={"Estimated Number of Homes per Year"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
-
-          {/*<DatePicker*/}
-          {/*  control={control}*/}
-          {/*  field={"expediting_details.estimatedStartDate"}*/}
-          {/*  title={"Estimated Start Date"}*/}
-          {/*/>*/}
 
           <Picker
             choices={yesOrNo}
             control={control}
             field={"expediting_details.inHouseProgram"}
             title={"Is the client using the In-House Program?"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
           />
         </View>
       </View>
@@ -150,7 +132,6 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
           control={control}
           title={"Notes"}
           field={"expediting_details.notes"}
-          // disabled={!client.permissions.pages["ClientDetails"].edit}
         />
       </View>
     </View>

@@ -6,7 +6,6 @@ import { programs } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
 import { View } from "react-native";
 import Button from "../components/button";
-import { ErrorMessage } from "@hookform/error-message";
 
 export default function AddProgramForm({ clientId, selections }) {
   const { control, errors, handleSubmit, reset } = useForm();
@@ -58,16 +57,6 @@ export default function AddProgramForm({ clientId, selections }) {
       </View>
 
       <View className={"flex-row justify-end gap-2"}>
-        {/*<Button*/}
-        {/*  title={"Cancel"}*/}
-        {/*  type={"outlined"}*/}
-        {/*  size={"xs"}*/}
-        {/*  color={"error"}*/}
-        {/*  onPress={() => {*/}
-        {/*    isOpen.value = !isOpen.value;*/}
-        {/*    reset();*/}
-        {/*  }}*/}
-        {/*/>*/}
         <Button
           title={"Save"}
           type={"contained"}

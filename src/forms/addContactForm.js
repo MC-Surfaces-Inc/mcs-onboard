@@ -82,16 +82,6 @@ export default function AddContactForm({ clientId }) {
       </View>
 
       <View className={"flex-row justify-end gap-2"}>
-        {/*<Button*/}
-        {/*  title={"Cancel"}*/}
-        {/*  type={"outlined"}*/}
-        {/*  size={"xs"}*/}
-        {/*  color={"error"}*/}
-        {/*  onPress={() => {*/}
-        {/*    isOpen.value = !isOpen.value;*/}
-        {/*    reset();*/}
-        {/*  }}*/}
-        {/*/>*/}
         <Button
           title={"Save"}
           type={"contained"}

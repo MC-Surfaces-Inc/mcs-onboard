@@ -21,7 +21,6 @@ export default function CarpetDetailsForm({ programs, clientId }) {
   });
   const [updateInfo, result] = useUpdateProgramInfoMutation();
   const [loading, setLoading] = React.useState(false);
-  const client = useSelector(state => state.client);
 
   React.useEffect(() => {
     const setData = async() => {
@@ -33,16 +32,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
     }
 
     setData();
-  }, [data, isLoading])
-
-  // if (programs.Carpet === 0 || programs.Carpet === null || error) {
-  //   return (
-  //     <Center h={"100%"}>
-  //       <Text>Program has not been included in client selections.</Text>
-  //       <Text>If you believe this is an error, please contact Support.</Text>
-  //     </Center>
-  //   );
-  // }
+  }, [data, isLoading]);
 
   const onSubmit = values => {
     setLoading(true);
@@ -131,7 +121,6 @@ export default function CarpetDetailsForm({ programs, clientId }) {
           color={"success"}
           onPress={handleSubmit(onSubmit)}
           disabled={isLocked}
-          // className={"my-50"}
         />
       </View>
     </View>

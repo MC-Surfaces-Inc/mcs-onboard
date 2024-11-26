@@ -13,7 +13,6 @@ import { useSelector } from "react-redux";
 
 export default function ProgramPricing({ navigation, route }) {
   const clientId = route.params?.clientId;
-  const [form, setForm] = React.useState(null);
   const [programs, setPrograms] = React.useState([]);
   const [selectedProgram, setSelectedProgram] = React.useState(null);
   const isLocked = useSelector(state => state.client.isLocked);
@@ -65,9 +64,7 @@ export default function ProgramPricing({ navigation, route }) {
             <VinylPricingForm clientId={clientId} programs={programs} disabled={isLocked} />
           )}
           {selectedProgram === "Tile" && (
-            // <Suspense fallback={<View className={"items-center justify-center"}>Loading....</View>}>
-              <TilePricingForm clientId={clientId} programs={programs} disabled={isLocked} />
-            // </Suspense>
+            <TilePricingForm clientId={clientId} programs={programs} disabled={isLocked} />
           )}
           {selectedProgram === "Wood" && (
             <WoodPricingForm clientId={clientId} programs={programs} disabled={isLocked} />

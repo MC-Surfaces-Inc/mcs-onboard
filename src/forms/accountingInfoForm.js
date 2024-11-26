@@ -11,7 +11,6 @@ import TextInput from "../components/input";
 import Divider from "../components/divider";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
-import { useSelector } from "react-redux";
 import { toast } from "../components/toast";
 import Button from "../components/button";
 
@@ -19,7 +18,6 @@ export default function AccountingInfoForm({ clientId, data, isLocked }) {
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
-  const client = useSelector(state => state.client);
 
   React.useEffect(() => {
     setValue("accounting_details", data);
@@ -59,7 +57,6 @@ export default function AccountingInfoForm({ clientId, data, isLocked }) {
           color={"success"}
           onPress={handleSubmit(onSubmit)}
           disabled={isLocked}
-          // className={"my-50"}
         />
       </View>
 
@@ -97,13 +94,6 @@ export default function AccountingInfoForm({ clientId, data, isLocked }) {
             choices={paymentType}
             disabled={isLocked}
           />
-
-      {/*    <Picker*/}
-      {/*      control={control}*/}
-      {/*      title={"Payment Portal"}*/}
-      {/*      field={"accounting_details.paymentPortal"}*/}
-      {/*      choices={yesOrNo}*/}
-      {/*    />*/}
 
           <TextInput
             control={control}

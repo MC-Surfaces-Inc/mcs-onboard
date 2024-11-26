@@ -36,16 +36,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
     }
 
     setData();
-  }, [data, isLoading])
-
-  // if (programs.Cabinets === 0 || programs.Cabinets === null || error) {
-  //   return (
-  //     <Center h={"100%"}>
-  //       <Text>Program has not been included in client selections.</Text>
-  //       <Text>If you believe this is an error, please contact Support.</Text>
-  //     </Center>
-  //   );
-  // }
+  }, [data, isLoading]);
 
   const onSubmit = values => {
     setLoading(true);
@@ -175,7 +166,6 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           color={"success"}
           onPress={handleSubmit(onSubmit)}
           disabled={isLocked}
-          // className={"my-50"}
         />
       </View>
     </View>

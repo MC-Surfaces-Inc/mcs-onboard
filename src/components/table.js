@@ -1,6 +1,6 @@
 import React from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { FlatList, Text, StyleSheet, View, TextInput } from "react-native";
+import { FlatList, Text, View } from "react-native";
 import IconButton from "../components/iconButton";
 import Divider from "../components/divider";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -51,40 +51,6 @@ export default function Table({
       height: animatedHeight.value,
     };
   }, [isAdding, height]);
-
-  const TableEnd = () => (
-    <View className={"bg-gray-800 items-center rounded-r-lg -ml-2 pl-2 flex-1"}>
-      {[{}, {}].concat(data).map((item, index) => {
-        if (index === 0 || index === 1) {
-          return (
-            <View flex={1}>
-            </View>
-          );
-        } else {
-          return (
-            <React.Fragment>
-              <Divider />
-              <View key={item.id} className={"items-center"}>
-                <IconButton
-                  icon={
-                    <FontAwesome5
-                      name={"ellipsis-h"}
-                      size={18}
-                      color={"#fafaf9"}
-                      className={"m-2"}
-                    />
-                  }
-                  onPress={() => console.log("PRESSED")}
-                />
-              </View>
-            </React.Fragment>
-          );
-        }
-      })}
-
-      {isAdding && <Divider />}
-    </View>
-  );
 
   return (
     <View className={"flex-col"}>
@@ -339,7 +305,6 @@ const ColumnHeader = (props) => (
     <Text className={`font-quicksand ${props.style} m-1 font-bold`}>
       {props.column}
     </Text>
-    {/*{ index+1 < columnNames.length && <Divider orientation={"vertical"}/> }*/}
   </React.Fragment>
 )
 Table.ColumnHeader = ColumnHeader;

@@ -7,8 +7,6 @@ export default function Input({
   field,
   title,
   rules,
-  error,
-  helperText,
   leftIcon,
   numerical,
   disabled,
@@ -38,19 +36,6 @@ export default function Input({
                   onFocus={() => setFocused(true)}
                   readOnly={disabled !== undefined && disabled}
                 />
-                {/*{helperText &&*/}
-                {/*  <FormControl.HelperText mt={0}>*/}
-                {/*    {helperText}*/}
-                {/*  </FormControl.HelperText>*/}
-                {/*}*/}
-                {/*{error &&*/}
-                {/*  <FormControl.ErrorMessage*/}
-                {/*    mt={0}*/}
-                {/*    leftIcon={<WarningOutlineIcon size={"xs"} />}*/}
-                {/*    alignItems={"flex-end"}>*/}
-                {/*    {error}*/}
-                {/*  </FormControl.ErrorMessage>*/}
-                {/*}*/}
               </View>
             );
           }
@@ -64,19 +49,6 @@ export default function Input({
                 readOnly={disabled !== undefined && disabled}
                 value={value && (numerical ? value.toString() : value)}
               />
-              {/*{helperText &&*/}
-              {/*  <FormControl.HelperText mt={0}>*/}
-              {/*    {helperText}*/}
-              {/*  </FormControl.HelperText>*/}
-              {/*}*/}
-              {/*{error &&*/}
-              {/*  <FormControl.ErrorMessage*/}
-              {/*    mt={0}*/}
-              {/*    leftIcon={<WarningOutlineIcon size={"xs"} />}*/}
-              {/*    alignItems={"flex-end"}>*/}
-              {/*    {error}*/}
-              {/*  </FormControl.ErrorMessage>*/}
-              {/*}*/}
             </React.Fragment>
           );
         }}

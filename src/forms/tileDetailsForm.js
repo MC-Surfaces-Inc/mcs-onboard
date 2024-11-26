@@ -36,16 +36,7 @@ export default function TileDetailsForm({ programs, clientId }) {
     }
 
     setData();
-  }, [data, isLoading])
-
-  // if (programs.Tile === 0 || programs.Tile === null || error) {
-  //   return (
-  //     <Center h={"100%"}>
-  //       <Text>Program has not been included in client selections.</Text>
-  //       <Text>If you believe this is an error, please contact Support.</Text>
-  //     </Center>
-  //   );
-  // }
+  }, [data, isLoading]);
 
   const onSubmit = values => {
     setLoading(true);
@@ -350,7 +341,6 @@ export default function TileDetailsForm({ programs, clientId }) {
           color={"success"}
           onPress={handleSubmit(onSubmit)}
           disabled={isLocked}
-          // className={"my-50"}
         />
       </View>
     </View>

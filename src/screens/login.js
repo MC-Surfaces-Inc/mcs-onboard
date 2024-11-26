@@ -2,7 +2,7 @@ import React from "react";
 import Auth0 from "react-native-auth0";
 import Button from "../components/button";
 import Config from "react-native-config";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import { saveToken, setLoading, setUser } from "../features/auth/authSlice";
 import { Text, View } from "react-native";
 
@@ -13,7 +13,6 @@ const auth0 = new Auth0({
 
 export default function Login() {
   const dispatch = useDispatch();
-  const auth = useSelector(state => state.auth);
 
   const login = () => {
     dispatch(setLoading());

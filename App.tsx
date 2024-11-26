@@ -1,5 +1,4 @@
 import React from 'react';
-import { useColorScheme } from 'react-native';
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // @ts-ignore
@@ -19,7 +18,6 @@ import { ToastComponent } from "./src/components/toast";
 const NavStack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
-  const isDarkMode = useColorScheme() === 'dark';
   const dispatch = useDispatch();
   const auth = useSelector((state: RootStateOrAny) => state.auth);
   React.useEffect(() => {

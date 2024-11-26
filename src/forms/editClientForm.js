@@ -1,20 +1,16 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { states, territories } from "../constants/dropdownValues";
+import { territories } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/input";
 import Picker from "../components/picker";
 import {
-  useCreateAddressMutation,
-  useCreateClientMutation, useUpdateClientMutation,
+  useUpdateClientMutation,
 } from "../services/client";
-import { useSelector } from "react-redux";
-import { ErrorMessage } from "@hookform/error-message";
 import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { toast } from "../components/toast";
 import Button from "../components/button";
 import Divider from "../components/divider";
-import open from "lodash/seq";
 
 export default function EditClientForm({ data, clientId, progress, width, isOpen }) {
   const {
