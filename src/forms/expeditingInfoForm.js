@@ -1,4 +1,5 @@
 import React from "react";
+import { Text, View } from "react-native";
 import { jobReleaseChoices, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
@@ -8,9 +9,10 @@ import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { toast } from "../components/toast";
-import { Text, View } from "react-native";
+import { useSelector } from "react-redux";
 
-export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
+export default function ExpeditingInfoForm({ clientId, data }) {
+  const isLocked = useSelector(state => state.client.isLocked);
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
@@ -65,12 +67,14 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.vendorPortal"}
             title={"Is there a vendor portal?"}
+            disabled={isLocked}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.vendorPortalURL"}
             title={"Vendor Portal URL"}
+            disabled={isLocked}
           />
 
           <Picker
@@ -78,18 +82,21 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.portalAccountCreated"}
             title={"Has the vendor portal account been created?"}
+            disabled={isLocked}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.portalUsername"}
             title={"Portal Username"}
+            disabled={isLocked}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.portalPassword"}
             title={"Portal Password"}
+            disabled={isLocked}
           />
         </View>
 
@@ -101,6 +108,7 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.jobReleaseMethod"}
             title={"How are jobs released?"}
+            disabled={isLocked}
           />
 
           <Picker
@@ -108,12 +116,14 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.poErrorHandling"}
             title={"PO Correction Handling?"}
+            disabled={isLocked}
           />
 
           <TextInput
             control={control}
             field={"expediting_details.estimatedHomes"}
             title={"Estimated Number of Homes per Year"}
+            disabled={isLocked}
           />
 
           <Picker
@@ -121,6 +131,7 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
             control={control}
             field={"expediting_details.inHouseProgram"}
             title={"Is the client using the In-House Program?"}
+            disabled={isLocked}
           />
         </View>
       </View>
@@ -132,6 +143,7 @@ export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
           control={control}
           title={"Notes"}
           field={"expediting_details.notes"}
+          disabled={isLocked}
         />
       </View>
     </View>

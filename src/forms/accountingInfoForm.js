@@ -13,8 +13,10 @@ import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { toast } from "../components/toast";
 import Button from "../components/button";
+import { useSelector } from "react-redux";
 
-export default function AccountingInfoForm({ clientId, data, isLocked }) {
+export default function AccountingInfoForm({ clientId, data }) {
+  const isLocked = useSelector(state => state.client.isLocked);
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
@@ -42,7 +44,7 @@ export default function AccountingInfoForm({ clientId, data, isLocked }) {
         });
       });
   };
-
+  console.log(isLocked);
   return (
     <View className={"flex-1 mx-2"}>
       <View className={"flex-row justify-between items-center my-2"}>

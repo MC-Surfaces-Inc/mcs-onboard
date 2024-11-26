@@ -55,8 +55,6 @@ export default function ClientProfile({ navigation, route }) {
   const dispatch = useDispatch();
   const isLocked = useSelector(state => state.client.isLocked);
   const { data, isLoading } = useGetClientByIdQuery(clientId);
-  const [editInfo, setEditInfo] = React.useState(false);
-  const [deleteInfo, setDeleteInfo] = React.useState(false);
   const [openPushClientModal, setOpenPushClientModal] = React.useState(false);
   const [updateStatus, result] = useUpdateStatusMutation();
   const [updateApprovals, result1] = useUpdateApprovalsMutation();
@@ -70,13 +68,11 @@ export default function ClientProfile({ navigation, route }) {
     if (data) {
       if (["Queued", "Approved", "Pushed"].includes(data.status.current)) {
         dispatch(setIsLocked({ isLocked: true }));
-        setEditInfo(true);
-        setDeleteInfo(true);
       } else {
         dispatch(setIsLocked({ isLocked: false }));
       }
     }
-  }, [data, setEditInfo]);
+  }, [data]);
 
   if (data === undefined || isLoading) {
     return <Loading navigation={navigation} />;
