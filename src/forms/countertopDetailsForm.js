@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import Button from "../components/button";
 
 export default function CountertopDetailsForm({ programs, clientId }) {
+  const isLocked = useSelector(state => state.client.isLocked);
   const { control, errors, handleSubmit, setValue } = useForm();
   const { data, error, isLoading } = useGetClientProgramDetailsQuery({
     program: "countertops",
@@ -81,7 +82,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           control={control}
           field={"countertops.preferredMaterialThickness"}
           title={"Preferred Material Thickness"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -89,7 +90,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           control={control}
           field={"countertops.preferredEdge"}
           title={"Preferred Edge"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -104,7 +105,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           control={control}
           field={"countertops.waterfallEdgeStandard"}
           title={"Waterfall Sides - Std. or Option?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -112,14 +113,14 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           control={control}
           field={"countertops.faucetHoles"}
           title={"Faucet Holes?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"countertops.stoveRangeSpecifications"}
           title={"Stove Range Specs."}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -134,7 +135,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           control={control}
           field={"countertops.takeoffResponsibility"}
           title={"Who Will Be Doing Takeoffs?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         {/*<FormControl.Label>Waste Factor Percentage</FormControl.Label>*/}
@@ -145,7 +146,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
             control={control}
             field={"countertops.notes"}
             title={"Notes"}
-            // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+            disabled={isLocked}
           />
         </View>
       </View>
@@ -159,6 +160,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           size={"md"}
           color={"success"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLocked}
           // className={"my-50"}
         />
       </View>

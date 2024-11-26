@@ -16,6 +16,7 @@ import { useSelector } from "react-redux";
 import { toast } from "../components/toast";
 
 export default function CabinetDetailsForm({ navigation, programs, clientId }) {
+  const isLocked = useSelector(state => state.client.isLocked);
   const { control, errors, handleSubmit, setValue } = useForm();
   const { data, error, isLoading } = useGetClientProgramDetailsQuery({
     program: "cabinets",
@@ -80,28 +81,28 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           control={control}
           field={"cabinets.preferredColors"}
           title={"Preferred Colors"}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"cabinets.preferredStyle"}
           title={"Preferred Style"}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"cabinets.overlay"}
           title={"Overlay"}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"cabinets.preferredCrown"}
           title={"Preferences on Crown"}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -109,7 +110,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           control={control}
           field={"cabinets.bidType"}
           title={"Bid Type Preferences"}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -122,14 +123,14 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           control={control}
           field={"cabinets.upperCabinetSpecs"}
           title={"Upper Cabinet Standard Specs."}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"cabinets.vanityHeightSpecs"}
           title={"Vanity Height Standard Specs."}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -137,14 +138,14 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           control={control}
           field={"cabinets.softCloseStandard"}
           title={"Is Soft Close Standard?"}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"cabinets.areasOptionedOut"}
           title={"Are Areas Optioned Out?"}
-          //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -159,7 +160,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
             control={control}
             field={"cabinets.notes"}
             title={"Notes"}
-            //isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+            disabled={isLocked}
           />
         </View>
       </View>
@@ -173,6 +174,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           size={"md"}
           color={"success"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLocked}
           // className={"my-50"}
         />
       </View>

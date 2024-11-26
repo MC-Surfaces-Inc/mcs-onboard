@@ -3,16 +3,10 @@ import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { FlatList, Text, StyleSheet, View, TextInput } from "react-native";
 import IconButton from "../components/iconButton";
 import Divider from "../components/divider";
-import { AlertNotification } from "./alert";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import Input from "../components/input";
-import { ErrorMessage } from "@hookform/error-message";
 import Picker from "../components/picker";
 
-// TODO:
-//        - add functionality to "add" row
-//        - add functionality to "edit" row
-//        - add functionality to "delete" row
 export default function Table({
   title,
   columns,
@@ -20,6 +14,7 @@ export default function Table({
   columnStyle,
   Form,
   control,
+  isLocked,
   onEdit,
   onDelete,
   onCancel,
@@ -121,6 +116,7 @@ export default function Table({
                 }}
                 dataExists={data.length > 0}
                 fieldTypes={fieldTypes}
+                isLocked={isLocked}
               />
             }
             ItemSeparatorComponent={<Divider />}
@@ -138,7 +134,7 @@ export default function Table({
 
               return (
                 <View className={rowStyle} key={index}>
-                  {(onEdit || onDelete) &&
+                  {(onEdit || onDelete) && isLocked &&
                     <React.Fragment>
                       <IconButton
                         icon={
@@ -227,7 +223,7 @@ const Header = (props) => (
 
           <View className={"flex-row"}>
             {/*Trash Can*/}
-            {props.delete.selectedItems.length > 0 &&
+            {props.delete.selectedItems.length > 0 && props.isLocked &&
               <IconButton
                 icon={
                   <FontAwesome5
@@ -245,7 +241,7 @@ const Header = (props) => (
             }
 
             {/*Edit*/}
-            {!props.edit.isEditing && props.edit.onEdit && props.dataExists &&
+            {!props.edit.isEditing && props.edit.onEdit && props.dataExists && props.isLocked &&
               <IconButton
                 icon={
                   <FontAwesome5
@@ -300,7 +296,7 @@ const Header = (props) => (
             }
 
             {/*Add or Exit Add*/}
-            {props.Form &&
+            {props.Form && props.isLocked &&
               <IconButton
                 icon={
                   <FontAwesome5
@@ -324,7 +320,7 @@ const Header = (props) => (
     }
 
     <View className={"flex-row bg-gray-100 items-center"}>
-      {(props.edit.onEdit || props.delete.onDelete) &&
+      {(props.edit.onEdit || props.delete.onDelete) && props.isLocked &&
         <View className={"mx-5"}>
         </View>
       }

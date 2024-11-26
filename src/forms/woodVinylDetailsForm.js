@@ -13,6 +13,7 @@ import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 
 export default function WoodVinylDetailsForm({ navigation, programs, clientId }) {
+  const isLocked = useSelector(state => state.client.isLocked);
   const { control, errors, handleSubmit, setValue } = useForm();
   const { data, error, isLoading } = useGetClientProgramDetailsQuery({
     program: "wood_vinyl",
@@ -78,14 +79,14 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           control={control}
           field={"wood_vinyl.preferredGlueProducts"}
           title={"Preferred Glue Products"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"wood_vinyl.otherGlueProducts"}
           title={"Other Glue Product"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -93,7 +94,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           control={control}
           field={"wood_vinyl.stainedOrPrimed"}
           title={"Stained or Primed?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -108,7 +109,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           control={control}
           field={"wood_vinyl.transitionStripsStandard"}
           title={"Are Transition Strips Standard?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -116,7 +117,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           control={control}
           field={"wood_vinyl.hvacRequirement"}
           title={"HVAC Requirements?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -124,7 +125,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           control={control}
           field={"wood_vinyl.MCInstalledTrim"}
           title={"MC Surfaces Install Wood Trim?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -132,7 +133,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           control={control}
           field={"wood_vinyl.secondFloorConstruction"}
           title={"2nd Story Subfloor Construction"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -147,14 +148,14 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           control={control}
           field={"wood_vinyl.takeoffResponsibility"}
           title={"Who Will Be Doing Takeoffs?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"wood_vinyl.wasteFactor"}
           title={"Waste Factor Percentage"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <View className={"pb-2"}>
@@ -162,7 +163,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             control={control}
             field={"wood_vinyl.notes"}
             title={"Notes"}
-            // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+            disabled={isLocked}
           />
         </View>
       </View>
@@ -176,6 +177,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           size={"md"}
           color={"success"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLocked}
           // className={"my-50"}
         />
       </View>

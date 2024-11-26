@@ -1,6 +1,5 @@
 import React from 'react';
 import { useColorScheme } from 'react-native';
-import { NativeBaseProvider, extendTheme } from "native-base";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 // @ts-ignore
@@ -16,55 +15,6 @@ import { saveToken } from "./src/features/auth/authSlice";
 import Help from "./src/screens/help";
 import "./global.css";
 import { ToastComponent } from "./src/components/toast";
-
-const theme = extendTheme({
-  fontConfig: {
-    Quicksand: {
-      100: {
-        normal: "Quicksand-Regular",
-        italic: "Quicksand-Light",
-      },
-      200: {
-        normal: "Quicksand-Regular",
-        italic: "Quicksand-Light",
-      },
-      300: {
-        normal: "Quicksand-Regular",
-        italic: "Quicksand-Light",
-      },
-      400: {
-        normal: "Quicksand-Regular",
-        italic: "Quicksand-Light",
-      },
-      500: {
-        normal: "Quicksand-Medium",
-      },
-      600: {
-        normal: "Quicksand-Medium",
-        italic: "Quicksand-Light",
-      },
-      700: {
-        normal: "Quicksand-Bold",
-        italic: "Quicksand-Bold",
-      },
-      800: {
-        normal: "Quicksand-Bold",
-      },
-      900: {
-        normal: "Quicksand-Bold",
-        italic: "Quicksand-Bold",
-      },
-    },
-  },
-  fonts: {
-    heading: "Quicksand",
-    body: "Quicksand",
-    mono: "Quicksand",
-  },
-  config: {
-    useSystemColorMode: true,
-  },
-});
 
 const NavStack = createNativeStackNavigator();
 
@@ -89,39 +39,37 @@ function App(): React.JSX.Element {
   }, [dispatch]);
 
   return (
-    <NativeBaseProvider theme={theme}>
+    <NavigationContainer>
       <ToastComponent />
-      <NavigationContainer>
-        <NavStack.Navigator
-          initialRouteName={"Login"}
-          screenOptions={{ headerShown: false }}>
-          {auth.token === null ? (
+      <NavStack.Navigator
+        initialRouteName={"Login"}
+        screenOptions={{ headerShown: false }}>
+        {auth.token === null ? (
+          <NavStack.Screen
+            name={"Login"}
+            component={Login}
+            options={{
+              animationTypeForReplace: auth.token === null ? "pop" : "push",
+            }}
+          />
+        ) : (
+          <>
+            <NavStack.Screen name={"Home"} component={Home} />
+            <NavStack.Screen name={"Help"} component={Help} />
+            <NavStack.Screen name={"ClientProfile"} component={ClientProfile} />
+            <NavStack.Screen name={"ClientDetails"} component={ClientDetails} />
             <NavStack.Screen
-              name={"Login"}
-              component={Login}
-              options={{
-                animationTypeForReplace: auth.token === null ? "pop" : "push",
-              }}
+              name={"ProgramDetails"}
+              component={ProgramDetails}
             />
-          ) : (
-            <>
-              <NavStack.Screen name={"Home"} component={Home} />
-              <NavStack.Screen name={"Help"} component={Help} />
-              <NavStack.Screen name={"ClientProfile"} component={ClientProfile} />
-              <NavStack.Screen name={"ClientDetails"} component={ClientDetails} />
-              <NavStack.Screen
-                name={"ProgramDetails"}
-                component={ProgramDetails}
-              />
-              <NavStack.Screen
-                name={"ProgramPricing"}
-                component={ProgramPricing}
-              />
-            </>
-          )}
-        </NavStack.Navigator>
-      </NavigationContainer>
-    </NativeBaseProvider>
+            <NavStack.Screen
+              name={"ProgramPricing"}
+              component={ProgramPricing}
+            />
+          </>
+        )}
+      </NavStack.Navigator>
+    </NavigationContainer>
   );
 };
 

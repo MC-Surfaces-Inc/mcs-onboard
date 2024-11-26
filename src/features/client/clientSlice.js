@@ -4,6 +4,7 @@ const editStatuses = ["Potential", "Declined", "Updated"];
 
 const initialState = {
   status: "",
+  isLocked: false,
   permissions: {
     name: {
       view: true,
@@ -55,6 +56,9 @@ export const clientSlice = createSlice({
   name: "client",
   initialState,
   reducers: {
+    setIsLocked: (state, action) => {
+      state.isLocked = action.payload.isLocked;
+    },
     setStatus: (state, action) => {
       state.status = action.payload;
       state.permissions.updateStatus = {
@@ -111,6 +115,9 @@ export const clientSlice = createSlice({
   },
 });
 
-export const { setStatus } = clientSlice.actions;
+export const {
+  setStatus,
+  setIsLocked,
+} = clientSlice.actions;
 
 export default clientSlice.reducer;

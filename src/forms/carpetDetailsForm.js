@@ -13,6 +13,7 @@ import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 
 export default function CarpetDetailsForm({ programs, clientId }) {
+  const isLocked = useSelector(state => state.client.isLocked);
   const { control, errors, handleSubmit, setValue } = useForm();
   const { data, error, isLoading } = useGetClientProgramDetailsQuery({
     program: "carpet",
@@ -78,7 +79,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
           control={control}
           field={"carpet.preferredPadding"}
           title={"Preferred Padding Brand"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -92,7 +93,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
           control={control}
           field={"carpet.wasteFactor"}
           title={"Waste Percentage"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -107,7 +108,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
           control={control}
           field={"carpet.takeoffResponsibility"}
           title={"Who Will Be Doing Takeoffs?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <View className={"pb-2"}>
@@ -115,7 +116,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
             control={control}
             field={"carpet.notes"}
             title={"Notes"}
-            // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+            disabled={isLocked}
           />
         </View>
       </View>
@@ -129,6 +130,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
           size={"md"}
           color={"success"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLocked}
           // className={"my-50"}
         />
       </View>

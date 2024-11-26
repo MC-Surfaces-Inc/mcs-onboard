@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Controller } from "react-hook-form";
 
@@ -9,27 +9,60 @@ export default function Input({
   rules,
   error,
   helperText,
+  leftIcon,
+  numerical,
   disabled,
   textStyle,
   inputStyle,
   containerStyle
 }) {
+  const [focused, setFocused] = useState(false);
+
   return (
-    <View className={`my-2 z-10 ${containerStyle}`}>
+    <View className={`z-10 ${containerStyle}`}>
       {title && <Text className={`font-quicksand mb-1 ${textStyle}`}>{title}</Text>}
       <Controller
         control={control}
         name={field}
         rules={rules || null}
         render={({ field: { onBlur, onChange, value } }) => {
+          if (leftIcon) {
+            return (
+              <View className={`flex-row items-center border ${focused ? "border-orange-500" : "border-gray-300"} h-10 p-2`}>
+                {leftIcon}
+                <TextInput
+                  className={`font-quicksand  rounded-md  ${inputStyle} w-full h-10 p-2`}
+                  onBlur={() => setFocused(false)}
+                  onChangeText={onChange}
+                  value={value && (numerical ? value.toString() : value)}
+                  onFocus={() => setFocused(true)}
+                  readOnly={disabled !== undefined && disabled}
+                />
+                {/*{helperText &&*/}
+                {/*  <FormControl.HelperText mt={0}>*/}
+                {/*    {helperText}*/}
+                {/*  </FormControl.HelperText>*/}
+                {/*}*/}
+                {/*{error &&*/}
+                {/*  <FormControl.ErrorMessage*/}
+                {/*    mt={0}*/}
+                {/*    leftIcon={<WarningOutlineIcon size={"xs"} />}*/}
+                {/*    alignItems={"flex-end"}>*/}
+                {/*    {error}*/}
+                {/*  </FormControl.ErrorMessage>*/}
+                {/*}*/}
+              </View>
+            );
+          }
+
           return (
             <React.Fragment>
               <TextInput
-                className={`border border-gray-300 h-10 p-2 rounded-md focus:border-orange-500 font-quicksand ${inputStyle}`}
+                className={`font-quicksand  rounded-md focus:border-orange-500 ${inputStyle} w-full border border-gray-300 h-10 p-2`}
                 onBlur={onBlur}
                 onChangeText={onChange}
-                editable={disabled}
-                value={value}
+                readOnly={disabled !== undefined && disabled}
+                value={value && (numerical ? value.toString() : value)}
               />
               {/*{helperText &&*/}
               {/*  <FormControl.HelperText mt={0}>*/}

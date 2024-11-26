@@ -1,14 +1,14 @@
 import React from "react";
-import { Center, HStack, Spinner } from "native-base";
+import { View } from "react-native";
 import Toolbar from "../components/toolbar";
 
 export default function Loading({ navigation }) {
   return (
-    <HStack flex={1} justifyContent={"flex-start"} pt={5}>
-      {navigation && <Toolbar navigation={navigation} />}
-      <Center flex={1}>
-        <Spinner size={"lg"} />
-      </Center>
-    </HStack>
+    <View className={"h-full"}>
+      {/*<Toolbar navigation={navigation} />*/}
+      {/*<Center flex={1}>*/}
+      {/*  <Spinner size={"lg"} />*/}
+      {/*</Center>*/}
+    </View>
   );
 }

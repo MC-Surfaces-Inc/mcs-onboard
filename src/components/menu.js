@@ -1,9 +1,8 @@
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import React from "react";
-import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import IconButton from "../components/iconButton";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { Divider } from "native-base";
+import Divider from "../components/divider";
 
 export default function Menu({ children }) {
   const [isOpen, setIsOpen] = React.useState(false);
@@ -35,7 +34,7 @@ export default function Menu({ children }) {
 
 const Item = (props) => (
   <Pressable disabled={props.disabled} className={"mx-2 ml-6 my-2 active:opacity-50"} onPress={props.onPress}>
-    <Text className={"font-quicksand text-slate-800"}>{props.title}</Text>
+    <Text className={`font-quicksand ${props.textStyle || "text-slate-800"} ${props.disabled && "text-slate-400"}`}>{props.title}</Text>
   </Pressable>
 );
 Menu.Item = Item;

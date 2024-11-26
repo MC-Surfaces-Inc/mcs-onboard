@@ -15,7 +15,7 @@ import { useSelector } from "react-redux";
 import { toast } from "../components/toast";
 import Button from "../components/button";
 
-export default function AccountingInfoForm({ clientId, data }) {
+export default function AccountingInfoForm({ clientId, data, isLocked }) {
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
@@ -58,6 +58,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           size={"xs"}
           color={"success"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLocked}
           // className={"my-50"}
         />
       </View>
@@ -71,7 +72,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             control={control}
             field={"accounting_details.paymentFrequency"}
             title={"Payment Frequency"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
 
           <Picker
@@ -79,14 +80,14 @@ export default function AccountingInfoForm({ clientId, data }) {
             control={control}
             field={"accounting_details.autopay"}
             title={"Autopay?"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
 
           <TextInput
             control={control}
             title={"Email for Submitting Invoices"}
             field={"accounting_details.invoiceEmailAddress"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
 
           <Picker
@@ -94,7 +95,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             title={"Payment Type"}
             field={"accounting_details.paymentType"}
             choices={paymentType}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
 
       {/*    <Picker*/}
@@ -108,7 +109,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             control={control}
             title={"Payment URL"}
             field={"accounting_details.paymentURL"}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
         </View>
 
@@ -120,7 +121,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             title={"POs Required?"}
             field={"accounting_details.poRequired"}
             choices={yesOrNo}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
 
           <Picker
@@ -128,7 +129,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             title={"POs Required for Invoices?"}
             field={"accounting_details.poInvoiceRequired"}
             choices={yesOrNo}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
 
           <Picker
@@ -136,7 +137,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             title={"Approvals Required?"}
             field={"accounting_details.approvalsRequired"}
             choices={yesOrNo}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
 
           <Picker
@@ -144,7 +145,7 @@ export default function AccountingInfoForm({ clientId, data }) {
             title={"Is the Contract Attached?"}
             field={"accounting_details.contractAttached"}
             choices={yesOrNo}
-            // disabled={!client.permissions.pages["ClientDetails"].edit}
+            disabled={isLocked}
           />
         </View>
       </View>
@@ -157,7 +158,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           title={"Contact Name"}
           field={"accounting_details.contactName"}
           containerStyle={"flex-1 mr-1"}
-          // disabled={!client.permissions.pages["ClientDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
@@ -165,7 +166,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           title={"Contact Phone"}
           field={"accounting_details.contactPhone"}
           containerStyle={"flex-1"}
-          // disabled={!client.permissions.pages["ClientDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
@@ -173,7 +174,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           title={"Contact Email"}
           field={"accounting_details.contactEmail"}
           containerStyle={"flex-1 ml-1"}
-          // disabled={!client.permissions.pages["ClientDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -184,7 +185,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           control={control}
           title={"Notes"}
           field={"accounting_details.notes"}
-          // disabled={!client.permissions.pages["ClientDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 

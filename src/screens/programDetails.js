@@ -11,7 +11,7 @@ import { SafeAreaView, ScrollView, Text, View } from "react-native";
 
 export default function ProgramDetails({ navigation, route }) {
   const clientId = route.params?.clientId;
-  const [form, setForm] = React.useState(null);
+  const locked = route.params?.isLocked;
   const [programs, setPrograms] = React.useState([]);
   const [selectedProgram, setSelectedProgram] = React.useState(null);
 
@@ -57,6 +57,7 @@ export default function ProgramDetails({ navigation, route }) {
               programs={programs}
               clientId={clientId}
               navigation={navigation}
+              disabled={locked}
             />
           )}
           {selectedProgram === "Carpet" && (
@@ -64,6 +65,7 @@ export default function ProgramDetails({ navigation, route }) {
               programs={programs}
               navigation={navigation}
               clientId={clientId}
+              disabled={locked}
             />
           )}
           {selectedProgram === "Countertops" && (
@@ -71,6 +73,7 @@ export default function ProgramDetails({ navigation, route }) {
               programs={programs}
               navigation={navigation}
               clientId={clientId}
+              disabled={locked}
             />
           )}
           {selectedProgram === "Tile" && (
@@ -78,6 +81,7 @@ export default function ProgramDetails({ navigation, route }) {
               programs={programs}
               navigation={navigation}
               clientId={clientId}
+              disabled={locked}
             />
           )}
           {selectedProgram === "Wood and Vinyl" && (
@@ -85,6 +89,7 @@ export default function ProgramDetails({ navigation, route }) {
               programs={programs}
               navigation={navigation}
               clientId={clientId}
+              disabled={locked}
             />
           )}
         </ScrollView>

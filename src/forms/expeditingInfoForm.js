@@ -2,7 +2,6 @@ import React from "react";
 import { jobReleaseChoices, paymentFrequency, paymentType, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
-import DatePicker from "../components/datePicker";
 import Divider from "../components/divider";
 import Button from "../components/button";
 import TextInput from "../components/input";
@@ -12,7 +11,7 @@ import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 import { Text, View } from "react-native";
 
-export default function ExpeditingInfoForm({ clientId, data }) {
+export default function ExpeditingInfoForm({ clientId, data, isLocked }) {
   const { control, handleSubmit, errors, setValue } = useForm();
   const [updateDetails, result] = useUpdateDetailsMutation();
   const [loading, setLoading] = React.useState(false);
@@ -55,6 +54,7 @@ export default function ExpeditingInfoForm({ clientId, data }) {
           size={"xs"}
           color={"success"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLocked}
           // className={"my-50"}
         />
       </View>

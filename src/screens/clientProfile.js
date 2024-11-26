@@ -5,14 +5,12 @@ import {
   useDeleteProgramInfoMutation,
   useDeleteProgramPartsMutation,
   useGetClientByIdQuery,
-  useGetSageDataQuery,
   useUpdateAddressMutation,
   useUpdateApprovalsMutation,
   useUpdateContactMutation,
   useUpdateProgramsMutation,
   useUpdateStatusMutation,
 } from "../services/client";
-import S3 from "../utils/S3";
 import Toolbar from "../components/toolbar";
 import Badge from "../components/badge";
 import Table from "../components/table";
@@ -22,18 +20,14 @@ import AddContactForm from "../forms/addContactForm";
 import AddAddressForm from "../forms/addAddressForm";
 import AddProgramForm from "../forms/addProgramForm";
 import { useFieldArray, useForm } from "react-hook-form";
-import { states, territories, types } from "../constants/dropdownValues";
-import Popup from "../components/popup";
-import TextInput from "../components/input";
+import { types } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
-import { ErrorMessage } from "@hookform/error-message";
-import _ from "lodash";
-import { setStatus } from "../features/client/clientSlice";
-import { useCreateSageClientMutation, useGetSagePartClassesQuery } from "../services/sage";
-import { Modal, SafeAreaView, Text, View } from "react-native";
+import { SafeAreaView, Text, View } from "react-native";
 import Menu from "../components/menu";
 import { useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import EditClientForm from "../forms/editClientForm";
+import { setIsLocked } from "../features/client/clientSlice";
+import { useDispatch, useSelector } from "react-redux";
 
 const statusColors = {
   Potential: "bg-slate-600",
@@ -58,59 +52,28 @@ const tableColumns = {
  */
 export default function ClientProfile({ navigation, route }) {
   const clientId = route.params?.clientId
+  const dispatch = useDispatch();
+  const isLocked = useSelector(state => state.client.isLocked);
   const { data, isLoading } = useGetClientByIdQuery(clientId);
   const [editInfo, setEditInfo] = React.useState(false);
   const [deleteInfo, setDeleteInfo] = React.useState(false);
   const [openPushClientModal, setOpenPushClientModal] = React.useState(false);
-  // const [files, setFiles] = React.useState([]);
   const [updateStatus, result] = useUpdateStatusMutation();
   const [updateApprovals, result1] = useUpdateApprovalsMutation();
-  // const [updateIndex, setUpdateIndex] = React.useState(null);
   const open = useSharedValue(false);
   const width = useSharedValue(0);
   const progress = useDerivedValue(() =>
     withTiming(open.value ? 0 : 1, { duration: 500 })
   );
 
-  const menuLinks = [
-    {
-      title: "Edit Name & Territory",
-      action: () => setOpenModal(!openModal),
-      disabled: false,
-    },
-    {
-      title: "Client Details",
-      action: () => navigation.push("ClientDetails", { clientId: clientId }),
-      disabled: false,
-    },
-    {
-      title: "Program Details",
-      action: () => navigation.push("Program Details", { clientId: clientId, programs }),
-      disabled: false,
-    },
-    {
-      title: "Program Pricing",
-      action: null,
-      disabled: false,
-    },
-  ]
-
-  // React.useEffect(() => {
-  //   const getFiles = async () => {
-  //     setFiles(await S3.getFiles(user, data.basicInfo.name));
-  //   };
-  //
-  //   if (data) {
-  //     dispatch(setStatus(data.status.current));
-  //     getFiles();
-  //   }
-  // }, [data, user]);
-
   React.useEffect(() => {
     if (data) {
-      if (!["Queued", "Approved", "Pushed"].includes(data.status.current)) {
+      if (["Queued", "Approved", "Pushed"].includes(data.status.current)) {
+        dispatch(setIsLocked({ isLocked: true }));
         setEditInfo(true);
         setDeleteInfo(true);
+      } else {
+        dispatch(setIsLocked({ isLocked: false }));
       }
     }
   }, [data, setEditInfo]);
@@ -118,83 +81,6 @@ export default function ClientProfile({ navigation, route }) {
   if (data === undefined || isLoading) {
     return <Loading navigation={navigation} />;
   }
-
-  // const PushClient = ({ open, setOpen }) => {
-  //   const partClasses = useGetSagePartClassesQuery();
-  //   const { data, isLoading } = useGetSageDataQuery(clientId);
-  //   const [createSageClient, result] = useCreateSageClientMutation();
-  //   const [firstStatus, setFirstStatus] = React.useState(false);
-    // const [secondStatus, setSecondStatus] = React.useState(false);
-    //
-    // const createClient = async (loading, setLoading, status, setStatus) => {
-    //   setLoading(!loading);
-    //   createSageClient({ body: data })
-    //     .unwrap()
-    //     .then((result) => {
-    //       setStatus(!status);
-    //       showNotification({
-    //         text: "Client successfully created in Sage."
-    //       });
-    //     })
-    //     .catch((error) => {
-    //       console.error(error);
-    //     });
-    //   setLoading(!loading);
-    // }
-    //
-    // const createPartClasses = () => {
-    //   const territoryPartClasses = {
-    //     "Austin": ["10000", "20000"],
-    //     "Dallas": ["20000", "30000"],
-    //     "Houston": ["30000", "40000"],
-    //     "San Antonio": ["40000", "50000"]
-    //   }
-    // }
-
-    // const onSubmit = values => {
-    //   setLoading(!loading);
-    //   updateContact({
-    //     id: data.contacts[index].id,
-    //     clientId: clientId,
-    //     body: {
-    //       id: values.contacts[index].id,
-    //       clientId: values.contacts[index].clientId,
-    //       name: values.contact.name,
-    //       title: values.contact.title,
-    //       phone: values.contact.phone,
-    //       email: values.contact.email,
-    //     }
-    //   })
-    //     .unwrap()
-    //     .then(res => {
-    //       setUpdateIndex(null)
-    //       setOpenContactModal(false);
-    //       setLoading(!loading);
-    //       showNotification({
-    //         text: "Contact Successfully Updated",
-    //       });
-    //     })
-    // }
-
-  //   return (
-  //     <Popup open={open} setOpen={setOpen} header={"Push Client"}>
-  //       <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
-  //         <Heading size={"md"}>Create Client</Heading>
-  //         <Button bg={"success.400"} isDisabled={firstStatus} onPress={() => createClient(firstStatus, setFirstStatus)} w={"30%"}>Submit</Button>
-  //       </HStack>
-  //       <Divider/>
-  //       <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
-  //         <Heading size={"md"}>Create Part Classes</Heading>
-  //         <Button bg={"success.400"} w={"30%"} isDisabled={!firstStatus} onPress={() => createPartClasses()}>Submit</Button>
-  //       </HStack>
-  //       <Divider/>
-  //       <HStack justifyContent={"space-between"} alignItems={"center"} mx={2} my={2}>
-  //         <Heading size={"md"}>Export Parts to Excel</Heading>
-  //         <Button bg={"success.400"} w={"30%"} isDisabled={!secondStatus}>Submit</Button>
-  //       </HStack>
-  //     </Popup>
-  //   );
-  // }
 
   const AddressTable = ({ data, clientId }) => {
     const { control, register, setValue, handleSubmit, reset } = useForm({
@@ -248,7 +134,7 @@ export default function ClientProfile({ navigation, route }) {
         control={control}
         Form={<AddAddressForm clientId={clientId} selections={data.addresses} />}
         fieldTypes={[{type: "picker", choices: types}, {type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
-        editInfo={editInfo}
+        isLocked={!isLocked}
         onEdit={handleSubmit(onEdit)}
         onDelete={onDelete}
         onCancel={() => console.log(data.addresses)}
@@ -264,7 +150,8 @@ export default function ClientProfile({ navigation, route }) {
     });
     const { fields } = useFieldArray({
       control,
-      name: "contacts"
+      name: "contacts",
+      keyName: "contactId"
     });
     const [updateContact, result] = useUpdateContactMutation();
     const [deleteContact, result4] = useDeleteContactMutation();
@@ -306,7 +193,7 @@ export default function ClientProfile({ navigation, route }) {
         columnStyle={["w-3/12", "w-2/12", "w-4/12", "w-2/12"]}
         Form={<AddContactForm clientId={clientId} />}
         fieldTypes={[{type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
-        editInfo={editInfo}
+        isLocked={!isLocked}
         control={control}
         onEdit={handleSubmit(onEdit)}
         onDelete={onDelete}
@@ -351,7 +238,8 @@ export default function ClientProfile({ navigation, route }) {
     });
     const { fields } = useFieldArray({
       control,
-      name: "programs"
+      name: "programs",
+      keyName: "programId"
     });
     const [updatePrograms, result2] = useUpdateProgramsMutation();
     const [deleteParts, result6] = useDeleteProgramPartsMutation();
@@ -365,7 +253,6 @@ export default function ClientProfile({ navigation, route }) {
 
     const onDelete = values => {
       values.forEach((item, index) => {
-        console.log(item)
         updatePrograms({
           id: clientId,
           body: {[item.selection.toLowerCase()]: 0 },
@@ -401,7 +288,7 @@ export default function ClientProfile({ navigation, route }) {
         columns={tableColumns.programs}
         columnStyle={["w-full"]}
         Form={<AddProgramForm clientId={clientId} selections={formatPrograms(data.programs)} />}
-        edit={editInfo}
+        isLocked={!isLocked}
         control={control}
         onDelete={onDelete}
       />
@@ -431,8 +318,6 @@ export default function ClientProfile({ navigation, route }) {
       <View className={"flex-row h-full"}>
         <Toolbar navigation={navigation} />
 
-        {/*<PushClient open={openPushClientModal} setOpen={setOpenPushClientModal} />*/}
-
         <View className={"flex-1"}>
           <View className={"z-30 mx-1"}>
             <View className={"flex-row items-center justify-between my-2"}>
@@ -444,11 +329,11 @@ export default function ClientProfile({ navigation, route }) {
                 <Badge label={data.basicInfo.territory} className={"bg-gray-800 w-1/4"}/>
                 <Badge label={data.status.current} className={`${statusColors[data.status.current]} w-1/4`}/>
 
-                <Menu options={menuLinks}>
+                <Menu>
                   <Menu.Title title={"Client Actions"} />
                   <Menu.Item
                     title={"Edit Name & Territory"}
-                    isDisabled={editInfo}
+                    disabled={isLocked}
                     onPress={() => {
                       open.value = !open.value;
                     }}
@@ -466,16 +351,16 @@ export default function ClientProfile({ navigation, route }) {
                     onPress={() =>
                       navigation.push("ProgramDetails", {
                         programs: data.programs,
-                        clientId: clientId,
+                        clientId: clientId
                       })
                     }
                   />
                   <Menu.Item
                     title={"Program Pricing"}
                     onPress={() =>
-                      navigation.push("Program Pricing", {
+                      navigation.push("ProgramPricing", {
                         programs: data.programs,
-                        clientId: clientId,
+                        clientId: clientId
                       })
                     }
                   />
@@ -493,18 +378,12 @@ export default function ClientProfile({ navigation, route }) {
                           kimn: null,
                         },
                       });
-                      // showNotification({
-                      //   text: "Client Status Successfully Updated"
-                      // });
                     }}
-                    isDisabled={
-                      data.status.current !== "Potential" &&
-                      data.status.current !== "Declined"
-                    }
+                    disabled={isLocked}
                   />
                   <Menu.Item
                     title={"Remove from Queue"}
-                    isDisabled={data.status.current !== "Queued"}
+                    disabled={data.status.current !== "Queued"}
                     onPress={() => {
                       updateStatus({ id: clientId, body: { status: "Potential" } });
                       updateApprovals({
@@ -515,9 +394,6 @@ export default function ClientProfile({ navigation, route }) {
                           kimn: null,
                         },
                       });
-                      // showNotification({
-                      //   text: "Client Status Successfully Updated"
-                      // });
                     }}
                   />
                   <Menu.Item
@@ -526,7 +402,7 @@ export default function ClientProfile({ navigation, route }) {
                       setOpenPushClientModal(!openPushClientModal);
                       // updateStatus({ id: clientId, body: { status: "Pushed" } });
                     }}
-                    isDisabled={data.status.current !== "Approved"}
+                    disabled={true}
                   />
                 </Menu>
               </View>

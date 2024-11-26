@@ -16,6 +16,7 @@ import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 
 export default function TileDetailsForm({ programs, clientId }) {
+  const isLocked = useSelector(state => state.client.isLocked);
   const { control, errors, handleSubmit, setValue } = useForm();
   const { data, error, isLoading } = useGetClientProgramDetailsQuery({
     program: "tile",
@@ -80,14 +81,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.allottedFloat"}
           title={"Allotted Float"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.chargeForExtraFloat"}
           title={"Charge for Extra Float"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -102,7 +103,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.waterproofMethodShowerFloor"}
           title={"Waterproofing Method"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -110,7 +111,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.waterproofMethod"}
           title={"Waterproofing Method - Shower Floor"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -118,7 +119,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.waterproofMethodShowerWalls"}
           title={"Waterproofing Method - Shower Walls"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -126,14 +127,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.waterproofMethodTubWall"}
           title={"Waterproofing Method - Tub Wall"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.fiberglassResponsibility"}
           title={"Who Is Installing Fiberglass?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -141,7 +142,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.backerboardInstallResponsibility"}
           title={"Who Will Be Installing Backerboard?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -149,7 +150,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.punchOutMaterial"}
           title={"Punch Out Material"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -164,7 +165,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.showerNicheConstruction"}
           title={"Shower Niche Construction"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -172,14 +173,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.showerNicheFraming"}
           title={"Shower Niche Framing"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.showerNicheBrand"}
           title={"Preformed Shower Niche Brand"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -187,14 +188,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.cornerSoapDishesStandard"}
           title={"Are Corner Soap Dishes Standard?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.cornerSoapDishMaterial"}
           title={"Corner Soap Dish Material"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -202,7 +203,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.showerSeatConstruction"}
           title={"Shower Seat Construction"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -210,7 +211,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.metalEdgeOptions"}
           title={"Metal Edge Options"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -225,14 +226,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.groutJointSizing"}
           title={"Grout Joint Subsizing"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.groutJointNotes"}
           title={"Grout Joint Notes"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -240,21 +241,21 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.preferredGroutBrand"}
           title={"Preferred Grout Joint Brand"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.upgradedGrout"}
           title={"Upgraded Grout and Formula"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.groutProduct"}
           title={"Grout Product"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <Picker
@@ -262,14 +263,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.subfloorStandardPractice"}
           title={"Subfloor Std. Practice"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.subfloorProducts"}
           title={"Subfloor Products"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -283,7 +284,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.standardWallTileHeight"}
           title={"Wall Tile Height Standard"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
       </View>
 
@@ -298,35 +299,35 @@ export default function TileDetailsForm({ programs, clientId }) {
           control={control}
           field={"tile.takeoffResponsibility"}
           title={"Who Will Be Doing Takeoffs?"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.wasteFactor"}
           title={"Waste Factor Percentage"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.wasteFactorWalls"}
           title={"Waste Factor Percentage - Walls"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.wasteFactorFloors"}
           title={"Waste Factor Percentage - Floors"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <TextInput
           control={control}
           field={"tile.wasteFactorMosaics"}
           title={"Waste Factor Percentage - Mosaics"}
-          // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+          disabled={isLocked}
         />
 
         <View className={"pb-2"}>
@@ -334,7 +335,7 @@ export default function TileDetailsForm({ programs, clientId }) {
             control={control}
             field={"tile.notes"}
             title={"Notes"}
-            // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+            disabled={isLocked}
           />
         </View>
       </View>
@@ -348,6 +349,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           size={"md"}
           color={"success"}
           onPress={handleSubmit(onSubmit)}
+          disabled={isLocked}
           // className={"my-50"}
         />
       </View>

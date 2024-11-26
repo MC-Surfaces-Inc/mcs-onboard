@@ -51,7 +51,7 @@ export default function Button({
   return (
     <TouchableOpacity
       title={title}
-      className={`flex-row items-center my-1 justify-center ${sizes[size]} ${types[type][color]} p-2 ${className}`}
+      className={`flex-row items-center my-1 justify-center ${sizes[size]} ${types[type][color]} p-2 ${className} ${disabled && "opacity-50"}`}
       onPress={onPress}
       disabled={disabled}
     >

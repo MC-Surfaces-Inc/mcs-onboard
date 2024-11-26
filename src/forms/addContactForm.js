@@ -13,7 +13,6 @@ export default function AddContactForm({ clientId }) {
   const [loading, setLoading] = React.useState(false);
 
   const onSubmit = values => {
-    console.log(values);
     setLoading(true);
     createContact({
       id: clientId,

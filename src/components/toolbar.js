@@ -2,15 +2,12 @@ import React from "react";
 import { Image, Text, TouchableOpacity, View } from "react-native";
 import { useDispatch } from "react-redux";
 import { clearToken } from "../features/auth/authSlice";
-import Button from "./button";
 import { useRoute } from "@react-navigation/native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 
 export default function Toolbar({ navigation }) {
   const dispatch = useDispatch();
   const route = useRoute();
-
-  console.log("route", route);
 
   return (
     <View className={"bg-gray-800 items-center justify-between rounded-r-md p-1 w-52"}>

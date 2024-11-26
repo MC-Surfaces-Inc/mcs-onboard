@@ -9,6 +9,7 @@ import Divider from "../components/divider";
 
 export default function ClientDetails({ navigation, route }) {
   const clientId = route.params?.clientId;
+  const isLocked = route.params?.isLocked;
   const { data, error, isLoading } = useGetClientDetailsQuery(clientId);
 
   if (data === undefined || isLoading) {
@@ -43,8 +44,16 @@ export default function ClientDetails({ navigation, route }) {
           </Text>
           <Divider />
 
-          <AccountingInfoForm data={data.tables.accounting_details} clientId={clientId} />
-          <ExpeditingInfoForm data={data.tables.expediting_details} clientId={clientId} />
+          <AccountingInfoForm
+            data={data.tables.accounting_details}
+            clientId={clientId}
+            isLocked={isLocked}
+          />
+          <ExpeditingInfoForm
+            data={data.tables.expediting_details}
+            clientId={clientId}
+            isLocked={isLocked}
+          />
         </ScrollView>
       </View>
     </SafeAreaView>

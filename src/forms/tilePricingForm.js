@@ -1,384 +1,318 @@
 import React from "react";
-import { Box, Center, Fab, Icon, Text } from "native-base";
-import InteractiveTable from "../components/interactiveTable";
-import { useForm } from "react-hook-form";
+import { Text } from "react-native";
+import { useFieldArray, useForm } from "react-hook-form";
 import { levels, units } from "../constants/dropdownValues";
-import { useGetClientProgramPricingQuery, useUpdateProgramPricingMutation } from "../services/client";
+import {
+  useDeleteBillingPartsMutation,
+  useGetClientProgramPricingQuery,
+  useUpdateProgramPricingMutation,
+} from "../services/client";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import Loading from "../screens/loading";
 import { toast } from "../components/toast";
+import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
+import { FlatList, View } from "react-native";
+import Menu from "../components/menu";
+import Divider from "../components/divider";
+import IconButton from "../components/iconButton";
+import Picker from "../components/picker";
+import TextInput from "../components/input";
+import Button from "../components/button";
+import { useSelector } from "react-redux";
 
 export default function TilePricingForm({ programs, clientId }) {
-  const { control, handleSubmit, errors, reset, setValue } = useForm();
-  const { data, error, isLoading } = useGetClientProgramPricingQuery({
+  const isLocked = useSelector(state => state.client.isLocked);
+  const {
+    control,
+    getValues,
+    handleSubmit,
+    setValue
+  } = useForm({
+    defaultValues: {
+      tile: [],
+      area: "",
+    }
+  });
+  const {
+    fields,
+    append,
+    remove
+  } = useFieldArray({
+    control,
+    name: "tile",
+    keyName: "partId"
+  });
+  const { data=[], error, isLoading } = useGetClientProgramPricingQuery({
     program: "Tile",
     clientId: clientId,
   });
-  const [updateParts, result] = useUpdateProgramPricingMutation();
+  const [updateParts, result1] = useUpdateProgramPricingMutation();
+  const [deleteParts, result2] = useDeleteBillingPartsMutation();
+  const [areaChoices, setAreaChoices] = React.useState([]);
+  const [isAdding, setIsAdding] = React.useState(false);
+  const [selectedItems, setSelectedItems] = React.useState([]);
+  const [height, setHeight] = React.useState(0);
+  const animatedHeight = useSharedValue(0);
+
+  const onLayout = (event) => {
+    const onLayoutHeight = event.nativeEvent.layout.height;
+
+    if (onLayoutHeight > 0 && height !== onLayoutHeight) {
+      setHeight(onLayoutHeight);
+    }
+  };
+
+  const collapsibleStyle = useAnimatedStyle(() => {
+    animatedHeight.value = isAdding ? withTiming(height) : withTiming(0);
+
+    return {
+      height: animatedHeight.value,
+    };
+  }, [isAdding, height]);
 
   React.useEffect(() => {
-    if (data) {
-      reset({
-        Backsplash_Fireplace_Wall_Tile: data.parts.filter(part => part.programTable === "Backsplash/Fireplace Wall Tile"),
-        Backsplash_Fireplace_Deco: data.parts.filter(part => part.programTable === "Backsplash/Fireplace Deco"),
-        Shower_Floor___Tile: data.parts.filter(part => part.programTable === "Shower Floor - Tile"),
-        Shower_Floor___Mesh: data.parts.filter(part => part.programTable === "Shower Floor - Mesh"),
-        Floor_Tile: data.parts.filter(part => part.programTable === "Floor Tile"),
-        Floor_Tile_Deco: data.parts.filter(part => part.programTable === "Floor Tile Deco"),
-        Bathroom_Wall_Tile: data.parts.filter(part => part.programTable === "Bathroom Wall Tile"),
-        Deco_w__Waterproofing: data.parts.filter(part => part.programTable === "Deco w/ Waterproofing"),
-        Floor_Stone: data.parts.filter(part => part.programTable === "Floor Stone"),
-        Bathroom_Wall_Stone: data.parts.filter(part => part.programTable === "Bathroom Wall Stone"),
-        Backsplash_Wall_Stone: data.parts.filter(part => part.programTable === "Bathroom Wall Stone"),
-        Fireplace_Wall_Stone: data.parts.filter(part => part.programTable === "Fireplace Wall Stone"),
-        Shower_Floor___Stone: data.parts.filter(part => part.programTable === "Shower Floor - Stone"),
-        Shower_Floor___Deco: data.parts.filter(part => part.programTable === "Shower Floor - Deco"),
-        Patterns: data.parts.filter(part => part.programTable === "Patterns"),
-        Accents: data.parts.filter(part => part.programTable === "Accents"),
-        Bath_Accessories: data.parts.filter(part => part.programTable === "Bath Accessories"),
-        Miscellaneous: data.parts.filter(part => part.programTable === "Miscellaneous"),
+    if (data.parts) {
+      data.parts.forEach((item) => {
+        if (!areaChoices.some((choice) => choice.programTable === item.programTable)) {
+          setAreaChoices([
+            ...areaChoices,
+            { label: item.programTable, value: item.programTable }
+          ]);
+        }
       });
+
+      setValue("tile", data.parts);
     }
-  }, [reset, isLoading, data]);
+  }, [data]);
 
-  if (programs.Tile === 0 || programs.Tile === null) {
-    return (
-      <Center h={"100%"}>
-        <Text>Program has not been included in client selections.</Text>
-      </Center>
-    );
-  }
-
+  // Create parts
   const onSubmit = values => {
-    let pricingData = [
-      ...values.Backsplash_Fireplace_Wall_Tile.map(row => ({
-        ...row,
-        programTable: "Backsplash/Fireplace Wall Tile",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Backsplash_Fireplace_Deco.map(row => ({
-        ...row,
-        programTable: "Backsplash/Fireplace Deco",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Shower_Floor___Tile.map(row => ({
-        ...row,
-        programTable: "Shower/Floor - Tile",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Shower_Floor___Mesh.map(row => ({
-        ...row,
-        programTable: "Shower Floor - Mesh",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Floor_Tile_Deco.map(row => ({
-        ...row,
-        programTable: "Floor Tile Deco",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Bathroom_Wall_Tile.map(row => ({
-        ...row,
-        programTable: "Bathroom Wall Tile",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Deco_w__Waterproofing.map(row => ({
-        ...row,
-        programTable: "Deco w/ Waterproofing",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Floor_Stone.map(row => ({
-        ...row,
-        programTable: "Floor Stone",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Bathroom_Wall_Stone.map(row => ({
-        ...row,
-        programTable: "Bathroom Wall Stone",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Backsplash_Wall_Stone.map(row => ({
-        ...row,
-        programTable: "Backsplash_Wall_Stone",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Fireplace_Wall_Stone.map(row => ({
-        ...row,
-        programTable: "Fireplace Wall Stone",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Shower_Floor___Stone.map(row => ({
-        ...row,
-        programTable: "Shower Floor - Stone",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Shower_Floor___Deco.map(row => ({
-        ...row,
-        programTable: "Shower Floor - Deco",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Patterns.map(row => ({
-        ...row,
-        programTable: "Patterns",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Accents.map(row => ({
-        ...row,
-        programTable: "Accents",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Bath_Accessories.map(row => ({
-        ...row,
-        programTable: "Bath Accessories",
-        program: "Tile",
-        clientId: clientId,
-      })),
-      ...values.Miscellaneous.map(row => ({
-        ...row,
-        programTable: "Miscellaneous",
-        program: "Tile",
-        clientId: clientId,
-      })),
-    ];
+    let errors = 0;
 
-    pricingData.forEach(row => {
+    values.tile.forEach(row => {
       updateParts({
-        body: { ...row },
-      });
+        body: {
+          ...row,
+          clientId: clientId,
+          program: "Tile"
+        },
+      })
+        .unwrap()
+        .then(res => {
+          if (res.message !== "Client Billing Parts Successfully Created.") {
+            errors += 1;
+          }
+        });
     });
 
     toast.success({
-      title: "Success!",
-      message: "Billing Parts Successfully Added",
+      title: "Part Status",
+      message: `${values.tile.length-errors}/${values.tile.length} billing parts successfully updated.`,
     });
   };
+
+  // Delete parts
+  const onDelete = values => {
+    let errors = 0;
+
+    values.forEach((part, index) => {
+      // Catch parts that have not been saved to DB yet
+      if (!("id" in part.item)) {
+        remove(part.index);
+
+        setSelectedItems(prevItems => prevItems.filter(item => item.index === part.index));
+
+        toast.success({
+          title: "Part Status",
+          message: `${values.length-errors}/${values.length} billing parts successfully deleted.`,
+        });
+
+        return;
+      }
+
+      // Delete parts from DB
+      deleteParts({
+        id: part.item.id
+      })
+        .unwrap()
+        .then(res => {
+          if (res.message !== "Billing Part successfully deleted.") {
+            errors += 1;
+          }
+
+          setSelectedItems([]);
+        });
+    });
+
+    toast.success({
+      title: "Part Status",
+      message: `${values.length-errors}/${values.length} billing parts successfully deleted.`,
+    });
+  }
 
   if (isLoading) {
     return <Loading navigation={null} />;
   }
 
   return (
-    <Box flex={1} m={2} mb={10}>
-      <InteractiveTable
-        title={"Backsplash/Fireplace Wall Tile"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Backsplash/Fireplace Deco"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Shower Floor - Tile"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Shower Floor - Mesh"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Floor Tile"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Floor Tile Deco"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Bathroom Wall Tile"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Deco w/ Waterproofing"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Floor Stone"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Bathroom Wall Stone"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Backsplash Wall Stone"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Fireplace Wall Stone"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          cost: { header: "Material", type: "input", choices: null },
-          costWithTax: { header: "Material w/ Tax", type: "input", choices: null },
-          laborCost: { header: "Labor", type: "input", choices: null },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Shower Floor - Stone"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Shower Floor - Deco"}
-        components={{
-          level: { header: "Level", type: "select", choices: levels },
-          unit: { header: "Unit", type: "select", choices: units },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Patterns"}
-        components={{
-          description: { header: "Description", type: "input", choices: null },
-          unit: { header: "Unit", type: "select", choices: units },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Accents"}
-        components={{
-          description: { header: "Description", type: "input", choices: null },
-          unit: { header: "Unit", type: "select", choices: units },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Bath Accessories"}
-        components={{
-          description: { header: "Description", type: "input", choices: null },
-          unit: { header: "Unit", type: "select", choices: units },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
-      <InteractiveTable
-        title={"Miscellaneous"}
-        components={{
-          description: { header: "Description", type: "input", choices: null },
-          unit: { header: "Unit", type: "select", choices: units },
-          totalCost: { header: "Total", type: "input", choices: null },
-        }}
-        control={control}
-      />
+    <View className={"border border-gray-500 rounded-md m-5 mb-20 z-30"}>
+      <View className={"flex-row justify-between items-center z-40"}>
+        <Text className={"font-quicksand text-xl font-bold text-gray-800 m-3"}>
+          Tile Pricing
+        </Text>
+        <Menu>
+          <Menu.Title title={"Table Actions"} />
+          <Menu.Item
+            title={"Add Area Choice"}
+            onPress={() => setIsAdding(!isAdding)}
+            disabled={isLocked}
+          />
+          <Menu.Item
+            title={"Add Table Row(s)"}
+            onPress={() => append({ programTable: "", level: "", unit: "", totalCost: "" })}
+            disabled={isLocked}
+          />
+          <Divider />
+          <Menu.Item
+            title={"Delete"}
+            textStyle={"text-red-500 font-bold"}
+            onPress={() => onDelete(selectedItems)}
+            disabled={selectedItems.length === 0 || isLocked}
+          />
+          <Divider />
+          <Menu.Item
+            title={"Save"}
+            textStyle={"text-green-500 font-bold"}
+            onPress={handleSubmit(onSubmit)}
+            disabled={isLocked}
+          />
+        </Menu>
+      </View>
 
-      <Fab
-        bg={"#4ade80"}
-        shadow={2}
-        size={"lg"}
-        icon={<FontAwesome5 name={"save"} size={32} color={"white"} />}
-        onPress={handleSubmit(onSubmit)}
+      <Divider />
+
+      <FlatList
+        data={fields}
+        ListHeaderComponent={(
+          <React.Fragment>
+            <View className={"flex-row items-center"}>
+              <React.Fragment>
+                <Text className={"font-quicksand text-lg w-1/4 ml-12"}>Program Table</Text>
+                <Text className={"font-quicksand text-lg w-1/4"}>Level</Text>
+                <Text className={"font-quicksand text-lg w-1/4"}>Unit</Text>
+                <Text className={"font-quicksand text-lg w-1/4"}>Total Cost</Text>
+              </React.Fragment>
+            </View>
+            <Divider />
+          </React.Fragment>
+        )}
+        ListEmptyComponent={
+          <View className={"flex-row justify-center z-0"}>
+            <Text className={"font-quicksand font-bold text-orange-500 p-2"}>
+              No Data Found
+            </Text>
+          </View>
+        }
+        ItemSeparatorComponent={<Divider />}
+        renderItem={(item, index) => {
+          return (
+            <View className={"flex-row z-0"} key={index}>
+              <View className={"items-center justify-center"}>
+                <IconButton
+                  icon={
+                    <FontAwesome5
+                      name={selectedItems.some(obj => obj.index === item.index) ? "check-square" : "square"}
+                      size={22}
+                      color={selectedItems.some(obj => obj.index === item.index) ? "#F97316" : "#172554"}
+                      className={"w-6 mx-2"}
+                    />
+                  }
+                  onPress={() => {
+                    if (selectedItems.some(obj => obj.index === item.index)) {
+                      setSelectedItems(previousSelectedItems => previousSelectedItems.filter(row => row.index != item.index));
+                    } else {
+                      setSelectedItems([...selectedItems, item]);
+                    }
+                  }}
+                />
+              </View>
+
+              <Picker
+                choices={areaChoices}
+                control={control}
+                field={`tile[${item.index}].programTable`}
+                containerStyle={"w-1/4 my-0"}
+                inputStyle={"rounded-none"}
+                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+              />
+              <TextInput
+                control={control}
+                field={`tile[${item.index}].level`}
+                containerStyle={"w-1/4 my-0"}
+                inputStyle={"rounded-none"}
+                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+              />
+              <Picker
+                choices={units}
+                control={control}
+                field={`tile[${item.index}].unit`}
+                containerStyle={"w-1/4 my-0"}
+                inputStyle={"rounded-none"}
+                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+              />
+              <TextInput
+                control={control}
+                field={`tile[${item.index}].totalCost`}
+                containerStyle={"w-1/4 my-0"}
+                leftIcon={<FontAwesome5 name={"dollar-sign"} size={20} className={"mr-5"} color={"#172554"} />}
+                inputStyle={`${index === (fields.length - 1) ? "rounded-none" : "rounded-r-none rounded-br-md rounded-l-none"}`}
+                // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+              />
+            </View>
+          );
+        }}
+        ListFooterComponent={(
+          <Animated.View className={"z-30 flex-row"} style={[collapsibleStyle, { overflow: "hidden", zIndex: 10 }]}>
+            <View onLayout={onLayout} className={"absolute pt-4 pb-2 px-2 bg-gray-800 w-full z-50 rounded-b-sm"}>
+              <View className={"flex-row justify-between items-center"}>
+                <TextInput
+                  control={control}
+                  field={`area`}
+                  title={"New Area"}
+                  textStyle={"text-gray-100"}
+                  containerStyle={"w-1/3 my-0"}
+                  inputStyle={"bg-gray-100"}
+                  // isDisabled={!client.permissions.pages["ProgramDetails"].edit}
+                />
+                <View className={"flex-row justify-end items-center"}>
+                  <Button
+                    title={"Cancel"}
+                    type={"outlined"}
+                    size={"sm"}
+                    color={"action"}
+                    onPress={() => setIsAdding(!isAdding)}
+                    className={"mt-5 -mb-1 h-10 mx-2"}
+                  />
+                  <Button
+                    title={"Save"}
+                    type={"contained"}
+                    size={"sm"}
+                    color={"success"}
+                    onPress={() => {
+                      setAreaChoices([
+                        ...areaChoices,
+                        { label: getValues("area"), value: getValues("area") }
+                      ]);
+                      setIsAdding(false);
+                    }}
+                    className={"mt-5 -mb-1 h-10 mx-2"}
+                  />
+                </View>
+              </View>
+            </View>
+          </Animated.View>
+        )}
       />
-    </Box>
+    </View>
   );
 }
