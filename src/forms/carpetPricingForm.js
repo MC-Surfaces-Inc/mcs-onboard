@@ -19,7 +19,7 @@ import IconButton from "../components/iconButton";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import { useSelector } from "react-redux";
 
-export default function CarpetPricingForm({ programs, clientId, disabled }) {
+export default function CarpetPricingForm({ clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
   const {
     control,
@@ -218,6 +218,7 @@ export default function CarpetPricingForm({ programs, clientId, disabled }) {
             <View className={"flex-row z-0"} key={index}>
               <View className={"items-center justify-center"}>
                 <IconButton
+                  disabled={isLocked}
                   icon={
                     <FontAwesome5
                       name={selectedItems.some(obj => obj.index === item.index) ? "check-square" : "square"}
@@ -242,12 +243,14 @@ export default function CarpetPricingForm({ programs, clientId, disabled }) {
                 field={`carpet[${item.index}].programTable`}
                 containerStyle={"w-1/4 my-0"}
                 inputStyle={"rounded-none"}
+                disabled={isLocked}
               />
               <TextInput
                 control={control}
                 field={`carpet[${item.index}].level`}
                 containerStyle={"w-1/4 my-0"}
                 inputStyle={"rounded-none"}
+                disabled={isLocked}
               />
               <Picker
                 choices={units}
@@ -255,6 +258,7 @@ export default function CarpetPricingForm({ programs, clientId, disabled }) {
                 field={`carpet[${item.index}].unit`}
                 containerStyle={"w-1/4 my-0"}
                 inputStyle={"rounded-none"}
+                disabled={isLocked}
               />
               <TextInput
                 control={control}
@@ -262,6 +266,7 @@ export default function CarpetPricingForm({ programs, clientId, disabled }) {
                 containerStyle={"w-1/4 my-0"}
                 leftIcon={<FontAwesome5 name={"dollar-sign"} size={20} className={"mr-5"} color={"#172554"} />}
                 inputStyle={`${index === (fields.length - 1) ? "rounded-none" : "rounded-r-none rounded-br-md rounded-l-none"}`}
+                disabled={isLocked}
               />
             </View>
           );

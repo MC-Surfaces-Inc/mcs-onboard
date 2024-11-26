@@ -9,13 +9,11 @@ import CountertopsPricingForm from "../forms/countertopsPricingForm";
 import TilePricingForm from "../forms/tilePricingForm";
 import WoodPricingForm from "../forms/woodPricingForm";
 import VinylPricingForm from "../forms/vinylPricingForm";
-import { useSelector } from "react-redux";
 
 export default function ProgramPricing({ navigation, route }) {
   const clientId = route.params?.clientId;
   const [programs, setPrograms] = React.useState([]);
   const [selectedProgram, setSelectedProgram] = React.useState(null);
-  const isLocked = useSelector(state => state.client.isLocked);
 
   React.useEffect(() => {
     const pulledPrograms = [];
@@ -26,8 +24,6 @@ export default function ProgramPricing({ navigation, route }) {
     }
     setPrograms([...pulledPrograms]);
   }, [route, setPrograms]);
-
-  console.log(isLocked)
 
   return (
     <SafeAreaView>
@@ -52,22 +48,22 @@ export default function ProgramPricing({ navigation, route }) {
           <Divider />
 
           {selectedProgram === "Cabinets" && (
-            <CabinetPricingForm clientId={clientId} programs={programs} disabled={isLocked} />
+            <CabinetPricingForm clientId={clientId} />
           )}
           {selectedProgram === "Carpet" && (
-            <CarpetPricingForm clientId={clientId} programs={programs} disabled={isLocked} />
+            <CarpetPricingForm clientId={clientId} />
           )}
           {selectedProgram === "Countertops" && (
-            <CountertopsPricingForm clientId={clientId} programs={programs} disabled={isLocked} />
+            <CountertopsPricingForm clientId={clientId} />
           )}
           {selectedProgram === "Vinyl" && (
-            <VinylPricingForm clientId={clientId} programs={programs} disabled={isLocked} />
+            <VinylPricingForm clientId={clientId} />
           )}
           {selectedProgram === "Tile" && (
-            <TilePricingForm clientId={clientId} programs={programs} disabled={isLocked} />
+            <TilePricingForm clientId={clientId} />
           )}
           {selectedProgram === "Wood" && (
-            <WoodPricingForm clientId={clientId} programs={programs} disabled={isLocked} />
+            <WoodPricingForm clientId={clientId} />
           )}
         </ScrollView>
       </View>

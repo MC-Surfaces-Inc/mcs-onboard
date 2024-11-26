@@ -20,7 +20,7 @@ import TextInput from "../components/input";
 import Button from "../components/button";
 import { useSelector } from "react-redux";
 
-export default function VinylPricingForm({ programs, clientId }) {
+export default function VinylPricingForm({ clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
   const {
     control,
@@ -219,6 +219,7 @@ export default function VinylPricingForm({ programs, clientId }) {
             <View className={"flex-row z-0"} key={index}>
               <View className={"items-center justify-center"}>
                 <IconButton
+                  disabled={isLocked}
                   icon={
                     <FontAwesome5
                       name={selectedItems.some(obj => obj.index === item.index) ? "check-square" : "square"}
@@ -243,12 +244,14 @@ export default function VinylPricingForm({ programs, clientId }) {
                 field={`lvp[${item.index}].programTable`}
                 containerStyle={"w-1/4 my-0"}
                 inputStyle={"rounded-none"}
+                disabled={isLocked}
               />
               <TextInput
                 control={control}
                 field={`lvp[${item.index}].level`}
                 containerStyle={"w-1/4 my-0"}
                 inputStyle={"rounded-none"}
+                disabled={isLocked}
               />
               <Picker
                 choices={units}
@@ -256,6 +259,7 @@ export default function VinylPricingForm({ programs, clientId }) {
                 field={`lvp[${item.index}].unit`}
                 containerStyle={"w-1/4 my-0"}
                 inputStyle={"rounded-none"}
+                disabled={isLocked}
               />
               <TextInput
                 control={control}
@@ -263,6 +267,7 @@ export default function VinylPricingForm({ programs, clientId }) {
                 containerStyle={"w-1/4 my-0"}
                 leftIcon={<FontAwesome5 name={"dollar-sign"} size={20} className={"mr-5"} color={"#172554"} />}
                 inputStyle={`${index === (fields.length - 1) ? "rounded-none" : "rounded-r-none rounded-br-md rounded-l-none"}`}
+                disabled={isLocked}
               />
             </View>
           );
