@@ -116,7 +116,7 @@ export default function AddClientForm({ progress, width, isOpen }) {
           control={control}
           field={"client.territory"}
           title={"Territory"}
-          containerStyle={"bg-gray-100 w-full h-16"}
+          containerStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -142,7 +142,7 @@ export default function AddClientForm({ progress, width, isOpen }) {
           control={control}
           field={"address.state"}
           title={"Corporate State"}
-          containerStyle={"bg-gray-100 w-full h-16"}
+          containerStyle={"bg-gray-100"}
         />
 
         <TextInput

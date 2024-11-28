@@ -215,7 +215,7 @@ export default function CarpetPricingForm({ clientId }) {
         ItemSeparatorComponent={<Divider />}
         renderItem={(item, index) => {
           return (
-            <View className={"flex-row z-0"} key={index}>
+            <View className={"flex-row items-center z-0"} key={index}>
               <View className={"items-center justify-center"}>
                 <IconButton
                   disabled={isLocked}
@@ -241,7 +241,7 @@ export default function CarpetPricingForm({ clientId }) {
                 choices={areaChoices}
                 control={control}
                 field={`carpet[${item.index}].programTable`}
-                containerStyle={"w-1/4 my-0"}
+                containerStyle={"w-1/4 my-0 -mt-1"}
                 inputStyle={"rounded-none"}
                 disabled={isLocked}
               />
@@ -256,7 +256,7 @@ export default function CarpetPricingForm({ clientId }) {
                 choices={units}
                 control={control}
                 field={`carpet[${item.index}].unit`}
-                containerStyle={"w-1/4 my-0"}
+                containerStyle={"w-1/4 my-0 -mt-1"}
                 inputStyle={"rounded-none"}
                 disabled={isLocked}
               />

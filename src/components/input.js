@@ -18,7 +18,7 @@ export default function Input({
 
   return (
     <View className={`z-10 ${containerStyle}`}>
-      {title && <Text className={`font-quicksand mb-1 ${textStyle}`}>{title}</Text>}
+      {title && <Text className={`font-quicksand mb-1 mt-2 ${textStyle}`}>{title}</Text>}
       <Controller
         control={control}
         name={field}
@@ -26,7 +26,7 @@ export default function Input({
         render={({ field: { onBlur, onChange, value } }) => {
           if (leftIcon) {
             return (
-              <View className={`flex-row items-center border ${focused ? "border-orange-500" : "border-gray-300"} h-10 p-2`}>
+              <View className={`flex-row items-center border ${focused ? "border-orange-500 border-2" : "border-gray-300"} h-10 p-2`}>
                 {leftIcon}
                 <TextInput
                   className={`font-quicksand  rounded-md  ${inputStyle} w-full h-10 p-2`}
@@ -43,7 +43,7 @@ export default function Input({
           return (
             <React.Fragment>
               <TextInput
-                className={`font-quicksand  rounded-md focus:border-orange-500 ${inputStyle} w-full border border-gray-300 h-10 p-2`}
+                className={`font-quicksand  rounded-md focus:border-orange-500 focus:border-2 w-full border border-gray-300 h-10 p-2 ${inputStyle}`}
                 onBlur={onBlur}
                 onChangeText={onChange}
                 readOnly={disabled !== undefined && disabled}

@@ -83,6 +83,7 @@ export default function Table({
                 dataExists={data.length > 0}
                 fieldTypes={fieldTypes}
                 isLocked={isLocked}
+                columnHeaderStyle={"py-2 px-1"}
               />
             }
             ItemSeparatorComponent={<Divider />}
@@ -96,13 +97,12 @@ export default function Table({
               </View>
             }
             renderItem={({ item, index }) => {
-              let rowStyle = `flex-row items-center`;
-
               return (
-                <View className={rowStyle} key={index}>
+                <View className={"flex-row z-0 items-center"} key={index}>
                   {(onEdit || onDelete) && isLocked &&
-                    <React.Fragment>
+                    <View className={"items-center justify-center"}>
                       <IconButton
+                        disabled={!isLocked}
                         icon={
                           <FontAwesome5
                             name={selectedItems.some(obj => obj.id === item.id) ? "check-square" : "square"}
@@ -119,9 +119,10 @@ export default function Table({
                           }
                         }}
                       />
-                      <Divider orientation={"vertical"} />
-                    </React.Fragment>
+                    </View>
                   }
+
+                  <Divider orientation="vertical" />
 
                   {columns.map((cell, cellIndex) => {
                     if (isEditing) {
@@ -131,9 +132,8 @@ export default function Table({
                             key={cell.id}
                             control={control}
                             field={`${title.toLowerCase()}.${index}.${cell.toLowerCase().replace(/\s/g, "")}`}
-                            textStyle={"color-white"}
-                            inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 border-0 m-0`}
-                            containerStyle={`${columnStyle[cellIndex]} mr-2 p-0 my-0`}
+                            containerStyle={`${columnStyle[cellIndex]}`}
+                            inputStyle={`${columnStyle[cellIndex]} rounded-none`}
                             cursorColor={"#F97316"}
                           />
                         );
@@ -145,10 +145,11 @@ export default function Table({
                             control={control}
                             field={`${title.toLowerCase()}.${index}.${cell.toLowerCase().replace(/\s/g, "")}`}
                             textStyle={"color-white"}
-                            containerStyle={`${columnStyle[cellIndex]} mr-2 p-0 my-0`}
-                            inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 m-0`}
+                            containerStyle={`${columnStyle[cellIndex]}`}
+                            inputStyle={`-mt-0.5 rounded-none`}
+                            // inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 m-0`}
                           />
-                        )
+                        );
                       }
                     } else {
                       return (
@@ -156,7 +157,7 @@ export default function Table({
                           data={item[cell.toLowerCase().replace(/\s/g, "")]}
                           index={cellIndex}
                           key={cell.id}
-                          style={columnStyle[cellIndex]}
+                          style={`${columnStyle[cellIndex]}`}
                         />
                       );
                     }
@@ -285,13 +286,18 @@ const Header = (props) => (
       </React.Fragment>
     }
 
-    <View className={"flex-row bg-gray-100 items-center"}>
+    <View className={`flex-row bg-gray-100 items-center`}>
       {(props.edit.onEdit || props.delete.onDelete) && props.isLocked &&
-        <View className={"mx-5"}>
+        <View className={"items-center justify-center w-10"}>
         </View>
       }
+
       {props.columns.map((column, index) => (
-        <ColumnHeader column={column} key={index} style={props.style[index]} />
+        <ColumnHeader
+          column={column}
+          key={index}
+          style={`${props.style[index]} ${props.edit.isEditing && "px-2"}`}
+        />
       ))}
     </View>
 
@@ -301,20 +307,20 @@ const Header = (props) => (
 Table.Header = Header;
 
 const ColumnHeader = (props) => (
-  <React.Fragment>
-    <Text className={`font-quicksand ${props.style} m-1 font-bold`}>
+  <View className={`h-15 ${props.style} py-2 px-1`}>
+    <Text className={`font-quicksand font-bold`}>
       {props.column}
     </Text>
-  </React.Fragment>
+  </View>
 )
 Table.ColumnHeader = ColumnHeader;
 
 const Cell = (props) => (
-  <React.Fragment>
-    <Text className={`font-quicksand ${props.style} m-1 my-2`}>
+  <View className={`h-15 ${props.style} py-2 px-1`}>
+    <Text className={`font-quicksand`}>
       {props.data}
     </Text>
-  </React.Fragment>
+  </View>
 );
 Table.Cell = Cell;
 

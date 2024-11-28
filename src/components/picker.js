@@ -56,12 +56,12 @@ export default function Picker({
   if (control === undefined || control === null) {
     return (
       <View className={`relative z-100 ${containerStyle}`} style={{ zIndex: 100 }}>
-        {title && <Text className={`font-quicksand mb-1 ${textStyle}`}>{title}</Text>}
+        {title && <Text className={`font-quicksand mb-1 mt-2 ${textStyle}`}>{title}</Text>}
         <React.Fragment>
           <Pressable
             disabled={disabled}
             onPress={handlePress}
-            className={`border ${borderColor} h-10 rounded-md focus:border-orange-500 p-2 font-quicksand flex-row justify-between ${inputStyle}`}
+            className={`border ${borderColor} h-10 rounded-md focus:border-orange-500 focus:border-2 p-2 font-quicksand flex-row justify-between ${inputStyle}`}
           >
             <Text className={"font-quicksand"}>{!selectedValue ? "Select" : selectedValue}</Text>
             <FontAwesome5
@@ -112,7 +112,7 @@ export default function Picker({
 
   return (
     <View className={`relative z-100 ${containerStyle}`} style={{ zIndex: 100 }}>
-      {title && <Text className={`font-quicksand mb-1 ${textStyle}`}>{title}</Text>}
+      {title && <Text className={`font-quicksand mb-1 mt-2 ${textStyle}`}>{title}</Text>}
       <Controller
         control={control}
         name={field}
@@ -122,7 +122,7 @@ export default function Picker({
             <Pressable
               disabled={disabled}
               onPress={handlePress}
-              className={`border ${borderColor} h-10 rounded-md focus:border-orange-500 p-2 font-quicksand flex-row justify-between ${inputStyle}`}
+              className={`border ${borderColor} h-10 rounded-md focus:border-orange-500 focus:border-2 p-2 mt-1 font-quicksand flex-row justify-between ${inputStyle}`}
             >
               <Text className={"font-quicksand"}>{!value ? "Select" : value}</Text>
               <FontAwesome5
