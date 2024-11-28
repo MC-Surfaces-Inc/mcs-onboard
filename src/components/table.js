@@ -122,7 +122,7 @@ export default function Table({
                     </View>
                   }
 
-                  <Divider orientation="vertical" />
+                  {isLocked && <Divider orientation="vertical" /> }
 
                   {columns.map((cell, cellIndex) => {
                     if (isEditing) {
