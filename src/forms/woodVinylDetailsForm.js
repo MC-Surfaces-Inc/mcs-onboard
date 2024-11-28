@@ -105,14 +105,6 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
         <Picker
           choices={yesOrNo}
           control={control}
-          field={"wood_vinyl.hvacRequirement"}
-          title={"HVAC Requirements?"}
-          disabled={isLocked}
-        />
-
-        <Picker
-          choices={yesOrNo}
-          control={control}
           field={"wood_vinyl.MCInstalledTrim"}
           title={"MC Surfaces Install Wood Trim?"}
           disabled={isLocked}

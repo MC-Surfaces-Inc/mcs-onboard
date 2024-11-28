@@ -186,7 +186,7 @@ export default function ClientProfile({ navigation, route }) {
         title={"Contacts"}
         data={data.contacts}
         columns={tableColumns.contacts}
-        columnStyle={["w-3/12", "w-2/12", "w-4/12", "w-2/12"]}
+        columnStyle={["w-3/12", "w-2/12", "w-4/12", "w-3/12"]}
         Form={<AddContactForm clientId={clientId} />}
         fieldTypes={[{type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
         isLocked={!isLocked}
@@ -249,6 +249,12 @@ export default function ClientProfile({ navigation, route }) {
 
     const onDelete = values => {
       values.forEach((item, index) => {
+        let tableName = item.selection;
+
+        if (item.selection.charAt(item.selection.length-1) === "s") {
+          tableName = item.selection.slice(0, -1);
+        }
+
         updatePrograms({
           id: clientId,
           body: {[item.selection.toLowerCase()]: 0 },
@@ -256,7 +262,7 @@ export default function ClientProfile({ navigation, route }) {
           .unwrap()
           .then(res1 => {
             deleteProgram({
-              program: item.selection.toLowerCase(),
+              program: tableName.toLowerCase(),
               id: clientId,
             })
               .unwrap()
@@ -365,15 +371,23 @@ export default function ClientProfile({ navigation, route }) {
                   <Menu.Item
                     title={"Submit Client"}
                     onPress={() => {
-                      updateStatus({ id: clientId, body: { status: "Queued" } });
-                      updateApprovals({
+                      updateStatus({
                         id: clientId,
-                        body: {
-                          edythc: null,
-                          lisak: null,
-                          kimn: null,
-                        },
-                      });
+                        body: { current: "Queued" }
+                      })
+                        .unwrap()
+                        .then(res => {
+                          updateApprovals({
+                            id: clientId,
+                            body: {
+                              edythc: null,
+                              lisak: null,
+                              kimn: null,
+                            },
+                          });
+
+                          toast.success({ title: "Success!", message: "Client Status successfully updated" });
+                        });
                     }}
                     disabled={isLocked}
                   />
@@ -381,15 +395,23 @@ export default function ClientProfile({ navigation, route }) {
                     title={"Remove from Queue"}
                     disabled={data.status.current !== "Queued"}
                     onPress={() => {
-                      updateStatus({ id: clientId, body: { status: "Potential" } });
-                      updateApprovals({
+                      updateStatus({
                         id: clientId,
-                        body: {
-                          edythc: null,
-                          lisak: null,
-                          kimn: null,
-                        },
-                      });
+                        body: { current: "Potential" }
+                      })
+                        .unwrap()
+                        .then(res => {
+                          updateApprovals({
+                            id: clientId,
+                            body: {
+                              edythc: null,
+                              lisak: null,
+                              kimn: null,
+                            },
+                          });
+
+                          toast.success({ title: "Success!", message: "Client Status successfully updated" });
+                        });
                     }}
                   />
                   <Menu.Item

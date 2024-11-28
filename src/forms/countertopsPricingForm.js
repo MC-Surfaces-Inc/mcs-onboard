@@ -241,7 +241,7 @@ export default function CountertopsPricingForm({ programs, clientId }) {
                 choices={areaChoices}
                 control={control}
                 field={`countertops[${item.index}].programTable`}
-                containerStyle={"w-1/5 my-0"}
+                containerStyle={"w-1/5 my-0 -mt-1"}
                 inputStyle={"rounded-none"}
               />
               <TextInput
@@ -260,7 +260,7 @@ export default function CountertopsPricingForm({ programs, clientId }) {
                 choices={units}
                 control={control}
                 field={`countertops[${item.index}].unit`}
-                containerStyle={"w-1/5 my-0"}
+                containerStyle={"w-1/5 my-0 -mt-1"}
                 inputStyle={"rounded-none"}
               />
               <TextInput

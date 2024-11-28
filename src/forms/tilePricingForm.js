@@ -242,7 +242,7 @@ export default function TilePricingForm({ clientId }) {
                 choices={areaChoices}
                 control={control}
                 field={`tile[${item.index}].programTable`}
-                containerStyle={"w-1/4 my-0"}
+                containerStyle={"w-1/4 my-0 -mt-1"}
                 inputStyle={"rounded-none"}
                 disabled={isLocked}
               />
@@ -257,7 +257,7 @@ export default function TilePricingForm({ clientId }) {
                 choices={units}
                 control={control}
                 field={`tile[${item.index}].unit`}
-                containerStyle={"w-1/4 my-0"}
+                containerStyle={"w-1/4 my-0 -mt-1"}
                 inputStyle={"rounded-none"}
                 disabled={isLocked}
               />
