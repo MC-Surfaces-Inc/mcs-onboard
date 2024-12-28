@@ -20,5 +20,6 @@ export const emptySplitApi = createApi({
     "Pricing",
     "Status",
     "Approvals",
+    "Files"
   ],
 });

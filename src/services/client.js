@@ -35,7 +35,11 @@ export const clientApi = emptySplitApi.injectEndpoints({
       query: () => `pricing/countertop_options`,
     }),
     getSageData: builder.query({
-      query: clientId => `clients/${clientId}/submittal-data`
+      query: clientId => `clients/${clientId}/submittal-data`,
+    }),
+    getFiles: builder.query({
+      query: folderId => `sharepoint/folder?id=${folderId}`,
+      providesTags: ["Files"],
     }),
     createClient: builder.mutation({
       query: body => ({
@@ -180,6 +184,7 @@ export const {
   useGetClientProgramPricingQuery,
   useGetCountertopOptionsQuery,
   useGetSageDataQuery,
+  useGetFilesQuery,
   useCreateClientMutation,
   useCreateAddressMutation,
   useCreateContactMutation,

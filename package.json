@@ -1,11 +1,11 @@
 {
   "name": "OnBoard",
-  "version": "0.0.1",
+  "version": "1.2.0",
   "private": true,
   "scripts": {
     "android": "react-native run-android",
     "ios": "react-native run-ios",
-    "ios-dev": "react-native run-ios --scheme 'OnBoardDevelopment' --simulator='iPad (10th generation)'",
+    "ios-dev": "react-native run-ios --scheme 'OnBoardDevelopment' --simulator='7AAB8FA2-A4DC-4FAB-A856-59A64DCDA6E0'",
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest"

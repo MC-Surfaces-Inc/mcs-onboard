@@ -21,6 +21,7 @@ const types = {
     error: "rounded-lg bg-red-500"
   },
   outlined: {
+    default: "border-2 rounded-lg border-blue-600",
     action: "border-2 rounded-lg border-orange-500",
     success: "border-2 rounded-lg border-green-400",
     error: "border-2 rounded-lg border-red-500"

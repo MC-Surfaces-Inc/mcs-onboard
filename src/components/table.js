@@ -1,6 +1,6 @@
 import React from "react";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import { FlatList, Text, View } from "react-native";
+import { FlatList, Text, TouchableOpacity, View } from "react-native";
 import IconButton from "../components/iconButton";
 import Divider from "../components/divider";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
@@ -18,7 +18,11 @@ export default function Table({
   onEdit,
   onDelete,
   onCancel,
-  fieldTypes
+  fieldTypes,
+  emptyComponent,
+  scrollEnabled=false,
+  fileTable=false,
+  ActionBar
 }) {
   const [alert, showAlert] = React.useState(false);
   const [selectedItems, setSelectedItems] = React.useState([]);
@@ -53,7 +57,7 @@ export default function Table({
   }, [isAdding, height]);
 
   return (
-    <View className={"flex-col"}>
+    <View className={"flex-col max-h-64"}>
       <View className={"flex-row z-20"}>
         <View className={`"border-gray-800" bg-gray-100 border rounded-lg flex-1 m-1 mt-2 ${isAdding ? "-mb-2" : "mb-0"}`}>
           <FlatList
@@ -84,19 +88,97 @@ export default function Table({
                 fieldTypes={fieldTypes}
                 isLocked={isLocked}
                 columnHeaderStyle={"py-2 px-1"}
+                fileTable={fileTable}
+                ActionBar={ActionBar}
               />
             }
             ItemSeparatorComponent={<Divider />}
-            scrollEnabled={false}
+            scrollEnabled={scrollEnabled}
+            stickyHeaderIndices={[0]}
             keyExtractor={(item, index) => index}
             ListEmptyComponent={
-              <View className={"flex-row justify-center"}>
-                <Text className={"font-quicksand font-bold text-orange-500 p-2"}>
-                  No Data Found
-                </Text>
-              </View>
+              emptyComponent ?
+                emptyComponent()
+                :
+                <View className={"flex-row justify-center"}>
+                  <Text className={"font-quicksand font-bold text-orange-500 p-2"}>
+                    No Data Found
+                  </Text>
+                </View>
             }
             renderItem={({ item, index }) => {
+              if (fileTable) {
+                return (
+                  <TouchableOpacity
+                    className={"flex-row z-0 items-center"}
+                    key={index}
+                    onPress={() => {
+                      if (item.hasOwnProperty("file")) {
+                        item.viewFile(item.webUrl);
+                      } else if (item.hasOwnProperty("folder")) {
+                        item.navigateToFolder(item.id, item.parentReference.id);
+                      }
+                    }}
+                  >
+                    {(onEdit || onDelete) && isLocked &&
+                      <View className={"items-center justify-center"}>
+                        <IconButton
+                          disabled={!isLocked}
+                          icon={
+                            <FontAwesome5
+                              name={selectedItems.some(obj => obj.id === item.id) ? "check-square" : "square"}
+                              size={22}
+                              color={selectedItems.some(obj => obj.id === item.id) ? "#F97316" : "#172554"}
+                              className={"w-6 mx-2"}
+                            />
+                          }
+                          onPress={() => {
+                            if (selectedItems.some(obj => obj.id === item.id)) {
+                              setSelectedItems(previousSelectedItems => previousSelectedItems.filter(row => row.id != item.id));
+                            } else {
+                              setSelectedItems([...selectedItems, item])
+                            }
+                          }}
+                        />
+                      </View>
+                    }
+
+                    {fileTable && item.hasOwnProperty("folder") &&
+                      <View className={"items-center justify-center"}>
+                        <FontAwesome5
+                          name={"folder"}
+                          size={22}
+                          className={"w-8 mx-2 text-center"}
+                        />
+                      </View>
+                    }
+
+                    {fileTable && item.hasOwnProperty("file") &&
+                      <View className={"items-center justify-center"}>
+                        <FontAwesome5
+                          name={"file-alt"}
+                          size={22}
+                          className={"w-8 mx-2 text-center"}
+                        />
+                      </View>
+                    }
+
+                    {isLocked && <Divider orientation="vertical" /> }
+
+                    {columns.map((cell, cellIndex) => {
+                      return (
+                        <Cell
+                          data={item[cell.toLowerCase().replace(/\s/g, "")]}
+                          index={cellIndex}
+                          key={cell.id}
+                          style={`${columnStyle[cellIndex]}`}
+                        />
+                      );
+                    })}
+                  </TouchableOpacity>
+                );
+              }
+
               return (
                 <View className={"flex-row z-0 items-center"} key={index}>
                   {(onEdit || onDelete) && isLocked &&
@@ -183,7 +265,7 @@ const Header = (props) => (
   <React.Fragment>
     {props.title &&
       <React.Fragment>
-        <View className={"flex-row items-center justify-between"}>
+        <View className={"flex-row items-center justify-between bg-gray-100 rounded-t-lg"}>
           <Text className={"font-quicksand text-base mx-1 my-2 font-bold"}>
             {props.title}
           </Text>
@@ -263,7 +345,7 @@ const Header = (props) => (
             }
 
             {/*Add or Exit Add*/}
-            {props.Form && props.isLocked &&
+            {props.Form && props.isLocked && !props.ActionBar &&
               <IconButton
                 icon={
                   <FontAwesome5
@@ -286,9 +368,18 @@ const Header = (props) => (
       </React.Fragment>
     }
 
+    {props.ActionBar && props.ActionBar()}
+
+    {props.ActionBar && <Divider />}
+
     <View className={`flex-row bg-gray-100 items-center`}>
       {(props.edit.onEdit || props.delete.onDelete) && props.isLocked &&
         <View className={"items-center justify-center w-10"}>
+        </View>
+      }
+
+      {props.fileTable &&
+        <View className={"items-center justify-center w-12"}>
         </View>
       }
 
@@ -296,7 +387,7 @@ const Header = (props) => (
         <ColumnHeader
           column={column}
           key={index}
-          style={`${props.style[index]} ${props.edit.isEditing && "px-2"}`}
+          style={`${props.style[index]} ${props.edit.isEditing && "px-2"}}`}
         />
       ))}
     </View>

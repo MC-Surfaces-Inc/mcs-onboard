@@ -1,10 +1,10 @@
-import React from "react";
+import React, { useState } from "react";
 import {
   useDeleteAddressMutation,
   useDeleteContactMutation,
   useDeleteProgramInfoMutation,
   useDeleteProgramPartsMutation,
-  useGetClientByIdQuery,
+  useGetClientByIdQuery, useGetFilesQuery,
   useUpdateAddressMutation,
   useUpdateApprovalsMutation,
   useUpdateContactMutation,
@@ -15,6 +15,7 @@ import Toolbar from "../components/toolbar";
 import Badge from "../components/badge";
 import Table from "../components/table";
 import Divider from "../components/divider";
+import Button from "../components/button";
 import Loading from "./loading";
 import AddContactForm from "../forms/addContactForm";
 import AddAddressForm from "../forms/addAddressForm";
@@ -22,12 +23,14 @@ import AddProgramForm from "../forms/addProgramForm";
 import { useFieldArray, useForm } from "react-hook-form";
 import { types } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
-import { SafeAreaView, Text, View } from "react-native";
+import { Linking, SafeAreaView, Text, View } from "react-native";
 import Menu from "../components/menu";
 import { useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import EditClientForm from "../forms/editClientForm";
 import { setIsLocked } from "../features/client/clientSlice";
 import { useDispatch, useSelector } from "react-redux";
+import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import IconButton from "../components/iconButton";
 
 const statusColors = {
   Potential: "bg-slate-600",
@@ -41,7 +44,8 @@ const tableColumns = {
   addresses: ["Type", "Address 1", "Address 2", "City", "State", "Zip"],
   contacts: ["Name", "Title", "Email", "Phone"],
   approvals: ["Name", "Value"],
-  programs: ["Selection"]
+  programs: ["Selection"],
+  files: ["Name", "Size", "Created By", "Created Time"]
 }
 
 /* TODO:  - Fix notification/toast system for tables
@@ -293,26 +297,151 @@ export default function ClientProfile({ navigation, route }) {
         isLocked={!isLocked}
         control={control}
         onDelete={onDelete}
+        scrollEnabled={true}
       />
     )
   }
 
-  const FileTable = ({ data, clientId }) => {
-    const formatFileArray = arr => {
-      if (arr === undefined) {
-        return [];
+  const FileTable = ({ client, clientId }) => {
+    const [id, setId] = React.useState(null);
+    const [parentId, setParentId] = React.useState(null);
+    const [files, setFiles] = React.useState([]);
+    const [filePath, setFilePath] = React.useState([]);
+    const { data, isLoading, isSuccess, isFetching } = useGetFilesQuery(id);
+
+    console.log(files)
+
+    React.useEffect(() => {
+      if (client.folder) {
+        setId(client.folder.sharepointId);
+        setFilePath([...filePath, client.folder.sharepointId]);
       }
+    }, [client, setId, setFilePath]);
 
-      let newArr = arr.map((file, index) => ({
-        name: file.Name,
-        type: file.Name.split(".")[file.Name.split(".").length - 1],
-        size: (file.Size / 1024).toFixed(2) + " KBs",
-        Bucket: file.Bucket,
-        Key: file.Key,
-      }));
+    React.useEffect(() => {
+      if (id && data) {
+        setFiles(data.data.map((file) => ({
+          ...file,
+          size: `${(file["size"]/(1024 * 1024)).toFixed(2)} MBs`,
+          createdtime: new Date(file["createdDateTime"]).toLocaleString(),
+          createdby: file["createdBy"].user.displayName,
+          viewFile: file.hasOwnProperty("file") ? webURL => viewFile(webURL) : null,
+          navigateToFolder: file.hasOwnProperty("folder") ? (destID, sourceID) => navigateToFolder(destID, sourceID) : null,
+        })));
+      }
+    }, [data, setFiles, id]);
 
-      return newArr;
-    };
+    const onDelete = values => {
+      console.log(values);
+      // Delete if folder (recursive)
+      // Delete if file
+    }
+
+    const createFolder = () => {
+
+    }
+
+    const uploadFile = () => { }
+
+    const navigateToFolder = (destID) => {
+      if (filePath.includes(destID)) {
+        setFilePath(filePath.filter(x => x !== destID));
+        setId(filePath[filePath.length - 2]);
+      } else {
+        setFilePath([...filePath, destID]);
+        setId(destID);
+      }
+    }
+
+    const viewFile = async(webURL) => {
+      const supported = await Linking.canOpenURL(webURL);
+
+      if (supported) {
+        await Linking.openURL(webURL);
+      } else {
+        toast.info({ title: "Failed to Open", message: "Looks like this URL isn't supported.", duration: 5000 });
+      }
+    }
+
+    const emptyComponent = () => (
+      <View className={"flex-row items-center p-2 w-11/12"}>
+        <FontAwesome5 name={"exclamation-triangle"} size={26} color={"#F97315"} />
+        <Text className={"font-quicksand font-bold text-gray-800 text-wrap ml-2"}>
+          Whoops, there's no folder in SharePoint for this client. Would you like to
+          <Text> </Text>
+          <Text
+            className={"font-quicksand font-bold text-gray-800 underline"}
+            onPress={() => console.log("CREATE FOLDER")}>
+            create one
+          </Text>
+          ?
+        </Text>
+      </View>
+    );
+
+    const ActionBar = () => (
+      <View className={`flex-row bg-gray-100 items-center justify-between py-2`}>
+        <IconButton
+          icon={
+            <FontAwesome5
+              name={"arrow-left"}
+              size={24}
+              color={"#172554"}
+              className={"mx-2"}
+            />
+          }
+          onPress={() => {
+            navigateToFolder(filePath[filePath.length - 1]);
+          }}
+          disabled={filePath.length <= 2}
+        />
+
+        <View className={"flex-row items-center"}>
+          <IconButton
+            icon={
+              <FontAwesome5
+                name={"folder-plus"}
+                size={28}
+                color={"#172554"}
+                className={"mx-3"}
+              />
+            }
+            onPress={() => {
+              createFolder();
+            }}
+          />
+          <IconButton
+            icon={
+              <FontAwesome5
+                name={"file-upload"}
+                size={24}
+                color={"#172554"}
+                className={"mx-3"}
+              />
+            }
+            onPress={() => {
+              uploadFile();
+            }}
+          />
+        </View>
+      </View>
+    );
+
+    return (
+      <Table
+        title={"Files"}
+        data={files}
+        columns={tableColumns.files}
+        columnStyle={["w-4/12", "w-2/12", "w-2/12", "w-4/12"]}
+        isLocked={!isLocked}
+        onDelete={onDelete}
+        emptyComponent={client.folder ? null : emptyComponent}
+        // onCancel={() => console.log(data.contacts)}
+        scrollEnabled={client.folder ? true : false}
+        ActionBar={ActionBar}
+        fileTable={true}
+      />
+    );
   }
 
   return (
@@ -439,14 +568,18 @@ export default function ClientProfile({ navigation, route }) {
 
             <View className={"flex-row"}>
               { data.approvals &&
-                <View className={"w-1/4 z-20"}>
+                <View className={"w-1/2 z-20"}>
                   <ApprovalsTable clientId={clientId} data={data} />
                 </View>
               }
-              <View className={"w-1/4"}>
+              <View className={"w-1/2"}>
                 <ProgramTable clientId={clientId} data={data} />
               </View>
             </View>
+          </View>
+
+          <View className={"w-full"}>
+            <FileTable clientId={clientId} client={data} />
           </View>
         </View>
         <View className={"items-center justify-center h-full"}>
