@@ -65,6 +65,24 @@ export const clientApi = emptySplitApi.injectEndpoints({
       }),
       invalidatesTags: ["Contacts"],
     }),
+    createFolder: builder.mutation({
+      query: ({ parentId, folder }) => ({
+        url: `sharepoint/folder?parentId=${parentId}&folder=${folder}`,
+        method: "POST",
+      }),
+      invalidatesTags: ["Files"],
+    }),
+    createFile: builder.mutation({
+      query: ({ parentId, body }) => ({
+        url: `sharepoint/file?parentId=${parentId}`,
+        body: body,
+        method: "POST",
+        headers: {
+          "Content-Type": "multipart/form-data",
+        }
+      }),
+      invalidatesTags: ["Files"],
+    }),
     updateClient: builder.mutation({
       query: ({ id, body }) => ({
         url: `clients/${id}`,
@@ -188,6 +206,8 @@ export const {
   useCreateClientMutation,
   useCreateAddressMutation,
   useCreateContactMutation,
+  useCreateFolderMutation,
+  useCreateFileMutation,
   useUpdateProgramsMutation,
   useUpdateDetailsMutation,
   useUpdateProgramInfoMutation,

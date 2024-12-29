@@ -88,6 +88,8 @@ export default function AddClientForm({ progress, width, isOpen }) {
           },
         });
       });
+
+    // CREATE FOLDERS FOR CLIENT
   };
 
   return (

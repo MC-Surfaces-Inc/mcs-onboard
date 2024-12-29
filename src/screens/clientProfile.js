@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import {
+  useCreateFileMutation,
+  useCreateFolderMutation,
   useDeleteAddressMutation,
   useDeleteContactMutation,
   useDeleteProgramInfoMutation,
@@ -23,7 +25,7 @@ import AddProgramForm from "../forms/addProgramForm";
 import { useFieldArray, useForm } from "react-hook-form";
 import { types } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
-import { Linking, SafeAreaView, Text, View } from "react-native";
+import { Linking, SafeAreaView, Text, TextInput, View } from "react-native";
 import Menu from "../components/menu";
 import { useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import EditClientForm from "../forms/editClientForm";
@@ -31,6 +33,9 @@ import { setIsLocked } from "../features/client/clientSlice";
 import { useDispatch, useSelector } from "react-redux";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import IconButton from "../components/iconButton";
+import DocumentPicker from "react-native-document-picker";
+import { getArrayBufferForBlob, getBlobForArrayBuffer } from "react-native-blob-jsi-helper";
+import FormData from "form-data";
 
 const statusColors = {
   Potential: "bg-slate-600",
@@ -303,33 +308,33 @@ export default function ClientProfile({ navigation, route }) {
   }
 
   const FileTable = ({ client, clientId }) => {
-    const [id, setId] = React.useState(null);
-    const [parentId, setParentId] = React.useState(null);
+    const [id, setId] = React.useState(client.folder.sharepointId);
     const [files, setFiles] = React.useState([]);
     const [filePath, setFilePath] = React.useState([]);
-    const { data, isLoading, isSuccess, isFetching } = useGetFilesQuery(id);
-
-    console.log(files)
+    const [fileInput, setFileInput] = React.useState("");
+    const [showInput, setShowInput] = React.useState(false);
+    const { data, isLoading } = useGetFilesQuery(id);
+    const [createFolder, result] = useCreateFolderMutation();
+    const [createFile, result2] = useCreateFileMutation();
 
     React.useEffect(() => {
-      if (client.folder) {
-        setId(client.folder.sharepointId);
+      if (filePath.length === 0) {
         setFilePath([...filePath, client.folder.sharepointId]);
       }
-    }, [client, setId, setFilePath]);
+    }, [client, setFilePath, filePath]);
 
     React.useEffect(() => {
-      if (id && data) {
-        setFiles(data.data.map((file) => ({
+      if (data) {
+        setFiles(data.map((file) => ({
           ...file,
           size: `${(file["size"]/(1024 * 1024)).toFixed(2)} MBs`,
           createdtime: new Date(file["createdDateTime"]).toLocaleString(),
           createdby: file["createdBy"].user.displayName,
           viewFile: file.hasOwnProperty("file") ? webURL => viewFile(webURL) : null,
-          navigateToFolder: file.hasOwnProperty("folder") ? (destID, sourceID) => navigateToFolder(destID, sourceID) : null,
+          navigateToFolder: file.hasOwnProperty("folder") ? (destID) => navigateToFolder(destID) : null,
         })));
       }
-    }, [data, setFiles, id]);
+    }, [data, setFiles]);
 
     const onDelete = values => {
       console.log(values);
@@ -337,18 +342,55 @@ export default function ClientProfile({ navigation, route }) {
       // Delete if file
     }
 
-    const createFolder = () => {
-
+    const uploadFolder = () => {
+      createFolder({ parentId: filePath[filePath.length - 1], folder: fileInput })
+        .unwrap()
+        .then(res => {
+          console.log(res);
+          toast.success({
+            title: "Success!",
+            message: "Folder Successfully Created",
+          });
+        })
     }
 
-    const uploadFile = () => { }
+    const uploadFile = async () => {
+      const formData = new FormData();
+      let file = await pickFile();
+      formData.append("file", file);
+
+      createFile({ parentId: filePath[filePath.length - 1], body: formData })
+        .unwrap()
+        .then(res => {
+          toast.success({
+            title: "Success!",
+            message: "File Successfully Uploaded",
+          });
+        });
+    }
+
+    const pickFile = async() => {
+      try {
+        const res = await DocumentPicker.pickSingle({
+          type: DocumentPicker.types.allFiles,
+        });
+
+        return res;
+      } catch (error) {
+        if (DocumentPicker.isCancel(error)) {
+          return "Canceled";
+        } else {
+          console.log(error);
+        }
+      }
+    }
 
     const navigateToFolder = (destID) => {
       if (filePath.includes(destID)) {
         setFilePath(filePath.filter(x => x !== destID));
         setId(filePath[filePath.length - 2]);
       } else {
-        setFilePath([...filePath, destID]);
+        setFilePath(prevFilePath => [...prevFilePath, destID]);
         setId(destID);
       }
     }
@@ -363,65 +405,73 @@ export default function ClientProfile({ navigation, route }) {
       }
     }
 
-    const emptyComponent = () => (
-      <View className={"flex-row items-center p-2 w-11/12"}>
-        <FontAwesome5 name={"exclamation-triangle"} size={26} color={"#F97315"} />
-        <Text className={"font-quicksand font-bold text-gray-800 text-wrap ml-2"}>
-          Whoops, there's no folder in SharePoint for this client. Would you like to
-          <Text> </Text>
-          <Text
-            className={"font-quicksand font-bold text-gray-800 underline"}
-            onPress={() => console.log("CREATE FOLDER")}>
-            create one
-          </Text>
-          ?
-        </Text>
-      </View>
-    );
-
     const ActionBar = () => (
       <View className={`flex-row bg-gray-100 items-center justify-between py-2`}>
         <IconButton
           icon={
             <FontAwesome5
               name={"arrow-left"}
-              size={24}
+              size={20}
               color={"#172554"}
-              className={"mx-2"}
+              className={"m-2"}
             />
           }
           onPress={() => {
-            navigateToFolder(filePath[filePath.length - 1]);
+            navigateToFolder(filePath[filePath.length - 2]);
           }}
-          disabled={filePath.length <= 2}
+          disabled={filePath.length === 1}
+          className={"border border-gray-800 rounded-lg  mx-1 h-10 w-10"}
         />
 
-        <View className={"flex-row items-center"}>
+        <View className={"flex-row items-center justify-end"}>
+          {showInput &&
+            <React.Fragment>
+              <TextInput
+                className={`w-1/2 rounded-l-lg border-gray-400 border-r-orange-500 border h-10 p-2 font-quicksand focus:border-orange-500`}
+                placeholder={"Folder Name"}
+                cursorColor={"#F97316"}
+                value={fileInput}
+                onChangeText={setFileInput}
+              />
+              <IconButton
+                icon={
+                  <FontAwesome5
+                    name={"save"}
+                    size={20}
+                    color={"#FFFFFF"}
+                  />
+                }
+                onPress={() => uploadFolder()}
+                className={"bg-orange-500 h-10 w-10 p-2 rounded-r-lg"}
+              />
+            </React.Fragment>
+          }
+
           <IconButton
             icon={
               <FontAwesome5
-                name={"folder-plus"}
-                size={28}
+                name={showInput ? "window-close" : "folder-plus"}
+                size={20}
                 color={"#172554"}
-                className={"mx-3"}
+                className={"m-2"}
               />
             }
-            onPress={() => {
-              createFolder();
-            }}
+            onPress={() => setShowInput(!showInput)}
+            className={"border border-gray-800 rounded-lg mx-1 ml-2 h-10 w-10"}
           />
           <IconButton
             icon={
               <FontAwesome5
                 name={"file-upload"}
-                size={24}
+                size={20}
                 color={"#172554"}
-                className={"mx-3"}
+                className={"m-2"}
               />
             }
             onPress={() => {
               uploadFile();
             }}
+            className={"border border-gray-800 rounded-lg  mx-1 h-10 w-10"}
           />
         </View>
       </View>
@@ -435,10 +485,77 @@ export default function ClientProfile({ navigation, route }) {
         columnStyle={["w-4/12", "w-2/12", "w-2/12", "w-4/12"]}
         isLocked={!isLocked}
         onDelete={onDelete}
-        emptyComponent={client.folder ? null : emptyComponent}
         // onCancel={() => console.log(data.contacts)}
         scrollEnabled={client.folder ? true : false}
         ActionBar={ActionBar}
+        fileTable={true}
+        isLoading={isLoading}
+      />
+    );
+  }
+
+  const NonExistingFileTable = ({ data }) => {
+    const [createFolder, result] = useCreateFolderMutation();
+
+    const uploadFolder = () => {
+      let parentId = null;
+
+      if (!data.basicInfo.territory) {
+        toast.danger({
+          title: "Whoops, no territory specified!",
+          message: "To create a folder in SharePoint, you'll need to enter a territory for this client.",
+        });
+
+        return;
+      }
+
+      if (data.basicInfo.territory === "Austin") {
+        parentId = "01XZCDNO6TTXM6UZXBFBC33WJWWDN3EEBJ";
+      } else if (data.basicInfo.territory === "Dallas") {
+        parentId = "01XZCDNO4JKCYSEARSCZDJYLUGIHQ2SKQP";
+      } else if (data.basicInfo.territory === "Houston") {
+        parentId = "01XZCDNO4WAPZ5LVJ33JG2JGIWKKSM6Z2B";
+      } else if (data.basicInfo.territory === "San Antonio") {
+        parentId = "01XZCDNOZKISHGJNG4DRCY7AVLE5VUPAJQ";
+      }
+
+      createFolder({ parentId: parentId, folder: data.basicInfo.name })
+        .unwrap()
+        .then(res => {
+          console.log(res);
+          toast.success({
+            title: "Success!",
+            message: "Folder Successfully Created",
+          });
+        });
+    }
+
+    const emptyComponent = () => (
+      <View className={"flex-row items-center p-2 w-11/12"}>
+        <FontAwesome5 name={"exclamation-triangle"} size={26} color={"#F97315"} />
+        <Text className={"font-quicksand font-bold text-gray-800 text-wrap ml-2"}>
+          Whoops, there's no folder in SharePoint for this client. Would you like to
+          <Text> </Text>
+          <Text
+            className={"font-quicksand font-bold text-gray-800 underline"}
+            onPress={() => uploadFolder()}>
+            create one
+          </Text>
+          ?
+        </Text>
+      </View>
+    );
+
+    return (
+      <Table
+        title={"Files"}
+        data={[]}
+        columns={tableColumns.files}
+        columnStyle={["w-4/12", "w-2/12", "w-2/12", "w-4/12"]}
+        isLocked={!isLocked}
+        emptyComponent={emptyComponent}
+        // onCancel={() => console.log(data.contacts)}
+        scrollEnabled={false}
         fileTable={true}
       />
     );
@@ -579,7 +696,11 @@ export default function ClientProfile({ navigation, route }) {
           </View>
 
           <View className={"w-full"}>
-            <FileTable clientId={clientId} client={data} />
+            {data.folder ?
+              <FileTable clientId={clientId} client={data} />
+              :
+              <NonExistingFileTable data={data} />
+            }
           </View>
         </View>
         <View className={"items-center justify-center h-full"}>

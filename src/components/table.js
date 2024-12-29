@@ -22,7 +22,8 @@ export default function Table({
   emptyComponent,
   scrollEnabled=false,
   fileTable=false,
-  ActionBar
+  ActionBar,
+  isLoading,
 }) {
   const [alert, showAlert] = React.useState(false);
   const [selectedItems, setSelectedItems] = React.useState([]);
@@ -100,11 +101,18 @@ export default function Table({
               emptyComponent ?
                 emptyComponent()
                 :
-                <View className={"flex-row justify-center"}>
-                  <Text className={"font-quicksand font-bold text-orange-500 p-2"}>
-                    No Data Found
-                  </Text>
-                </View>
+                isLoading ?
+                  <View className={"flex-row z-0 items-center justify-center"}>
+                    <Text className={"font-quicksand font-bold text-orange-500 p-2"}>
+                      Loading...
+                    </Text>
+                  </View>
+                  :
+                  <View className={"flex-row justify-center"}>
+                    <Text className={"font-quicksand font-bold text-orange-500 p-2"}>
+                      No Data Found
+                    </Text>
+                  </View>
             }
             renderItem={({ item, index }) => {
               if (fileTable) {

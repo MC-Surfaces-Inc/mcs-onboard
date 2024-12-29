@@ -5,7 +5,7 @@ export default function IconButton(props) {
   return (
     <Pressable
       // title={props.title}
-      className={`${props.className} active:opacity-50`}
+      className={`${props.className} active:opacity-50 items-center justify-center`}
       onPress={!props.disabled && props.onPress}
       disabled={props.disabled}
     >
