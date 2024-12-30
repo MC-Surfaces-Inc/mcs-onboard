@@ -6,7 +6,7 @@ import TextInput from "../components/input";
 import Picker from "../components/picker";
 import {
   useCreateAddressMutation,
-  useCreateClientMutation,
+  useCreateClientMutation, useCreateFolderMutation, useCreateInternalFolderMutation,
 } from "../services/client";
 import { useSelector } from "react-redux";
 import { ErrorMessage } from "@hookform/error-message";
@@ -39,6 +39,8 @@ export default function AddClientForm({ progress, width, isOpen }) {
   });
   const [createClient, { isLoading, isUpdating }] = useCreateClientMutation();
   const [createAddress, status] = useCreateAddressMutation();
+  const [createFolder, result] = useCreateFolderMutation();
+  const [createInternalFolder, result2] = useCreateInternalFolderMutation();
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -51,7 +53,11 @@ export default function AddClientForm({ progress, width, isOpen }) {
     transform: [{ translateX: progress.value * 2 * width.value }],
   }));
 
-  const onSubmit = values => {
+  const onSubmit = async (values) => {
+    let clientId = null;
+    let parentId = null;
+    let createdId = null;
+
     setLoading(true);
     createClient({
       ...values.client,
@@ -60,7 +66,8 @@ export default function AddClientForm({ progress, width, isOpen }) {
     })
       .unwrap()
       .then(res => {
-        console.log(res);
+        clientId = res.data.insertId;
+
         createAddress({
           id: res.data.insertId,
           body: {
@@ -89,7 +96,50 @@ export default function AddClientForm({ progress, width, isOpen }) {
         });
       });
 
+    if (!values.client.territory) {
+      toast.danger({
+        title: "Whoops, no territory specified!",
+        message: "To create a folder in SharePoint, you'll need to enter a territory for this client.",
+      });
+
+      return;
+    }
+
     // CREATE FOLDERS FOR CLIENT
+    // Jobs, Programs, Purchase Orders, Selection Sheets and Diagrams
+    if (values.client.territory === "Austin") {
+      parentId = "01XZCDNO6TTXM6UZXBFBC33WJWWDN3EEBJ";
+    } else if (values.client.territory === "Dallas") {
+      parentId = "01XZCDNO4JKCYSEARSCZDJYLUGIHQ2SKQP";
+    } else if (values.client.territory === "Houston") {
+      parentId = "01XZCDNO4WAPZ5LVJ33JG2JGIWKKSM6Z2B";
+    } else if (values.client.territory === "San Antonio") {
+      parentId = "01XZCDNOZKISHGJNG4DRCY7AVLE5VUPAJQ";
+    }
+
+    await createFolder({ parentId: parentId, folder: values.client.name })
+      .unwrap()
+      .then(res => {
+        toast.success({
+          title: "Success!",
+          message: "Folder Successfully Created",
+        });
+
+        // Need to receive created ID back
+        let createdId = res.id;
+        createInternalFolder({
+          body: {
+            clientId: clientId,
+            sharepointId: createdId,
+            sharepointParentId: parentId,
+          }
+        });
+
+        // Create subfolders
+        createFolder({ parentId: createdId, folder: "Jobs" });
+        createFolder({ parentId: createdId, folder: "Programs" });
+        createFolder({ parentId: createdId, folder: "Purchase Orders" });
+      });
   };
 
   return (

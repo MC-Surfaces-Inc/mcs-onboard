@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React from "react";
 import {
   useCreateFileMutation,
   useCreateFolderMutation,
@@ -17,7 +17,6 @@ import Toolbar from "../components/toolbar";
 import Badge from "../components/badge";
 import Table from "../components/table";
 import Divider from "../components/divider";
-import Button from "../components/button";
 import Loading from "./loading";
 import AddContactForm from "../forms/addContactForm";
 import AddAddressForm from "../forms/addAddressForm";
@@ -34,7 +33,6 @@ import { useDispatch, useSelector } from "react-redux";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import IconButton from "../components/iconButton";
 import DocumentPicker from "react-native-document-picker";
-import { getArrayBufferForBlob, getBlobForArrayBuffer } from "react-native-blob-jsi-helper";
 import FormData from "form-data";
 
 const statusColors = {
@@ -53,10 +51,7 @@ const tableColumns = {
   files: ["Name", "Size", "Created By", "Created Time"]
 }
 
-/* TODO:  - Fix notification/toast system for tables
-          - Add in form functionality for Addresses, Contacts and Programs
-          - Add complete File functionality
-          - Adjust tables for screen size
+/* TODO:  - Adjust tables for screen size
           - Fix portait orientation
  */
 export default function ClientProfile({ navigation, route }) {
@@ -689,7 +684,7 @@ export default function ClientProfile({ navigation, route }) {
                   <ApprovalsTable clientId={clientId} data={data} />
                 </View>
               }
-              <View className={"w-1/2"}>
+              <View className={"w-1/2 flex-1"}>
                 <ProgramTable clientId={clientId} data={data} />
               </View>
             </View>

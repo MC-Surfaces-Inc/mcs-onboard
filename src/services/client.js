@@ -65,6 +65,14 @@ export const clientApi = emptySplitApi.injectEndpoints({
       }),
       invalidatesTags: ["Contacts"],
     }),
+    createInternalFolder: builder.mutation({
+      query: ({ body }) => ({
+        url: `sharepoint/folder/internal`,
+        method: "POST",
+        body: body,
+      }),
+      invalidatesTags: ["BasicInfo"],
+    }),
     createFolder: builder.mutation({
       query: ({ parentId, folder }) => ({
         url: `sharepoint/folder?parentId=${parentId}&folder=${folder}`,
@@ -206,6 +214,7 @@ export const {
   useCreateClientMutation,
   useCreateAddressMutation,
   useCreateContactMutation,
+  useCreateInternalFolderMutation,
   useCreateFolderMutation,
   useCreateFileMutation,
   useUpdateProgramsMutation,
