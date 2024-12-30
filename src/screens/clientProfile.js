@@ -1,7 +1,7 @@
 import React from "react";
 import {
   useCreateFileMutation,
-  useCreateFolderMutation,
+  useCreateFolderMutation, useCreateInternalFolderMutation,
   useDeleteAddressMutation,
   useDeleteContactMutation,
   useDeleteProgramInfoMutation,
@@ -489,8 +489,9 @@ export default function ClientProfile({ navigation, route }) {
     );
   }
 
-  const NonExistingFileTable = ({ data }) => {
+  const NonExistingFileTable = ({ data, clientId }) => {
     const [createFolder, result] = useCreateFolderMutation();
+    const [createInternalFolder, result2] = useCreateInternalFolderMutation();
 
     const uploadFolder = () => {
       let parentId = null;
@@ -517,7 +518,19 @@ export default function ClientProfile({ navigation, route }) {
       createFolder({ parentId: parentId, folder: data.basicInfo.name })
         .unwrap()
         .then(res => {
-          console.log(res);
+          createInternalFolder({
+            body: {
+              clientId: clientId,
+              sharepointId: res.id,
+              sharepointParentId: parentId,
+            }
+          });
+
+          // Create subfolders
+          createFolder({ parentId: res.id, folder: "Jobs" });
+          createFolder({ parentId: res.id, folder: "Programs" });
+          createFolder({ parentId: res.id, folder: "Purchase Orders" });
+
           toast.success({
             title: "Success!",
             message: "Folder Successfully Created",
@@ -694,7 +707,7 @@ export default function ClientProfile({ navigation, route }) {
             {data.folder ?
               <FileTable clientId={clientId} client={data} />
               :
-              <NonExistingFileTable data={data} />
+              <NonExistingFileTable clientId={clientId} data={data} />
             }
           </View>
         </View>
