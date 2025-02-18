@@ -44,7 +44,7 @@ export default function AccountingInfoForm({ clientId, data }) {
         });
       });
   };
-  console.log(isLocked);
+
   return (
     <View className={"flex-1 mx-2"}>
       <View className={"flex-row justify-between items-center my-2"}>

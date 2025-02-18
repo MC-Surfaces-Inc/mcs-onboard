@@ -1,24 +1,43 @@
 import React, { useState } from "react";
 import { Text, TextInput, View } from "react-native";
 import { Controller } from "react-hook-form";
+import { ErrorMessage } from "@hookform/error-message";
 
 export default function Input({
   control,
   field,
   title,
   rules,
+  errors,
   leftIcon,
+  rightIcon,
   numerical,
   disabled,
+  inputMode=null,
+  autoCapitalize,
+  secureTextEntry,
   textStyle,
   inputStyle,
   containerStyle
 }) {
   const [focused, setFocused] = useState(false);
+  const [error, setError] = useState(false);
+
+  React.useEffect(() => {
+    if (errors) {
+      if (errors[field]) {
+        setError(true);
+      } else {
+        setError(false);
+      }
+    }
+  }, [errors, field, setError]);
 
   return (
     <View className={`z-10 ${containerStyle}`}>
-      {title && <Text className={`font-quicksand mb-1 mt-2 ${textStyle}`}>{title}</Text>}
+      {title &&
+        <Text className={`font-quicksand mb-1 mt-2 ${textStyle} ${error && "text-red-700"}`}>{title}</Text>
+      }
       <Controller
         control={control}
         name={field}
@@ -26,33 +45,64 @@ export default function Input({
         render={({ field: { onBlur, onChange, value } }) => {
           if (leftIcon) {
             return (
-              <View className={`flex-row items-center border ${focused ? "border-orange-500 border-2" : "border-gray-300"} h-10 p-2`}>
+              <View className={`flex-row items-center border ${focused ? "border-orange-500 border-2" : "border-gray-300"} ${error && "border-red-700"} rounded-md h-10 p-2`}>
                 {leftIcon}
                 <TextInput
-                  className={`font-quicksand  rounded-md  ${inputStyle} w-full h-10 p-2`}
+                  className={`font-quicksand ${inputStyle} w-full h-10 p-2`}
                   onBlur={() => setFocused(false)}
                   onChangeText={onChange}
                   value={value && (numerical ? value.toString() : value)}
                   onFocus={() => setFocused(true)}
                   readOnly={disabled !== undefined && disabled}
+                  inputMode={inputMode}
+                  autoCapitalize={autoCapitalize}
+                  secureTextEntry={secureTextEntry}
                 />
               </View>
             );
+          } else if (rightIcon) {
+            return (
+              <View className={`flex-row items-center justify-between border ${focused ? "border-orange-500 border-2" : "border-gray-300"} ${error && "border-red-700"} rounded-md h-10 pr-2`}>
+                <TextInput
+                  className={`font-quicksand ${inputStyle} h-10 w-3/4 p-2`}
+                  onBlur={() => setFocused(false)}
+                  onChangeText={onChange}
+                  value={value && (numerical ? value.toString() : value)}
+                  onFocus={() => setFocused(true)}
+                  readOnly={disabled !== undefined && disabled}
+                  inputMode={inputMode}
+                  autoCapitalize={autoCapitalize}
+                  secureTextEntry={secureTextEntry}
+                />
+                {rightIcon}
+              </View>
+            )
           }
 
           return (
-            <React.Fragment>
-              <TextInput
-                className={`font-quicksand  rounded-md focus:border-orange-500 focus:border-2 w-full border border-gray-300 h-10 p-2 ${inputStyle}`}
-                onBlur={onBlur}
-                onChangeText={onChange}
-                readOnly={disabled !== undefined && disabled}
-                value={value && (numerical ? value.toString() : value)}
-              />
-            </React.Fragment>
+            <TextInput
+              className={`font-quicksand rounded-md focus:border-orange-500 focus:border-2 w-full border border-gray-300 h-10 p-2 ${inputStyle} ${error && "border-red-700"} text-wrap`}
+              onBlur={onBlur}
+              onChangeText={onChange}
+              readOnly={disabled !== undefined && disabled}
+              value={value && (numerical ? value.toString() : value)}
+              inputMode={inputMode}
+              autoCapitalize={autoCapitalize}
+              secureTextEntry={secureTextEntry}
+            />
           );
         }}
       />
+
+      {error &&
+        <ErrorMessage
+          name={field}
+          errors={errors}
+          render={({message}) => (
+            <Text className={"font-quicksand color-red-700 w-3/4 mt-2"}>{message}</Text>
+          )}
+        />
+      }
     </View>
   );
 }

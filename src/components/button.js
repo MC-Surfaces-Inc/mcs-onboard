@@ -16,6 +16,7 @@ const types = {
     error: ""
   },
   contained: {
+    default: "rounded-lg bg-blue-600",
     action: "rounded-lg bg-orange-500",
     success: "rounded-lg bg-green-400",
     error: "rounded-lg bg-red-500"
@@ -47,7 +48,7 @@ const text = {
 }
 
 export default function Button({
-  title, type, size, color, onPress, className, fontClass, disabled, icon
+  title, type, size, color, onPress, className, fontClass, disabled, icon, children, textIcon
 }) {
   return (
     <TouchableOpacity
@@ -61,7 +62,10 @@ export default function Button({
           {icon}
         </View>
       )}
-      <Text className={`font-quicksand font-semibold ${text[type][color]} ${fontClass}`}>{title}</Text>
+      <View className={"flex-row items-center"}>
+        <Text className={`font-quicksand font-semibold ${text[type][color]} ${fontClass}`}>{title}</Text>
+        {textIcon && textIcon}
+      </View>
     </TouchableOpacity>
   )
 }

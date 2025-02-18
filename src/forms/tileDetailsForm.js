@@ -289,7 +289,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           choices={tile.takeoffResp}
           control={control}
           field={"tile.takeoffResponsibility"}
-          title={"Who Will Be Doing Takeoffs?"}
+          title={"Who will be doing takeoffs?"}
           disabled={isLocked}
         />
 

@@ -3,7 +3,7 @@ import { emptySplitApi } from "./emptySplit";
 export const userApi = emptySplitApi.injectEndpoints({
   endpoints: builder => ({
     getUserInfo: builder.query({
-      query: userSub => `users?sub=${userSub}`,
+      query: email => `users/email?value=${email}`,
     }),
   }),
   overrideExisting: true,

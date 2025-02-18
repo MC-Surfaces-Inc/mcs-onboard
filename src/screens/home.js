@@ -22,7 +22,7 @@ const statusColors = {
   Pushed: "bg-blue-950",
 };
 
-// TODO:  - create divider component (need to use in FlatList)
+//
 export default function Home({ navigation }) {
   const user = useSelector(state => state.auth.user);
   const { data = [], error, isLoading } = useGetClientsByUserQuery(user?.id);

@@ -124,7 +124,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           choices={countertops.takeoffResp}
           control={control}
           field={"countertops.takeoffResponsibility"}
-          title={"Who Will Be Doing Takeoffs?"}
+          title={"Who will be doing takeoffs?"}
           disabled={isLocked}
         />
 

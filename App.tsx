@@ -15,6 +15,12 @@ import Help from "./src/screens/help";
 import "./global.css";
 import { ToastComponent } from "./src/components/toast";
 
+// AWS Cognito Required Imports
+import 'react-native-get-random-values';
+import 'react-native-url-polyfill/auto';
+import { ReadableStream } from 'web-streams-polyfill/ponyfill';
+globalThis.ReadableStream = ReadableStream;
+
 const NavStack = createNativeStackNavigator();
 
 function App(): React.JSX.Element {
@@ -36,8 +42,12 @@ function App(): React.JSX.Element {
     bootstrapAsync();
   }, [dispatch]);
 
+  const linking = {
+    prefixes: ["mcsurfacesinc.onboard://"]
+  };
+
   return (
-    <NavigationContainer>
+    <NavigationContainer linking={linking}>
       <ToastComponent />
       <NavStack.Navigator
         initialRouteName={"Login"}
