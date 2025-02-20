@@ -64,7 +64,7 @@ export default function AddAddressForm({ clientId, selections }) {
           field={"type"}
           title={"Type"}
           textStyle={"color-white"}
-          containerStyle={"w-2/12"}
+          containerStyle={"w-2/12 -mt-1"}
           inputStyle={"bg-gray-100"}
         />
         <TextInput
@@ -97,7 +97,7 @@ export default function AddAddressForm({ clientId, selections }) {
           field={"state"}
           title={"State"}
           textStyle={"color-white"}
-          containerStyle={"w-2/12"}
+          containerStyle={"w-2/12 -mt-1"}
           inputStyle={"bg-gray-100"}
         />
         <TextInput

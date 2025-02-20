@@ -25,7 +25,6 @@ export default function Table({
   ActionBar,
   isLoading,
 }) {
-  const [alert, showAlert] = React.useState(false);
   const [selectedItems, setSelectedItems] = React.useState([]);
   const [height, setHeight] = React.useState(0);
   const animatedHeight = useSharedValue(0);
@@ -58,7 +57,7 @@ export default function Table({
   }, [isAdding, height]);
 
   return (
-    <View className={"flex-col max-h-64"}>
+    <View className={`flex-col ${fileTable ? "min-h-96 max-h-96" : "max-h-64"}`}>
       <View className={"flex-row z-20"}>
         <View className={`"border-gray-800" bg-gray-100 border rounded-lg flex-1 m-1 mt-2 ${isAdding ? "-mb-2" : "mb-0"}`}>
           <FlatList
@@ -124,7 +123,7 @@ export default function Table({
                       if (item.hasOwnProperty("file")) {
                         item.viewFile(item.webUrl);
                       } else if (item.hasOwnProperty("folder")) {
-                        item.navigateToFolder(item.id, item.parentReference.id);
+                        item.navigateToFolder(item.id, item.parentReference.id, item.name);
                       }
                     }}
                   >
@@ -215,16 +214,20 @@ export default function Table({
                   {isLocked && <Divider orientation="vertical" /> }
 
                   {columns.map((cell, cellIndex) => {
+                    let attribute = cell.toLowerCase().replace(/\s/g, "");
+                    let field = `${title.toLowerCase()}.${index}.${attribute}`;
+
                     if (isEditing) {
                       if (fieldTypes[cellIndex].type === "input") {
                         return (
                           <Input
                             key={cell.id}
                             control={control}
-                            field={`${title.toLowerCase()}.${index}.${cell.toLowerCase().replace(/\s/g, "")}`}
+                            field={field}
                             containerStyle={`${columnStyle[cellIndex]}`}
                             inputStyle={`${columnStyle[cellIndex]} rounded-none`}
                             cursorColor={"#F97316"}
+                            autoCapitalize={attribute === "email" ? "none" : ""}
                           />
                         );
                       } else if (fieldTypes[cellIndex].type === "picker") {
@@ -233,9 +236,9 @@ export default function Table({
                             key={cell.id}
                             choices={fieldTypes[cellIndex].choices}
                             control={control}
-                            field={`${title.toLowerCase()}.${index}.${cell.toLowerCase().replace(/\s/g, "")}`}
+                            field={field}
                             textStyle={"color-white"}
-                            containerStyle={`${columnStyle[cellIndex]}`}
+                            containerStyle={`${columnStyle[cellIndex]} -mt-1`}
                             inputStyle={`-mt-0.5 rounded-none`}
                             // inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 m-0`}
                           />
@@ -273,7 +276,7 @@ const Header = (props) => (
   <React.Fragment>
     {props.title &&
       <React.Fragment>
-        <View className={"flex-row items-center justify-between bg-gray-100 rounded-t-lg"}>
+        <View className={"flex-row items-center justify-between bg-gray-100 rounded-t-lg py-2"}>
           <Text className={"font-quicksand text-base mx-1 my-2 font-bold"}>
             {props.title}
           </Text>
@@ -285,15 +288,15 @@ const Header = (props) => (
                 icon={
                   <FontAwesome5
                     name={"trash"}
-                    size={24}
+                    size={20}
                     color={"#ef4444"}
-                    className={"mx-2"}
                   />
                 }
                 onPress={() => {
                   props.delete.onDelete(props.delete.selectedItems);
                 }}
                 disabled={props.add.isAdding || props.edit.isEditing}
+                className={"border border-gray-800 rounded-lg mx-1 ml-2 h-10 w-10"}
               />
             }
 
@@ -303,15 +306,15 @@ const Header = (props) => (
                 icon={
                   <FontAwesome5
                     name={"edit"}
-                    size={24}
+                    size={20}
                     color={"#172554"}
-                    className={"mx-2"}
                   />
                 }
                 onPress={() => {
                   props.edit.setIsEditing(!props.edit.isEditing);
                 }}
                 disabled={props.add.isAdding || props.edit.isDeleting}
+                className={"border border-gray-800 rounded-lg mx-1 ml-2 h-10 w-10"}
               />
             }
 
@@ -321,9 +324,8 @@ const Header = (props) => (
                 icon={
                   <FontAwesome5
                     name={"save"}
-                    size={24}
+                    size={20}
                     color={"#4ade80"}
-                    className={"mx-2"}
                   />
                 }
                 onPress={() => {
@@ -331,6 +333,7 @@ const Header = (props) => (
                   props.edit.setIsEditing(!props.edit.isEditing);
                 }}
                 disabled={props.add.isAdding || props.edit.isDeleting}
+                className={"border border-gray-800 rounded-lg mx-1 ml-2 h-10 w-10"}
               />
             }
 
@@ -340,15 +343,15 @@ const Header = (props) => (
                 icon={
                   <FontAwesome5
                     name={"times"}
-                    size={24}
+                    size={20}
                     color={"#ef4444"}
-                    className={"mx-2"}
                   />
                 }
                 onPress={() => {
                   props.edit.setIsEditing(false);
                 }}
                 disabled={props.add.isAdding || props.edit.isDeleting}
+                className={"border border-gray-800 rounded-lg mx-1 ml-2 h-10 w-10"}
               />
             }
 
@@ -358,15 +361,15 @@ const Header = (props) => (
                 icon={
                   <FontAwesome5
                     name={props.add.isAdding ? "times" : "plus"}
-                    size={24}
+                    size={20}
                     color={props.add.isAdding ? "#ef4444": "#172554"}
-                    className={"mx-2"}
                   />
                 }
                 onPress={() => {
                   props.add.setIsAdding(!props.add.isAdding);
                 }}
                 disabled={props.add.isDeleting || props.edit.isEditing}
+                className={"border border-gray-800 rounded-lg mx-1 ml-2 h-10 w-10"}
               />
             }
           </View>

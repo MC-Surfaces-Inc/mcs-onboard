@@ -56,7 +56,7 @@ export default function Picker({
   if (control === undefined || control === null) {
     return (
       <View className={`relative z-100 ${containerStyle}`} style={{ zIndex: 100 }}>
-        {title && <Text className={`font-quicksand mb-1 mt-2 ${textStyle}`}>{title}</Text>}
+        {title && <Text className={`font-quicksand ${textStyle}`}>{title}</Text>}
         <React.Fragment>
           <Pressable
             disabled={disabled}

@@ -44,9 +44,6 @@ export default function AddContactForm({ clientId }) {
           control={control}
           field={"name"}
           title={"Name"}
-          rules={{
-            required: "Required Field"
-          }}
           errorMessage={<ErrorMessage errors={errors} name={"name"} />}
           textStyle={"color-white"}
           inputStyle={"bg-gray-100"}
@@ -56,9 +53,6 @@ export default function AddContactForm({ clientId }) {
           control={control}
           field={"title"}
           title={"Title"}
-          rules={{
-            required: "Required Field"
-          }}
           textStyle={"color-white"}
           inputStyle={"bg-gray-100"}
           containerStyle={"w-1/4"}
@@ -78,6 +72,7 @@ export default function AddContactForm({ clientId }) {
           textStyle={"color-white"}
           inputStyle={"bg-gray-100"}
           containerStyle={"w-1/4"}
+          autoCapitalize={"none"}
         />
       </View>
 

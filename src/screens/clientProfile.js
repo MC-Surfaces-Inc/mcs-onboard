@@ -24,7 +24,7 @@ import AddProgramForm from "../forms/addProgramForm";
 import { useFieldArray, useForm } from "react-hook-form";
 import { types } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
-import { Linking, SafeAreaView, Text, TextInput, View } from "react-native";
+import { Linking, SafeAreaView, ScrollView, Text, TextInput, View } from "react-native";
 import Menu from "../components/menu";
 import { useDerivedValue, useSharedValue, withTiming } from "react-native-reanimated";
 import EditClientForm from "../forms/editClientForm";
@@ -133,7 +133,14 @@ export default function ClientProfile({ navigation, route }) {
         columnStyle={["w-2/12", "w-3/12", "w-2/12", "w-2/12", "w-1/12", "w-2/12"]}
         control={control}
         Form={<AddAddressForm clientId={clientId} selections={data.addresses} />}
-        fieldTypes={[{type: "picker", choices: types}, {type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
+        fieldTypes={[
+          {type: "picker", choices: types, cellAction: null},
+          {type: "input", cellAction: null},
+          {type: "input", cellAction: null},
+          {type: "input", cellAction: null},
+          {type: "input", cellAction: null},
+          {type: "input", cellAction: null}
+        ]}
         isLocked={!isLocked}
         onEdit={handleSubmit(onEdit)}
         onDelete={onDelete}
@@ -155,7 +162,6 @@ export default function ClientProfile({ navigation, route }) {
     });
     const [updateContact, result] = useUpdateContactMutation();
     const [deleteContact, result4] = useDeleteContactMutation();
-    const [loading, setLoading] = React.useState(false);
 
     const onDelete = values => {
       values.forEach((item, index) => {
@@ -183,6 +189,21 @@ export default function ClientProfile({ navigation, route }) {
             });
           });
       });
+    }
+
+    const mailTo = cell => {
+      const mailToUrl = `mailto:${cell.address}`;
+
+      Linking.canOpenURL(mailToUrl).then(supported => {
+        if (supported) {
+          return Linking.openURL(mailToUrl);
+        } else {
+          toast.danger({
+            title: "Whoops!",
+            message: "Couldn't open your email app"
+          })
+        }
+      })
     }
 
     return (
@@ -306,6 +327,7 @@ export default function ClientProfile({ navigation, route }) {
     const [id, setId] = React.useState(client.folder.sharepointId);
     const [files, setFiles] = React.useState([]);
     const [filePath, setFilePath] = React.useState([]);
+    const [textFilePath, setTextFilePath] = React.useState([]);
     const [fileInput, setFileInput] = React.useState("");
     const [showInput, setShowInput] = React.useState(false);
     const { data, isLoading } = useGetFilesQuery(id);
@@ -319,6 +341,12 @@ export default function ClientProfile({ navigation, route }) {
     }, [client, setFilePath, filePath]);
 
     React.useEffect(() => {
+      if (textFilePath.length === 0) {
+        setTextFilePath([...textFilePath, client.basicInfo.name]);
+      }
+    }, [client, setTextFilePath, textFilePath]);
+
+    React.useEffect(() => {
       if (data) {
         setFiles(data.map((file) => ({
           ...file,
@@ -326,7 +354,7 @@ export default function ClientProfile({ navigation, route }) {
           createdtime: new Date(file["createdDateTime"]).toLocaleString(),
           createdby: file["createdBy"].user.displayName,
           viewFile: file.hasOwnProperty("file") ? webURL => viewFile(webURL) : null,
-          navigateToFolder: file.hasOwnProperty("folder") ? (destID) => navigateToFolder(destID) : null,
+          navigateToFolder: file.hasOwnProperty("folder") ? (destID, parentId, fileName) => navigateToFolder(destID, parentId, fileName) : null,
         })));
       }
     }, [data, setFiles]);
@@ -380,12 +408,14 @@ export default function ClientProfile({ navigation, route }) {
       }
     }
 
-    const navigateToFolder = (destID) => {
+    const navigateToFolder = (destID, parentId, fileName) => {
       if (filePath.includes(destID)) {
-        setFilePath(filePath.filter(x => x !== destID));
+        setFilePath(filePath.filter(x => x === destID));
+        setTextFilePath(textFilePath.filter(x => x === fileName));
         setId(filePath[filePath.length - 2]);
       } else {
         setFilePath(prevFilePath => [...prevFilePath, destID]);
+        setTextFilePath(prevFilePath => [...prevFilePath, fileName]);
         setId(destID);
       }
     }
@@ -402,21 +432,29 @@ export default function ClientProfile({ navigation, route }) {
 
     const ActionBar = () => (
       <View className={`flex-row bg-gray-100 items-center justify-between py-2`}>
-        <IconButton
-          icon={
-            <FontAwesome5
-              name={"arrow-left"}
-              size={20}
-              color={"#172554"}
-              className={"m-2"}
-            />
-          }
-          onPress={() => {
-            navigateToFolder(filePath[filePath.length - 2]);
-          }}
-          disabled={filePath.length === 1}
-          className={"border border-gray-800 rounded-lg  mx-1 h-10 w-10"}
-        />
+        <View className={"flex-row items-center"}>
+          <IconButton
+            icon={
+              <FontAwesome5
+                name={"arrow-left"}
+                size={20}
+                color={"#172554"}
+                className={"m-2"}
+              />
+            }
+            onPress={() => {
+              navigateToFolder(filePath[filePath.length - 2], textFilePath[textFilePath.length - 2]);
+            }}
+            disabled={filePath.length === 1}
+            className={"border border-gray-800 rounded-lg  mx-1 h-10 w-10 mr-2"}
+          />
+          {textFilePath.map((fileName, index) => (
+            <React.Fragment key={fileName}>
+              <Text className={"font-quicksand ml-1"}>{fileName}</Text>
+              <Text className={"font-quicksand ml-1"}>/</Text>
+            </React.Fragment>
+          ))}
+        </View>
 
         <View className={"flex-row items-center justify-end"}>
           {showInput &&
@@ -574,7 +612,7 @@ export default function ClientProfile({ navigation, route }) {
       <View className={"flex-row h-full"}>
         <Toolbar navigation={navigation} />
 
-        <View className={"flex-1"}>
+        <ScrollView className={"flex-1"}>
           <View className={"z-30 mx-1"}>
             <View className={"flex-row items-center justify-between my-2"}>
               <Text className={"font-quicksand text-4xl text-gray-800 ml-2"}>
@@ -710,7 +748,7 @@ export default function ClientProfile({ navigation, route }) {
               <NonExistingFileTable clientId={clientId} data={data} />
             }
           </View>
-        </View>
+        </ScrollView>
         <View className={"items-center justify-center h-full"}>
           <EditClientForm
             data={data}

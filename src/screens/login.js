@@ -208,6 +208,7 @@ export default function Login() {
               containerStyle={"w-3/4"}
               autoCapitalize={"none"}
               errors={errors}
+              textContentType={"emailAddress"}
             />
             <TextInput
               control={control}
@@ -223,6 +224,7 @@ export default function Login() {
               }
               errors={errors}
               autoCapitalize={"none"}
+              textContentType={"newPassword"}
             />
 
             {error && <Text className={"font-quicksand color-red-700 text-center w-3/4 mt-2"}>{error}</Text>}

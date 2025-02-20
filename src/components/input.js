@@ -16,6 +16,7 @@ export default function Input({
   inputMode=null,
   autoCapitalize,
   secureTextEntry,
+  textContentType="none",
   textStyle,
   inputStyle,
   containerStyle
@@ -57,6 +58,7 @@ export default function Input({
                   inputMode={inputMode}
                   autoCapitalize={autoCapitalize}
                   secureTextEntry={secureTextEntry}
+                  textContentType={textContentType}
                 />
               </View>
             );
@@ -73,6 +75,7 @@ export default function Input({
                   inputMode={inputMode}
                   autoCapitalize={autoCapitalize}
                   secureTextEntry={secureTextEntry}
+                  textContentType={textContentType}
                 />
                 {rightIcon}
               </View>
@@ -89,6 +92,7 @@ export default function Input({
               inputMode={inputMode}
               autoCapitalize={autoCapitalize}
               secureTextEntry={secureTextEntry}
+              textContentType={textContentType}
             />
           );
         }}

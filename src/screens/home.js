@@ -79,11 +79,12 @@ export default function Home({ navigation }) {
                   className={"m-2"}
                 />
                 <TextInput
-                  className={`text-gray-800 p-2 focus:border-orange-500 font-quicksand`}
+                  className={`text-gray-800 p-2 focus:border-orange-500 font-quicksand flex-1`}
                   placeholderTextColor={"#1F2937"}
                   placeholder="Client Name"
                   cursorColor={"#F97316"}
                   onChangeText={search}
+                  clearButtonMode={"while-editing"}
                   // onBlur={onBlur}
                   // onChangeText={onChange}
                   // editable={disabled}
