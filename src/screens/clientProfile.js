@@ -32,7 +32,7 @@ import { setIsLocked } from "../features/client/clientSlice";
 import { useDispatch, useSelector } from "react-redux";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import IconButton from "../components/iconButton";
-import DocumentPicker from "react-native-document-picker";
+import DocumentPicker from "@react-native-documents/picker";
 import FormData from "form-data";
 
 const statusColors = {
@@ -394,7 +394,7 @@ export default function ClientProfile({ navigation, route }) {
 
     const pickFile = async() => {
       try {
-        const res = await DocumentPicker.pickSingle({
+        const res = await DocumentPicker.pick({
           type: DocumentPicker.types.allFiles,
         });
 
