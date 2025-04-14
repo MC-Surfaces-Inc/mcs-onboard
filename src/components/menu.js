@@ -8,7 +8,7 @@ export default function Menu({ children }) {
   const [isOpen, setIsOpen] = React.useState(false);
 
   return (
-    <View className={"z-50 shadow-sm"}>
+    <View className={"shadow-sm"}>
       <IconButton
         icon={
           <FontAwesome5

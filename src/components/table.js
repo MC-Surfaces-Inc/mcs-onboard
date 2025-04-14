@@ -31,6 +31,7 @@ export default function Table({
   const [isAdding, setIsAdding] = React.useState(false);
   const [isEditing, setIsEditing] = React.useState(false);
   const [isDeleting, setIsDeleting] = React.useState(false);
+  const [tableHeight, setTableHeight] = React.useState(0);
   
   React.useEffect(() => {
     if (selectedItems.length > 0) {
@@ -53,13 +54,19 @@ export default function Table({
 
     return {
       height: animatedHeight.value,
+      top: tableHeight + 2,
+      overflow: "hidden",
     };
   }, [isAdding, height]);
 
+  const onTableLayout = (event) => {
+    setTableHeight(event.nativeEvent.layout.height);
+  }
+
   return (
-    <View className={`flex-col ${fileTable ? "min-h-96 max-h-96" : "max-h-64"}`}>
-      <View className={"flex-row z-20"}>
-        <View className={`"border-gray-800" bg-gray-100 border rounded-lg flex-1 m-1 mt-2 ${isAdding ? "-mb-2" : "mb-0"}`}>
+    <View className={`flex-col ${fileTable ? "min-h-96 max-h-96" : "max-h-64"} relative`}>
+      <View className={"flex-row z-0"}>
+        <View onLayout={onTableLayout} className={`"border-gray-800" bg-gray-100 border rounded-lg flex-1 m-1 mt-2`}>
           <FlatList
             data={data}
             ListHeaderComponent={
@@ -101,7 +108,7 @@ export default function Table({
                 emptyComponent()
                 :
                 isLoading ?
-                  <View className={"flex-row z-0 items-center justify-center"}>
+                  <View className={"flex-row items-center justify-center"}>
                     <Text className={"font-quicksand font-bold text-orange-500 p-2"}>
                       Loading...
                     </Text>
@@ -117,7 +124,7 @@ export default function Table({
               if (fileTable) {
                 return (
                   <TouchableOpacity
-                    className={"flex-row z-0 items-center"}
+                    className={"flex-row items-center"}
                     key={index}
                     onPress={() => {
                       if (item.hasOwnProperty("file")) {
@@ -187,7 +194,7 @@ export default function Table({
               }
 
               return (
-                <View className={"flex-row z-0 items-center"} key={index}>
+                <View className={"flex-row items-center"} key={index}>
                   {(onEdit || onDelete) && isLocked &&
                     <View className={"items-center justify-center"}>
                       <IconButton
@@ -427,8 +434,8 @@ const Cell = (props) => (
 Table.Cell = Cell;
 
 const AnimatedDropdown = (props) => (
-  <Animated.View className={"z-30 flex-row mx-1"} style={[props.collapsibleStyle, { overflow: "hidden", zIndex: 10 }]}>
-    <View onLayout={props.onLayout} className={"absolute pt-4 pb-2 px-2 bg-gray-800 w-full -mt-2 z-50 rounded-b-md"}>
+  <Animated.View className={"absolute left-1 right-1 -z-10"} style={[props.collapsibleStyle, { overflow: "hidden" }]}>
+    <View onLayout={props.onLayout} className={"absolute pt-4 pb-2 px-2 bg-gray-800 w-full -mt-2 rounded-b-md"}>
       {props.form}
     </View>
   </Animated.View>

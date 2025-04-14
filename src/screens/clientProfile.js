@@ -401,7 +401,7 @@ export default function ClientProfile({ navigation, route }) {
         return res;
       } catch (error) {
         if (DocumentPicker.isCancel(error)) {
-          return "Canceled";
+          return "Cancelled";
         } else {
           console.log(error);
         }
@@ -613,13 +613,13 @@ export default function ClientProfile({ navigation, route }) {
         <Toolbar navigation={navigation} />
 
         <ScrollView className={"flex-1"}>
-          <View className={"z-30 mx-1"}>
+          <View className={"mx-1"}>
             <View className={"flex-row items-center justify-between my-2"}>
               <Text className={"font-quicksand text-4xl text-gray-800 ml-2"}>
                 {data.basicInfo.name}
               </Text>
 
-              <View className={"flex-row flex-1 justify-end items-center"}>
+              <View className={"flex-row flex-1 justify-end items-center z-50"}>
                 <Badge label={data.basicInfo.territory} className={"bg-gray-800 w-1/4"}/>
                 <Badge label={data.status.current} className={`${statusColors[data.status.current]} w-1/4`}/>
 
@@ -729,9 +729,9 @@ export default function ClientProfile({ navigation, route }) {
               <ContactTable clientId={clientId} data={data} />
             </View>
 
-            <View className={"flex-row"}>
+            <View className={"flex-row z-20"}>
               { data.approvals &&
-                <View className={"w-1/2 z-20"}>
+                <View className={"w-1/2"}>
                   <ApprovalsTable clientId={clientId} data={data} />
                 </View>
               }
@@ -741,7 +741,7 @@ export default function ClientProfile({ navigation, route }) {
             </View>
           </View>
 
-          <View className={"w-full"}>
+          <View className={"w-full z-10"}>
             {data.folder ?
               <FileTable clientId={clientId} client={data} />
               :
