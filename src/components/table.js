@@ -64,7 +64,7 @@ export default function Table({
   }
 
   return (
-    <View className={`flex-col ${fileTable ? "min-h-96 max-h-96" : "max-h-64"} relative`}>
+    <View className={`flex-col ${fileTable ? "min-h-96 max-h-96" : "max-h-96"} relative`}>
       <View className={"flex-row z-0"}>
         <View onLayout={onTableLayout} className={`"border-gray-800" bg-gray-100 border rounded-lg flex-1 m-1 mt-2`}>
           <FlatList

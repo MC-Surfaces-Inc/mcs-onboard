@@ -43,18 +43,16 @@ export default function AddProgramForm({ clientId, selections }) {
   };
 
   return (
-    <View>
-      <View className={"flex-row flex-1 gap-1 z-10"}>
-        <Picker
-          choices={choices}
-          control={control}
-          field={"program"}
-          title={"Programs"}
-          textStyle={"color-white"}
-          containerStyle={"w-full"}
-          inputStyle={"bg-gray-100"}
-        />
-      </View>
+    <View className={"z-20"}>
+      <Picker
+        choices={choices}
+        control={control}
+        field={"program"}
+        title={"Programs"}
+        textStyle={"color-white"}
+        // containerStyle={"w-full"}
+        inputStyle={"bg-gray-100"}
+      />
 
       <View className={"flex-row justify-end gap-2"}>
         <Button
