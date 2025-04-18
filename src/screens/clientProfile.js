@@ -32,7 +32,7 @@ import { setIsLocked } from "../features/client/clientSlice";
 import { useDispatch, useSelector } from "react-redux";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
 import IconButton from "../components/iconButton";
-import DocumentPicker from "@react-native-documents/picker";
+import { pick } from "@react-native-documents/picker";
 import FormData from "form-data";
 
 const statusColors = {
@@ -393,18 +393,22 @@ export default function ClientProfile({ navigation, route }) {
     }
 
     const pickFile = async() => {
+      console.log("Picking file...");
       try {
-        const res = await DocumentPicker.pick({
-          type: DocumentPicker.types.allFiles,
+        const [result] = await pick({
+          mode: "open"
         });
 
-        return res;
+        console.log(result);
+
+        return result;
       } catch (error) {
-        if (DocumentPicker.isCancel(error)) {
-          return "Cancelled";
-        } else {
-          console.log(error);
-        }
+        console.log(error);
+        // if (DocumentPicker.isCancel(error)) {
+        //   return "Cancelled";
+        // } else {
+        //   console.log(error);
+        // }
       }
     }
 
