@@ -157,6 +157,8 @@ export default function Table({
                       </View>
                     }
 
+                    {isLocked && <Divider orientation="vertical" /> }
+
                     {fileTable && item.hasOwnProperty("folder") &&
                       <View className={"items-center justify-center"}>
                         <FontAwesome5
@@ -177,7 +179,7 @@ export default function Table({
                       </View>
                     }
 
-                    {isLocked && <Divider orientation="vertical" /> }
+                    {isLocked || fileTable && <Divider orientation="vertical" /> }
 
                     {columns.map((cell, cellIndex) => {
                       return (

@@ -5,7 +5,6 @@ import { Text } from "react-native";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import Divider from "./divider";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
-import DropDownPicker from "react-native-dropdown-picker";
 
 export default function Picker({
   choices,
