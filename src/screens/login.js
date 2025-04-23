@@ -35,7 +35,7 @@ const cognitoClient = new CognitoIdentityProviderClient({
 export default function Login() {
   const [email, setEmail] = useState(null);
   const [token, setToken] = useState(null);
-  const { data } = useGetUserInfoQuery(email);
+  const { data, isLoading } = useGetUserInfoQuery(email);
   const openSignIn = useSharedValue(true);
   const openSignUp = useSharedValue(false);
   const openForgotPassword = useSharedValue(false);
@@ -49,6 +49,9 @@ export default function Login() {
       dispatch(saveToken(token));
     }
   }, [data, token, setUser, saveToken, dispatch]);
+
+  console.log(isLoading);
+  console.log(data);
 
   const onPressSignUp = () => {
     openSignUp.value = true;
@@ -161,6 +164,7 @@ export default function Login() {
       const formattedUrl = new URL(url).searchParams;
       const code = formattedUrl.get("code");
 
+      console.log("CODE: " + code);
       if (code) {
         // post code to retrieve token
         await axios.post(`${Config.COGNITO_OAUTH_URI}/token`, {
@@ -186,11 +190,13 @@ export default function Login() {
           }).catch((err) => {
             console.log(err);
           });
-        }).catch(err =>
-          console.log(err)
-        );
+        }).catch(err => {
+          console.log(err);
+        });
       }
     });
+
+
 
     return (
       <Animated.View style={[styles.animatedView, bodyStyle]}>

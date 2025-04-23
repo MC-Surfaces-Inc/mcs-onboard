@@ -399,16 +399,9 @@ export default function ClientProfile({ navigation, route }) {
           mode: "open"
         });
 
-        console.log(result);
-
         return result;
       } catch (error) {
         console.log(error);
-        // if (DocumentPicker.isCancel(error)) {
-        //   return "Cancelled";
-        // } else {
-        //   console.log(error);
-        // }
       }
     }
 

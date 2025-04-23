@@ -32,6 +32,7 @@ function App(): React.JSX.Element {
 
       try {
         userToken = await AsyncStorage.getItem("userToken");
+        console.log("TOKEN : " + userToken);
       } catch (e) {
         console.log(e);
       }
