@@ -35,7 +35,7 @@ export default function ProgramDetails({ navigation, route }) {
         <Toolbar navigation={navigation} route={route} />
 
         <ScrollView>
-          <View className={"flex-row items-center justify-between py-2"}>
+          <View className={"flex-row items-center justify-between py-2 z-20"}>
             <Text className={"font-quicksand text-4xl text-gray-800 ml-2"}>
               Client Details
             </Text>

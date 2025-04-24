@@ -28,6 +28,8 @@ export default function AccountingInfoForm({ clientId, data }) {
   const onSubmit = values => {
     setLoading(true);
 
+    console.log(values);
+
     updateDetails({
       id: clientId,
       type: "accounting_details",

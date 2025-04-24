@@ -122,7 +122,22 @@ export default function Picker({
               onPress={handlePress}
               className={`border ${borderColor} rounded-md focus:border-orange-500 p-2 font-quicksand flex-row justify-between ${inputStyle}`}
             >
-              <Text className={"font-quicksand"}>{value ? value : "Select"}</Text>
+              <Text className={"font-quicksand"}>
+                {value !== ""
+                  ?
+                  value === 0
+                  ?
+                    "No"
+                    :
+                    value === 1
+                    ?
+                      "Yes"
+                      :
+                      value
+                  :
+                  "Select"
+                }
+              </Text>
               <FontAwesome5
                 name={"angle-down"}
                 size={20}
