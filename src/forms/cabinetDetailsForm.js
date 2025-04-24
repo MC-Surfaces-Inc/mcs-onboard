@@ -19,7 +19,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
   const { control, errors, handleSubmit, setValue } = useForm();
   const { data, error, isLoading } = useGetClientProgramDetailsQuery({
-    program: "cabinets",
+    program: "cabinet",
     clientId: clientId,
   });
   const [updateInfo, result] = useUpdateProgramInfoMutation();
