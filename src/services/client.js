@@ -91,6 +91,13 @@ export const clientApi = emptySplitApi.injectEndpoints({
       }),
       invalidatesTags: ["Files"],
     }),
+    createAirtableClient: builder.mutation({
+      query: ({ body }) => ({
+        url: `airtable/clients`,
+        body: body,
+        method: "POST"
+      }),
+    }),
     updateClient: builder.mutation({
       query: ({ id, body }) => ({
         url: `clients/${id}`,
@@ -217,6 +224,7 @@ export const {
   useCreateInternalFolderMutation,
   useCreateFolderMutation,
   useCreateFileMutation,
+  useCreateAirtableClientMutation,
   useUpdateProgramsMutation,
   useUpdateDetailsMutation,
   useUpdateProgramInfoMutation,

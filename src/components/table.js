@@ -121,6 +121,8 @@ export default function Table({
                   </View>
             }
             renderItem={({ item, index }) => {
+              const disabledCheckbox = !isLocked || item.name === "Jobs" || item.name === "Programs" || item.name === "Purchase Orders";
+
               if (fileTable) {
                 return (
                   <TouchableOpacity
@@ -137,12 +139,12 @@ export default function Table({
                     {(onEdit || onDelete) && isLocked &&
                       <View className={"items-center justify-center"}>
                         <IconButton
-                          disabled={!isLocked}
+                          disabled={disabledCheckbox}
                           icon={
                             <FontAwesome5
                               name={selectedItems.some(obj => obj.id === item.id) ? "check-square" : "square"}
                               size={22}
-                              color={selectedItems.some(obj => obj.id === item.id) ? "#F97316" : "#172554"}
+                              color={disabledCheckbox ? "#aeb6bf" : selectedItems.some(obj => obj.id === item.id) ? "#F97316" : "#172554"}
                               className={"w-6 mx-2"}
                             />
                           }
@@ -179,7 +181,7 @@ export default function Table({
                       </View>
                     }
 
-                    {isLocked || fileTable && <Divider orientation="vertical" /> }
+                    {isLocked && <Divider orientation="vertical" /> }
 
                     {columns.map((cell, cellIndex) => {
                       return (

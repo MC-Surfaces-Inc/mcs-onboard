@@ -5,8 +5,8 @@ import { useForm } from "react-hook-form";
 import TextInput from "../components/input";
 import Picker from "../components/picker";
 import {
-  useCreateAddressMutation,
-  useCreateClientMutation, useCreateFolderMutation, useCreateInternalFolderMutation,
+  useCreateAddressMutation, useCreateAirtableClientMutation,
+  useCreateClientMutation, useCreateFolderMutation, useCreateInternalFolderMutation, useUpdateClientMutation,
 } from "../services/client";
 import { useSelector } from "react-redux";
 import { ErrorMessage } from "@hookform/error-message";
@@ -41,6 +41,8 @@ export default function AddClientForm({ progress, width, isOpen }) {
   const [createAddress, status] = useCreateAddressMutation();
   const [createFolder, result] = useCreateFolderMutation();
   const [createInternalFolder, result2] = useCreateInternalFolderMutation();
+  const [createAirtableClient, result3] = useCreateAirtableClientMutation();
+  const [updateClient, result4] = useUpdateClientMutation();
   const [loading, setLoading] = React.useState(false);
 
   React.useEffect(() => {
@@ -57,6 +59,7 @@ export default function AddClientForm({ progress, width, isOpen }) {
     let clientId = null;
     let parentId = null;
     let createdId = null;
+    let sharepointUrl = null;
 
     setLoading(true);
     createClient({
@@ -119,14 +122,17 @@ export default function AddClientForm({ progress, width, isOpen }) {
 
     await createFolder({ parentId: parentId, folder: values.client.name })
       .unwrap()
-      .then(res => {
+      .then(async (res) => {
         toast.success({
           title: "Success!",
           message: "Folder Successfully Created",
         });
 
         // Need to receive created ID back
-        let createdId = res.id;
+        createdId = res.id;
+        sharepointUrl = res.webUrl;
+
+        // Create Top Folder
         createInternalFolder({
           body: {
             clientId: clientId,
@@ -136,9 +142,33 @@ export default function AddClientForm({ progress, width, isOpen }) {
         });
 
         // Create subfolders
-        createFolder({ parentId: createdId, folder: "Jobs" });
-        createFolder({ parentId: createdId, folder: "Programs" });
-        createFolder({ parentId: createdId, folder: "Purchase Orders" });
+        let res1 = await createFolder({ parentId: createdId, folder: "Jobs" });
+        let res2 = await createFolder({ parentId: createdId, folder: "Programs" });
+        let res3 = await createFolder({ parentId: createdId, folder: "Purchase Orders" });
+
+        await createAirtableClient({
+          body: {
+            name: values.client.name,
+            territory: values.client.territory,
+            sharepointId: createdId,
+            sharepointUrl: sharepointUrl,
+            jobsSharePointId: res1.data.id,
+            email: user.email,
+          }
+        }).unwrap()
+          .then(res => {
+            updateClient({
+              id: clientId,
+              body: {
+                airtableId: res1.data.id
+              }
+            });
+
+            toast.success({
+              title: "Success!",
+              message: "Airtable Client Created",
+            })
+          });
       });
   };
 
@@ -151,57 +181,59 @@ export default function AddClientForm({ progress, width, isOpen }) {
       style={[sheetStyles.sheet, sheetStyle]}
     >
       <ScrollView className={"pr-2"}>
-        <Text className={"font-quicksand text-2xl text-gray-800 my-2"}>Add a Client</Text>
-        <Divider />
-        <TextInput
-          control={control}
-          field={"client.name"}
-          title={"Client Name"}
-          rules={{
-            required: "Required Field"
-          }}
-          errorMessage={<ErrorMessage errors={errors} name={"client.name"} />}
-        />
+        <View className={"flex-col"}>
+          <Text className={"font-quicksand text-2xl text-gray-800 my-2"}>Add a Client</Text>
+          <Divider />
+          <TextInput
+            control={control}
+            field={"client.name"}
+            title={"Client Name"}
+            rules={{
+              required: "Required Field"
+            }}
+            errorMessage={<ErrorMessage errors={errors} name={"client.name"} />}
+          />
 
-        <Picker
-          choices={territories}
-          control={control}
-          field={"client.territory"}
-          title={"Territory"}
-          containerStyle={"bg-gray-100"}
-        />
+          <Picker
+            choices={territories}
+            control={control}
+            field={"client.territory"}
+            title={"Territory"}
+            containerStyle={"bg-gray-100"}
+          />
 
-        <TextInput
-          control={control}
-          field={"address.address1"}
-          title={"Corporate Address 1"}
-        />
+          <TextInput
+            control={control}
+            field={"address.address1"}
+            title={"Corporate Address 1"}
+          />
 
-        <TextInput
-          control={control}
-          field={"address.address2"}
-          title={"Corporate Address 2"}
-        />
+          <TextInput
+            control={control}
+            field={"address.address2"}
+            title={"Corporate Address 2"}
+          />
 
-        <TextInput
-          control={control}
-          field={"address.city"}
-          title={"Corporate City"}
-        />
+          <TextInput
+            control={control}
+            field={"address.city"}
+            title={"Corporate City"}
+          />
 
-        <Picker
-          choices={states}
-          control={control}
-          field={"address.state"}
-          title={"Corporate State"}
-          containerStyle={"bg-gray-100"}
-        />
+          <Picker
+            choices={states}
+            control={control}
+            field={"address.state"}
+            title={"Corporate State"}
+            containerStyle={"bg-gray-100"}
+          />
 
-        <TextInput
-          control={control}
-          field={"address.zip"}
-          title={"Corporate Zip"}
-        />
+          <TextInput
+            control={control}
+            field={"address.zip"}
+            title={"Corporate Zip"}
+          />
+        </View>
 
         <View className={"flex-row justify-between mt-5"}>
           <Button

@@ -393,7 +393,6 @@ export default function ClientProfile({ navigation, route }) {
     }
 
     const pickFile = async() => {
-      console.log("Picking file...");
       try {
         const [result] = await pick({
           mode: "open"
