@@ -14,6 +14,7 @@ import MultiLineText from "../components/multiLineText";
 import Picker from "../components/picker";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
+import Dropdown from "../components/dropdown";
 
 export default function TileDetailsForm({ programs, clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -73,6 +74,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.allottedFloat"}
           title={"Allotted Float"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -80,6 +82,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.chargeForExtraFloat"}
           title={"Charge for Extra Float"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
 
@@ -89,35 +92,35 @@ export default function TileDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={tile.waterproofMethod}
-          control={control}
-          field={"tile.waterproofMethodShowerFloor"}
+        <Dropdown
           title={"Waterproofing Method"}
-          disabled={isLocked}
-        />
-
-        <Picker
-          choices={tile.showerFloorWaterproof}
+          options={tile.waterproofMethod}
           control={control}
           field={"tile.waterproofMethod"}
-          title={"Waterproofing Method - Shower Floor"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={tile.waterproofMethod}
+        <Dropdown
+          title={"Waterproofing Method - Shower Floor"}
+          options={tile.waterproofMethod}
+          control={control}
+          field={"tile.waterproofMethodShowerFloor"}
+          disabled={isLocked}
+        />
+
+        <Dropdown
+          title={"Waterproofing Method - Shower Walls"}
+          options={tile.waterproofMethod}
           control={control}
           field={"tile.waterproofMethodShowerWalls"}
-          title={"Waterproofing Method - Shower Walls"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={tile.waterproofMethod}
+        <Dropdown
+          title={"Waterproofing Method - Tub Walls"}
+          options={tile.waterproofMethod}
           control={control}
           field={"tile.waterproofMethodTubWall"}
-          title={"Waterproofing Method - Tub Wall"}
           disabled={isLocked}
         />
 
@@ -126,21 +129,22 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.fiberglassResponsibility"}
           title={"Who Is Installing Fiberglass?"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={yesOrNo}
+        <Dropdown
+          title={"Will MC Surfaces be installing backerboard?"}
+          options={yesOrNo}
           control={control}
           field={"tile.backerboardInstallResponsibility"}
-          title={"Who Will Be Installing Backerboard?"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={tile.punchOutMaterial}
+        <Dropdown
+          title={"Punch Out Material"}
+          options={tile.punchOutMaterial}
           control={control}
           field={"tile.punchOutMaterial"}
-          title={"Punch Out Material"}
           disabled={isLocked}
         />
       </View>
@@ -151,19 +155,19 @@ export default function TileDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={tile.showerNiche}
+        <Dropdown
+          title={"Shower Niche Construction"}
+          options={tile.showerNiche}
           control={control}
           field={"tile.showerNicheConstruction"}
-          title={"Shower Niche Construction"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={tile.showerNicheFraming}
+        <Dropdown
+          title={"Shower Niche Framing"}
+          options={tile.showerNicheFraming}
           control={control}
           field={"tile.showerNicheFraming"}
-          title={"Shower Niche Framing"}
           disabled={isLocked}
         />
 
@@ -172,13 +176,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.showerNicheBrand"}
           title={"Preformed Shower Niche Brand"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={tile.cornerSoapDishes}
+        <Dropdown
+          title={"Are corner soap dishes standard?"}
+          options={tile.cornerSoapDishes}
           control={control}
           field={"tile.cornerSoapDishesStandard"}
-          title={"Are Corner Soap Dishes Standard?"}
           disabled={isLocked}
         />
 
@@ -187,21 +192,22 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.cornerSoapDishMaterial"}
           title={"Corner Soap Dish Material"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={tile.showerSeat}
+        <Dropdown
+          title={"Shower Seat Construction"}
+          options={tile.showerSeat}
           control={control}
           field={"tile.showerSeatConstruction"}
-          title={"Shower Seat Construction"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={tile.metalEdge}
+        <Dropdown
+          title={"Metal Edge Options"}
+          options={tile.metalEdge}
           control={control}
           field={"tile.metalEdgeOptions"}
-          title={"Metal Edge Options"}
           disabled={isLocked}
         />
       </View>
@@ -212,11 +218,11 @@ export default function TileDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={tile.groutJointSize}
+        <Dropdown
+          title={"Grout Joint Subsizing"}
+          options={tile.groutJointSize}
           control={control}
           field={"tile.groutJointSizing"}
-          title={"Grout Joint Subsizing"}
           disabled={isLocked}
         />
 
@@ -225,13 +231,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.groutJointNotes"}
           title={"Grout Joint Notes"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={tile.groutBrand}
+        <Dropdown
+          title={"Preferred Grout Joint Brand"}
+          options={tile.groutBrand}
           control={control}
           field={"tile.preferredGroutBrand"}
-          title={"Preferred Grout Joint Brand"}
           disabled={isLocked}
         />
 
@@ -240,6 +247,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.upgradedGrout"}
           title={"Upgraded Grout and Formula"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -247,13 +255,14 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.groutProduct"}
           title={"Grout Product"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={tile.subfloorPractice}
+        <Dropdown
+          title={"Subfloor Std. Practice"}
+          options={tile.subfloorPractice}
           control={control}
           field={"tile.subfloorStandardPractice"}
-          title={"Subfloor Std. Practice"}
           disabled={isLocked}
         />
 
@@ -262,6 +271,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.subfloorProducts"}
           title={"Subfloor Products"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
 
@@ -276,6 +286,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.standardWallTileHeight"}
           title={"Wall Tile Height Standard"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
 
@@ -285,11 +296,11 @@ export default function TileDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={tile.takeoffResp}
+        <Dropdown
+          title={"Who will be doing takeoffs?"}
+          options={tile.takeoffResp}
           control={control}
           field={"tile.takeoffResponsibility"}
-          title={"Who will be doing takeoffs?"}
           disabled={isLocked}
         />
 
@@ -298,6 +309,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.wasteFactor"}
           title={"Waste Factor Percentage"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -305,6 +317,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.wasteFactorWalls"}
           title={"Waste Factor Percentage - Walls"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -312,6 +325,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.wasteFactorFloors"}
           title={"Waste Factor Percentage - Floors"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -319,6 +333,7 @@ export default function TileDetailsForm({ programs, clientId }) {
           field={"tile.wasteFactorMosaics"}
           title={"Waste Factor Percentage - Mosaics"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <View className={"pb-2"}>
@@ -327,6 +342,7 @@ export default function TileDetailsForm({ programs, clientId }) {
             field={"tile.notes"}
             title={"Notes"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
           />
         </View>
       </View>

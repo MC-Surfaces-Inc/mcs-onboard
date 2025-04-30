@@ -434,7 +434,7 @@ export default function ClientProfile({ navigation, route }) {
               <FontAwesome5
                 name={"arrow-left"}
                 size={20}
-                color={"#172554"}
+                color={filePath.length === 1 ? "#AEB6BF" : "#172554"}
                 className={"m-2"}
               />
             }

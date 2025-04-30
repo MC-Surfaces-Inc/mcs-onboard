@@ -1,6 +1,6 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { territories } from "../constants/dropdownValues";
+import { states, territories } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/input";
 import Picker from "../components/picker";
@@ -11,6 +11,7 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { toast } from "../components/toast";
 import Button from "../components/button";
 import Divider from "../components/divider";
+import Dropdown from "../components/dropdown";
 
 export default function EditClientForm({ data, clientId, progress, width, isOpen }) {
   const {
@@ -62,12 +63,11 @@ export default function EditClientForm({ data, clientId, progress, width, isOpen
           title={"Client Name"}
         />
 
-        <Picker
-          choices={territories}
+        <Dropdown
+          title={"Territory"}
+          options={territories}
           control={control}
           field={"territory"}
-          title={"Territory"}
-          containerStyle={"bg-gray-100 w-full h-16"}
         />
 
         <View className={"flex-row justify-between mt-5"}>

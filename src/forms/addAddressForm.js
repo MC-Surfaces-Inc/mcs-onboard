@@ -7,6 +7,7 @@ import { useCreateAddressMutation } from "../services/client";
 import { toast } from "../components/toast";
 import Button from "../components/button";
 import TextInput from "../components/input";
+import Dropdown from "../components/dropdown";
 
 export default function AddAddressForm({ clientId, selections }) {
   const { control, handleSubmit, reset, } = useForm({
@@ -58,14 +59,13 @@ export default function AddAddressForm({ clientId, selections }) {
   return (
     <View>
       <View className={"flex-row flex-1 gap-1 pr-5 z-10"}>
-        <Picker
-          choices={choices}
+        <Dropdown
+          title={"Type"}
+          options={choices}
           control={control}
           field={"type"}
-          title={"Type"}
           textStyle={"color-white"}
-          containerStyle={"w-2/12 -mt-1"}
-          inputStyle={"bg-gray-100"}
+          containerStyle={"w-2/12"}
         />
         <TextInput
           control={control}
@@ -91,14 +91,13 @@ export default function AddAddressForm({ clientId, selections }) {
           inputStyle={"bg-gray-100"}
           textStyle={"color-white"}
         />
-        <Picker
-          choices={states}
+        <Dropdown
+          title={"State"}
+          options={states}
           control={control}
           field={"state"}
-          title={"State"}
           textStyle={"color-white"}
-          containerStyle={"w-2/12 -mt-1"}
-          inputStyle={"bg-gray-100"}
+          containerStyle={"w-2/12"}
         />
         <TextInput
           control={control}

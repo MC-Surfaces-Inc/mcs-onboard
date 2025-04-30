@@ -6,6 +6,7 @@ import { programs } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
 import { View } from "react-native";
 import Button from "../components/button";
+import Dropdown from "../components/dropdown";
 
 export default function AddProgramForm({ clientId, selections }) {
   const { control, errors, handleSubmit, reset } = useForm();
@@ -44,14 +45,12 @@ export default function AddProgramForm({ clientId, selections }) {
 
   return (
     <View className={"z-20"}>
-      <Picker
-        choices={choices}
+      <Dropdown
+        title={"Programs"}
+        options={choices}
         control={control}
         field={"program"}
-        title={"Programs"}
         textStyle={"color-white"}
-        // containerStyle={"w-full"}
-        inputStyle={"bg-gray-100"}
       />
 
       <View className={"flex-row justify-end gap-2"}>

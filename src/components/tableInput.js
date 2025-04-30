@@ -3,24 +3,24 @@ import { Text, TextInput, View } from "react-native";
 import { Controller } from "react-hook-form";
 import { ErrorMessage } from "@hookform/error-message";
 
-export default function Input({
-  control,
-  field,
-  title,
-  rules,
-  errors,
-  leftIcon,
-  rightIcon,
-  numerical,
-  disabled,
-  inputMode=null,
-  autoCapitalize,
-  secureTextEntry,
-  textContentType="none",
-  textStyle,
-  inputStyle,
-  containerStyle
-}) {
+export default function TableInput({
+                                control,
+                                field,
+                                title,
+                                rules,
+                                errors,
+                                leftIcon,
+                                rightIcon,
+                                numerical,
+                                disabled,
+                                inputMode=null,
+                                autoCapitalize,
+                                secureTextEntry,
+                                textContentType="none",
+                                textStyle,
+                                inputStyle,
+                                containerStyle
+                              }) {
   const [focused, setFocused] = useState(false);
   const [error, setError] = useState(false);
 
@@ -84,7 +84,7 @@ export default function Input({
 
           return (
             <TextInput
-              className={`font-quicksand rounded-md focus:border-orange-500 focus:border-2 w-full border border-gray-300 h-10 p-2 ${inputStyle} ${error && "border-red-700"} text-wrap`}
+              className={`font-quicksand rounded-md w-full border border-gray-300 h-10 p-2 ${inputStyle} ${error && "border-red-700"} text-wrap`}
               onBlur={onBlur}
               onChangeText={onChange}
               readOnly={disabled !== undefined && disabled}

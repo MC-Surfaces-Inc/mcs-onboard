@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
-import { carpet } from "../constants/dropdownValues";
+import { carpet, yesOrNo } from "../constants/dropdownValues";
 import { useGetClientProgramDetailsQuery, useUpdateProgramInfoMutation } from "../services/client";
 import Loading from "../screens/loading";
 import { useForm } from "react-hook-form";
@@ -11,6 +11,7 @@ import Button from "../components/button";
 import Divider from "../components/divider";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
+import Dropdown from "../components/dropdown";
 
 export default function CarpetDetailsForm({ programs, clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -64,11 +65,11 @@ export default function CarpetDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={carpet.carpetPad}
+        <Dropdown
+          title={"Preferred Padding Brand"}
+          options={carpet.carpetPad}
           control={control}
           field={"carpet.preferredPadding"}
-          title={"Preferred Padding Brand"}
           disabled={isLocked}
         />
       </View>
@@ -84,6 +85,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
           field={"carpet.wasteFactor"}
           title={"Waste Percentage"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
 
@@ -93,11 +95,11 @@ export default function CarpetDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={carpet.takeoffResp}
+        <Dropdown
+          title={"Who will be doing takeoffs?"}
+          options={carpet.takeoffResp}
           control={control}
           field={"carpet.takeoffResponsibility"}
-          title={"Who will be doing takeoffs?"}
           disabled={isLocked}
         />
 
@@ -107,6 +109,7 @@ export default function CarpetDetailsForm({ programs, clientId }) {
             field={"carpet.notes"}
             title={"Notes"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
           />
         </View>
       </View>

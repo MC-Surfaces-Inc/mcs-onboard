@@ -11,6 +11,7 @@ import Button from "../components/button";
 import Divider from "../components/divider";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
+import Dropdown from "../components/dropdown";
 
 export default function WoodVinylDetailsForm({ navigation, programs, clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -64,11 +65,11 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
         </Text>
         <Divider />
 
-        <Picker
-          choices={wood.glueProducts}
+        <Dropdown
+          title={"Who will be doing takeoffs?"}
+          options={wood.glueProducts}
           control={control}
           field={"wood_vinyl.preferredGlueProducts"}
-          title={"Preferred Glue Products"}
           disabled={isLocked}
         />
 
@@ -77,13 +78,14 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           field={"wood_vinyl.otherGlueProducts"}
           title={"Other Glue Product"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={wood.stainOrPrimed}
+        <Dropdown
+          title={"Stained or Primed?"}
+          options={wood.stainOrPrimed}
           control={control}
           field={"wood_vinyl.stainedOrPrimed"}
-          title={"Stained or Primed?"}
           disabled={isLocked}
         />
       </View>
@@ -94,27 +96,27 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
         </Text>
         <Divider />
 
-        <Picker
-          choices={yesOrNo}
+        <Dropdown
+          title={"Are transition strips standard?"}
+          options={yesOrNo}
           control={control}
           field={"wood_vinyl.transitionStripsStandard"}
-          title={"Are Transition Strips Standard?"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={yesOrNo}
+        <Dropdown
+          title={"Will MC Surfaces install wood trim?"}
+          options={yesOrNo}
           control={control}
           field={"wood_vinyl.MCInstalledTrim"}
-          title={"MC Surfaces Install Wood Trim?"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={wood.subfloorConstruction}
+        <Dropdown
+          title={"2nd Story Subfloor Construction"}
+          options={wood.subfloorConstruction}
           control={control}
           field={"wood_vinyl.secondFloorConstruction"}
-          title={"2nd Story Subfloor Construction"}
           disabled={isLocked}
         />
       </View>
@@ -125,11 +127,11 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
         </Text>
         <Divider />
 
-        <Picker
-          choices={wood.takeoffResp}
+        <Dropdown
+          title={"Who will be doing takeoffs?"}
+          options={wood.takeoffResp}
           control={control}
           field={"wood_vinyl.takeoffResponsibility"}
-          title={"Who Will Be Doing Takeoffs?"}
           disabled={isLocked}
         />
 
@@ -138,6 +140,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
           field={"wood_vinyl.wasteFactor"}
           title={"Waste Factor Percentage"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <View className={"pb-2"}>
@@ -146,6 +149,7 @@ export default function WoodVinylDetailsForm({ navigation, programs, clientId })
             field={"wood_vinyl.notes"}
             title={"Notes"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
           />
         </View>
       </View>

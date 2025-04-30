@@ -8,6 +8,7 @@ import CountertopDetailsForm from "../forms/countertopDetailsForm";
 import TileDetailsForm from "../forms/tileDetailsForm";
 import WoodVinylDetailsForm from "../forms/woodVinylDetailsForm";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
+import Dropdown from "../components/dropdown";
 
 export default function ProgramDetails({ navigation, route }) {
   const clientId = route.params?.clientId;
@@ -20,7 +21,9 @@ export default function ProgramDetails({ navigation, route }) {
     for (const [key, value] of Object.entries(route.params.programs)) {
       if (value === 1) {
         if (key === "Wood" || key === "Vinyl") {
-          pulledPrograms.push({ label: "Wood and Vinyl", value: "Wood and Vinyl" });
+          if (!pulledPrograms.find(program => program.value === "Wood and Vinyl")) {
+            pulledPrograms.push({ label: "Wood and Vinyl", value: "Wood and Vinyl" });
+          }
         } else {
           pulledPrograms.push({ label: key, value: key });
         }
@@ -40,13 +43,11 @@ export default function ProgramDetails({ navigation, route }) {
               Client Details
             </Text>
 
-            <Picker
-              choices={programs}
+            <Dropdown
+              options={programs}
               control={null}
-              textStyle={"color-white"}
-              containerStyle={"w-1/4 mr-2 justify-center"}
-              inputStyle={"bg-gray-100"}
               callbackFunction={setSelectedProgram}
+              containerStyle={"w-1/4 mr-2"}
             />
           </View>
 

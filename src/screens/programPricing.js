@@ -9,6 +9,7 @@ import CountertopsPricingForm from "../forms/countertopsPricingForm";
 import TilePricingForm from "../forms/tilePricingForm";
 import WoodPricingForm from "../forms/woodPricingForm";
 import VinylPricingForm from "../forms/vinylPricingForm";
+import Dropdown from "../components/dropdown";
 
 export default function ProgramPricing({ navigation, route }) {
   const clientId = route.params?.clientId;
@@ -36,13 +37,11 @@ export default function ProgramPricing({ navigation, route }) {
               Program Pricing
             </Text>
 
-            <Picker
-              choices={programs}
+            <Dropdown
+              options={programs}
               control={null}
-              textStyle={"color-white"}
-              containerStyle={"w-1/4 mr-2 justify-center"}
-              inputStyle={"bg-gray-100"}
               callbackFunction={setSelectedProgram}
+              containerStyle={"w-1/4 mr-2"}
             />
           </View>
           <Divider />

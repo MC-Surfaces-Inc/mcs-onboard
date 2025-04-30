@@ -2,7 +2,7 @@ import React from "react";
 import { Text, View } from "react-native";
 import {
   paymentFrequency,
-  paymentType,
+  paymentType, states,
   yesOrNo,
 } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
@@ -14,6 +14,7 @@ import { useUpdateDetailsMutation } from "../services/client";
 import { toast } from "../components/toast";
 import Button from "../components/button";
 import { useSelector } from "react-redux";
+import Dropdown from "../components/dropdown";
 
 export default function AccountingInfoForm({ clientId, data }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -23,12 +24,11 @@ export default function AccountingInfoForm({ clientId, data }) {
 
   React.useEffect(() => {
     setValue("accounting_details", data);
+    console.log(data)
   }, [data, setValue]);
 
   const onSubmit = values => {
     setLoading(true);
-
-    console.log(values);
 
     updateDetails({
       id: clientId,
@@ -39,6 +39,7 @@ export default function AccountingInfoForm({ clientId, data }) {
     })
       .unwrap()
       .then(res => {
+        console.log(res);
         setLoading(false);
         toast.success({
           title: "Success!",
@@ -68,19 +69,19 @@ export default function AccountingInfoForm({ clientId, data }) {
 
       <View className={"flex-row m-2"}>
         <View className={"flex-1 mx-1"}>
-          <Picker
-            choices={paymentFrequency}
+          <Dropdown
+            title={"Payment Frequency"}
+            options={paymentFrequency}
             control={control}
             field={"accounting_details.paymentFrequency"}
-            title={"Payment Frequency"}
             disabled={isLocked}
           />
 
-          <Picker
-            choices={yesOrNo}
+          <Dropdown
+            title={"Autopay?"}
+            options={yesOrNo}
             control={control}
             field={"accounting_details.autopay"}
-            title={"Autopay?"}
             disabled={isLocked}
           />
 
@@ -89,13 +90,15 @@ export default function AccountingInfoForm({ clientId, data }) {
             title={"Email for Submitting Invoices"}
             field={"accounting_details.invoiceEmailAddress"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
+            autoCapitalize={"none"}
           />
 
-          <Picker
-            control={control}
+          <Dropdown
             title={"Payment Type"}
+            options={paymentType}
+            control={control}
             field={"accounting_details.paymentType"}
-            choices={paymentType}
             disabled={isLocked}
           />
 
@@ -104,41 +107,43 @@ export default function AccountingInfoForm({ clientId, data }) {
             title={"Payment URL"}
             field={"accounting_details.paymentURL"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
+            autoCapitalize={"none"}
           />
         </View>
 
         <Divider orientation={"vertical"} />
 
         <View className={"flex-1 mx-1"}>
-          <Picker
-            control={control}
+          <Dropdown
             title={"POs Required?"}
+            options={yesOrNo}
+            control={control}
             field={"accounting_details.poRequired"}
-            choices={yesOrNo}
             disabled={isLocked}
           />
 
-          <Picker
-            control={control}
+          <Dropdown
             title={"POs Required for Invoices?"}
+            options={yesOrNo}
+            control={control}
             field={"accounting_details.poInvoiceRequired"}
-            choices={yesOrNo}
             disabled={isLocked}
           />
 
-          <Picker
-            control={control}
+          <Dropdown
             title={"Approvals Required?"}
+            options={yesOrNo}
+            control={control}
             field={"accounting_details.approvalsRequired"}
-            choices={yesOrNo}
             disabled={isLocked}
           />
 
-          <Picker
+          <Dropdown
+            title={"Is the contract attached?"}
+            options={yesOrNo}
             control={control}
-            title={"Is the Contract Attached?"}
             field={"accounting_details.contractAttached"}
-            choices={yesOrNo}
             disabled={isLocked}
           />
         </View>
@@ -153,6 +158,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           field={"accounting_details.contactName"}
           containerStyle={"flex-1 mr-1"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -161,6 +167,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           field={"accounting_details.contactPhone"}
           containerStyle={"flex-1"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -169,6 +176,8 @@ export default function AccountingInfoForm({ clientId, data }) {
           field={"accounting_details.contactEmail"}
           containerStyle={"flex-1 ml-1"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
+          autoCapitalize={"none"}
         />
       </View>
 
@@ -180,6 +189,7 @@ export default function AccountingInfoForm({ clientId, data }) {
           title={"Notes"}
           field={"accounting_details.notes"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
 

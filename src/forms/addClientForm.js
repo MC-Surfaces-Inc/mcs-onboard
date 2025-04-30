@@ -14,6 +14,7 @@ import Animated, { useAnimatedStyle } from "react-native-reanimated";
 import { toast } from "../components/toast";
 import Button from "../components/button";
 import Divider from "../components/divider";
+import Dropdown from "../components/dropdown";
 
 export default function AddClientForm({ progress, width, isOpen }) {
   const user = useSelector(state => state.auth.user);
@@ -220,12 +221,11 @@ export default function AddClientForm({ progress, width, isOpen }) {
             title={"Corporate City"}
           />
 
-          <Picker
-            choices={states}
+          <Dropdown
+            title={"Corporate State"}
+            options={states}
             control={control}
             field={"address.state"}
-            title={"Corporate State"}
-            containerStyle={"bg-gray-100"}
           />
 
           <TextInput

@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
-import { countertops, yesOrNo } from "../constants/dropdownValues";
+import { carpet, countertops, yesOrNo } from "../constants/dropdownValues";
 import Loading from "../screens/loading";
 import {
   useGetClientProgramDetailsQuery,
@@ -14,6 +14,7 @@ import MultiLineText from "../components/multiLineText";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 import Button from "../components/button";
+import Dropdown from "../components/dropdown";
 
 export default function CountertopDetailsForm({ programs, clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -67,19 +68,19 @@ export default function CountertopDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={countertops.materialThickness}
+        <Dropdown
+          title={"Preferred Material Thickness"}
+          options={countertops.materialThickness}
           control={control}
           field={"countertops.preferredMaterialThickness"}
-          title={"Preferred Material Thickness"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={countertops.edges}
-          control={control}
-          field={"countertops.preferredEdge"}
+        <Dropdown
           title={"Preferred Edge"}
+          options={countertops.edges}
+          control={control}
+          field={"carpet.preferredEdge"}
           disabled={isLocked}
         />
       </View>
@@ -90,19 +91,19 @@ export default function CountertopDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={countertops.standardOrOption}
+        <Dropdown
+          title={"Waterfall Sides - std. or option?"}
+          options={countertops.standardOrOption}
           control={control}
           field={"countertops.waterfallEdgeStandard"}
-          title={"Waterfall Sides - Std. or Option?"}
           disabled={isLocked}
         />
 
-        <Picker
-          choices={yesOrNo}
+        <Dropdown
+          title={"Faucet Holes?"}
+          options={yesOrNo}
           control={control}
           field={"countertops.faucetHoles"}
-          title={"Faucet Holes?"}
           disabled={isLocked}
         />
 
@@ -111,6 +112,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
           field={"countertops.stoveRangeSpecifications"}
           title={"Stove Range Specs."}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
 
@@ -120,11 +122,11 @@ export default function CountertopDetailsForm({ programs, clientId }) {
         </Text>
         <Divider />
 
-        <Picker
-          choices={countertops.takeoffResp}
+        <Dropdown
+          title={"Who will be doing takeoffs?"}
+          options={countertops.takeoffResp}
           control={control}
           field={"countertops.takeoffResponsibility"}
-          title={"Who will be doing takeoffs?"}
           disabled={isLocked}
         />
 
@@ -134,6 +136,7 @@ export default function CountertopDetailsForm({ programs, clientId }) {
             field={"countertops.notes"}
             title={"Notes"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
           />
         </View>
       </View>

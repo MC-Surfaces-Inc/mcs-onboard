@@ -19,6 +19,8 @@ import Picker from "../components/picker";
 import TextInput from "../components/input";
 import Button from "../components/button";
 import { useSelector } from "react-redux";
+import TableInput from "../components/tableInput";
+import Dropdown from "../components/dropdown";
 
 export default function VinylPricingForm({ clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -160,33 +162,47 @@ export default function VinylPricingForm({ clientId }) {
         <Text className={"font-quicksand text-xl font-bold text-gray-800 m-3"}>
           LVP Pricing
         </Text>
-        <Menu>
-          <Menu.Title title={"Table Actions"} />
-          <Menu.Item
-            title={"Add Area Choice"}
-            onPress={() => setIsAdding(!isAdding)}
-            disabled={isLocked}
-          />
-          <Menu.Item
-            title={"Add Table Row(s)"}
-            onPress={() => append({ programTable: "", level: "", unit: "", totalCost: "" })}
-            disabled={isLocked}
-          />
-          <Divider />
-          <Menu.Item
-            title={"Delete"}
-            textStyle={"text-red-500 font-bold"}
+        <View className={"flex-row"}>
+          <IconButton
+            icon={
+              <FontAwesome5
+                name={"trash"}
+                size={20}
+                color={selectedItems.length === 0 || isLocked ? "#AEB6BF" : "#172554"}
+                className={"m-2"}
+              />
+            }
             onPress={() => onDelete(selectedItems)}
             disabled={selectedItems.length === 0 || isLocked}
+            className={"border border-gray-800 rounded-lg  mx-1 h-10 w-10"}
           />
-          <Divider />
-          <Menu.Item
-            title={"Save"}
-            textStyle={"text-green-500 font-bold"}
+          <IconButton
+            icon={
+              <FontAwesome5
+                name={"save"}
+                size={20}
+                color={"#172554"}
+                className={"m-2"}
+              />
+            }
             onPress={handleSubmit(onSubmit)}
             disabled={isLocked}
+            className={"border border-gray-800 rounded-lg  mx-1 h-10 w-10"}
           />
-        </Menu>
+          <Menu>
+            <Menu.Title title={"Table Actions"} />
+            <Menu.Item
+              title={"Add Area Choice"}
+              onPress={() => setIsAdding(!isAdding)}
+              disabled={isLocked}
+            />
+            <Menu.Item
+              title={"Add Table Row(s)"}
+              onPress={() => append({ programTable: "", level: "", unit: "", totalCost: "" })}
+              disabled={isLocked}
+            />
+          </Menu>
+        </View>
       </View>
 
       <Divider />
@@ -238,35 +254,39 @@ export default function VinylPricingForm({ clientId }) {
                 />
               </View>
 
-              <Picker
-                choices={areaChoices}
+              <Divider orientation={"vertical"} />
+              <Dropdown
+                options={areaChoices}
                 control={control}
                 field={`lvp[${item.index}].programTable`}
-                containerStyle={"w-1/4 my-0 -mt-1"}
-                inputStyle={"rounded-none"}
+                containerStyle={"w-1/4 my-0"}
+                inputStyle={"border-0"}
                 disabled={isLocked}
               />
-              <TextInput
+              <Divider orientation={"vertical"} />
+              <TableInput
                 control={control}
                 field={`lvp[${item.index}].level`}
                 containerStyle={"w-1/4 my-0"}
-                inputStyle={"rounded-none"}
+                inputStyle={"border-0"}
                 disabled={isLocked}
               />
-              <Picker
-                choices={units}
+              <Divider orientation={"vertical"} />
+              <Dropdown
+                options={units}
                 control={control}
                 field={`lvp[${item.index}].unit`}
-                containerStyle={"w-1/4 my-0 -mt-1"}
-                inputStyle={"rounded-none"}
+                containerStyle={"w-1/4 my-0"}
+                inputStyle={"border-0"}
                 disabled={isLocked}
               />
-              <TextInput
+              <Divider orientation={"vertical"} />
+              <TableInput
                 control={control}
                 field={`lvp[${item.index}].totalCost`}
                 containerStyle={"w-1/4 my-0"}
                 leftIcon={<FontAwesome5 name={"dollar-sign"} size={20} className={"mr-5"} color={"#172554"} />}
-                inputStyle={`${index === (fields.length - 1) ? "rounded-none" : "rounded-r-none rounded-br-md rounded-l-none"}`}
+                inputStyle={"border-0"}
                 disabled={isLocked}
               />
             </View>

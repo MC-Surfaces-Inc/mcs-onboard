@@ -144,7 +144,7 @@ export default function Table({
                             <FontAwesome5
                               name={selectedItems.some(obj => obj.id === item.id) ? "check-square" : "square"}
                               size={22}
-                              color={disabledCheckbox ? "#aeb6bf" : selectedItems.some(obj => obj.id === item.id) ? "#F97316" : "#172554"}
+                              color={disabledCheckbox ? "#AEB6BF" : selectedItems.some(obj => obj.id === item.id) ? "#F97316" : "#172554"}
                               className={"w-6 mx-2"}
                             />
                           }

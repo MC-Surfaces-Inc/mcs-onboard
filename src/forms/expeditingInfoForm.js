@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
-import { jobReleaseChoices, yesOrNo } from "../constants/dropdownValues";
+import { jobReleaseChoices, paymentType, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import Picker from "../components/picker";
 import Divider from "../components/divider";
@@ -10,6 +10,7 @@ import MultiLineText from "../components/multiLineText";
 import { useUpdateDetailsMutation } from "../services/client";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
+import Dropdown from "../components/dropdown";
 
 export default function ExpeditingInfoForm({ clientId, data }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -62,11 +63,11 @@ export default function ExpeditingInfoForm({ clientId, data }) {
 
       <View className={"flex-row m-2"}>
         <View className={"flex-1 mx-1"}>
-          <Picker
-            choices={yesOrNo}
+          <Dropdown
+            title={"Is there a vendor portal?"}
+            options={yesOrNo}
             control={control}
             field={"expediting_details.vendorPortal"}
-            title={"Is there a vendor portal?"}
             disabled={isLocked}
           />
 
@@ -75,13 +76,15 @@ export default function ExpeditingInfoForm({ clientId, data }) {
             field={"expediting_details.vendorPortalURL"}
             title={"Vendor Portal URL"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
+            autoCapitalize={"none"}
           />
 
-          <Picker
-            choices={yesOrNo}
+          <Dropdown
+            title={"Has the vendor portal account been created?"}
+            options={yesOrNo}
             control={control}
             field={"expediting_details.portalAccountCreated"}
-            title={"Has the vendor portal account been created?"}
             disabled={isLocked}
           />
 
@@ -90,6 +93,8 @@ export default function ExpeditingInfoForm({ clientId, data }) {
             field={"expediting_details.portalUsername"}
             title={"Portal Username"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
+            autoCapitalize={"none"}
           />
 
           <TextInput
@@ -97,25 +102,27 @@ export default function ExpeditingInfoForm({ clientId, data }) {
             field={"expediting_details.portalPassword"}
             title={"Portal Password"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
+            autoCapitalize={"none"}
           />
         </View>
 
         <Divider orientation={"vertical"} />
 
         <View className={"flex-1 mx-1"}>
-          <Picker
-            choices={jobReleaseChoices}
+          <Dropdown
+            title={"How are jobs released?"}
+            options={jobReleaseChoices}
             control={control}
             field={"expediting_details.jobReleaseMethod"}
-            title={"How are jobs released?"}
             disabled={isLocked}
           />
 
-          <Picker
-            choices={yesOrNo}
+          <Dropdown
+            title={"PO correction handling?"}
+            options={yesOrNo}
             control={control}
             field={"expediting_details.poErrorHandling"}
-            title={"PO Correction Handling?"}
             disabled={isLocked}
           />
 
@@ -124,13 +131,14 @@ export default function ExpeditingInfoForm({ clientId, data }) {
             field={"expediting_details.estimatedHomes"}
             title={"Estimated Number of Homes per Year"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
           />
 
-          <Picker
-            choices={yesOrNo}
+          <Dropdown
+            title={"Is the client using the In-House Program?"}
+            options={yesOrNo}
             control={control}
             field={"expediting_details.inHouseProgram"}
-            title={"Is the client using the In-House Program?"}
             disabled={isLocked}
           />
         </View>
@@ -144,6 +152,7 @@ export default function ExpeditingInfoForm({ clientId, data }) {
           title={"Notes"}
           field={"expediting_details.notes"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
     </View>

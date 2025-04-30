@@ -13,12 +13,13 @@ export default function Menu({ children }) {
         icon={
           <FontAwesome5
             name={"bars"}
-            size={24}
+            size={20}
             color={"#172554"}
-            className={"m-2 mx-4"}
+            className={"m-2"}
           />
         }
         onPress={() => setIsOpen(!isOpen)}
+        className={"border border-gray-800 rounded-lg  mx-1 h-10 w-10"}
       />
 
       {isOpen && (

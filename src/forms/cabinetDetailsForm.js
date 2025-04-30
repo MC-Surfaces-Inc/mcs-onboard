@@ -1,6 +1,6 @@
 import React from "react";
 import { Text, View } from "react-native";
-import { cabinets, yesOrNo } from "../constants/dropdownValues";
+import { cabinets, states, yesOrNo } from "../constants/dropdownValues";
 import {
   useGetClientProgramDetailsQuery,
   useUpdateProgramInfoMutation,
@@ -14,6 +14,7 @@ import Button from "../components/button";
 import Divider from "../components/divider";
 import { useSelector } from "react-redux";
 import { toast } from "../components/toast";
+import Dropdown from "../components/dropdown";
 
 export default function CabinetDetailsForm({ navigation, programs, clientId }) {
   const isLocked = useSelector(state => state.client.isLocked);
@@ -73,6 +74,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           field={"cabinets.preferredColors"}
           title={"Preferred Colors"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -80,6 +82,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           field={"cabinets.preferredStyle"}
           title={"Preferred Style"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -87,6 +90,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           field={"cabinets.overlay"}
           title={"Overlay"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -94,13 +98,14 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           field={"cabinets.preferredCrown"}
           title={"Preferences on Crown"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={cabinets.bidTypes}
+        <Dropdown
+          title={"Bid Type Preferences"}
+          options={cabinets.bidTypes}
           control={control}
           field={"cabinets.bidType"}
-          title={"Bid Type Preferences"}
           disabled={isLocked}
         />
       </View>
@@ -115,6 +120,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           field={"cabinets.upperCabinetSpecs"}
           title={"Upper Cabinet Standard Specs."}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
         <TextInput
@@ -122,13 +128,14 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           field={"cabinets.vanityHeightSpecs"}
           title={"Vanity Height Standard Specs."}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
 
-        <Picker
-          choices={yesOrNo}
+        <Dropdown
+          title={"Is soft close standard?"}
+          options={yesOrNo}
           control={control}
           field={"cabinets.softCloseStandard"}
-          title={"Is Soft Close Standard?"}
           disabled={isLocked}
         />
 
@@ -137,6 +144,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
           field={"cabinets.areasOptionedOut"}
           title={"Are Areas Optioned Out?"}
           disabled={isLocked}
+          inputStyle={"bg-gray-100"}
         />
       </View>
 
@@ -152,6 +160,7 @@ export default function CabinetDetailsForm({ navigation, programs, clientId }) {
             field={"cabinets.notes"}
             title={"Notes"}
             disabled={isLocked}
+            inputStyle={"bg-gray-100"}
           />
         </View>
       </View>
