@@ -9,7 +9,6 @@ import Loading from "../screens/loading";
 import TextInput from "../components/input";
 import { useForm } from "react-hook-form";
 import MultiLineText from "../components/multiLineText";
-import Picker from "../components/picker";
 import Button from "../components/button";
 import Divider from "../components/divider";
 import { useSelector } from "react-redux";

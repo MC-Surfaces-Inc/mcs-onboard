@@ -13,7 +13,6 @@ import { toast } from "../components/toast";
 import Button from "../components/button";
 import Menu from "../components/menu";
 import TextInput from "../components/input";
-import Picker from "../components/picker";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import IconButton from "../components/iconButton";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";

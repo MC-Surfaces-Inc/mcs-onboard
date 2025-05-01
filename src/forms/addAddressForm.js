@@ -2,7 +2,6 @@ import React from "react";
 import { View } from "react-native";
 import { states, types } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
-import Picker from "../components/picker";
 import { useCreateAddressMutation } from "../services/client";
 import { toast } from "../components/toast";
 import Button from "../components/button";

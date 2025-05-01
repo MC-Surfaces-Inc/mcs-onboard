@@ -4,7 +4,6 @@ import { carpet, yesOrNo } from "../constants/dropdownValues";
 import { useGetClientProgramDetailsQuery, useUpdateProgramInfoMutation } from "../services/client";
 import Loading from "../screens/loading";
 import { useForm } from "react-hook-form";
-import Picker from "../components/picker";
 import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
 import Button from "../components/button";

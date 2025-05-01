@@ -15,7 +15,6 @@ import { FlatList, View } from "react-native";
 import Menu from "../components/menu";
 import Divider from "../components/divider";
 import IconButton from "../components/iconButton";
-import Picker from "../components/picker";
 import TextInput from "../components/input";
 import Button from "../components/button";
 import { useSelector } from "react-redux";

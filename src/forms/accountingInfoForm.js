@@ -6,7 +6,6 @@ import {
   yesOrNo,
 } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
-import Picker from "../components/picker";
 import TextInput from "../components/input";
 import Divider from "../components/divider";
 import MultiLineText from "../components/multiLineText";

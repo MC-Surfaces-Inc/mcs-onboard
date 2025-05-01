@@ -1,9 +1,8 @@
 import React from "react";
 import { ScrollView, StyleSheet, Text, View } from "react-native";
-import { states, territories } from "../constants/dropdownValues";
+import { states, territories, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/input";
-import Picker from "../components/picker";
 import {
   useCreateAddressMutation, useCreateAirtableClientMutation,
   useCreateClientMutation, useCreateFolderMutation, useCreateInternalFolderMutation, useUpdateClientMutation,
@@ -195,12 +194,11 @@ export default function AddClientForm({ progress, width, isOpen }) {
             errorMessage={<ErrorMessage errors={errors} name={"client.name"} />}
           />
 
-          <Picker
-            choices={territories}
+          <Dropdown
+            title={"Territory"}
+            options={territories}
             control={control}
             field={"client.territory"}
-            title={"Territory"}
-            containerStyle={"bg-gray-100"}
           />
 
           <TextInput

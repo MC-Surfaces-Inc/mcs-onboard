@@ -6,7 +6,6 @@ import {
   useGetClientProgramDetailsQuery,
   useUpdateProgramInfoMutation,
 } from "../services/client";
-import Picker from "../components/picker";
 import Divider from "../components/divider";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/input";

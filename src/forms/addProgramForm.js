@@ -1,7 +1,6 @@
 import React from "react";
 import { useUpdateProgramsMutation } from "../services/client";
 import { useForm } from "react-hook-form";
-import Picker from "../components/picker";
 import { programs } from "../constants/dropdownValues";
 import { toast } from "../components/toast";
 import { View } from "react-native";

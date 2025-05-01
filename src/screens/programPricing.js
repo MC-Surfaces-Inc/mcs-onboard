@@ -1,6 +1,5 @@
 import React from "react";
 import { SafeAreaView, ScrollView, Text, View } from "react-native";
-import Picker from "../components/picker";
 import Toolbar from "../components/toolbar";
 import Divider from "../components/divider";
 import CarpetPricingForm from "../forms/carpetPricingForm";

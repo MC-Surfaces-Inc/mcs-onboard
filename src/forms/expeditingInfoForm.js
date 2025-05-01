@@ -2,7 +2,6 @@ import React from "react";
 import { Text, View } from "react-native";
 import { jobReleaseChoices, paymentType, yesOrNo } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
-import Picker from "../components/picker";
 import Divider from "../components/divider";
 import Button from "../components/button";
 import TextInput from "../components/input";

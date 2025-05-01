@@ -11,7 +11,6 @@ import Loading from "../screens/loading";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/input";
 import MultiLineText from "../components/multiLineText";
-import Picker from "../components/picker";
 import { toast } from "../components/toast";
 import { useSelector } from "react-redux";
 import Dropdown from "../components/dropdown";

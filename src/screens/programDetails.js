@@ -1,5 +1,4 @@
 import React from "react";
-import Picker from "../components/picker";
 import Divider from "../components/divider";
 import Toolbar from "../components/toolbar";
 import CabinetDetailsForm from "../forms/cabinetDetailsForm";

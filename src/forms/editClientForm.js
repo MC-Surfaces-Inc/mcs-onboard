@@ -3,7 +3,6 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { states, territories } from "../constants/dropdownValues";
 import { useForm } from "react-hook-form";
 import TextInput from "../components/input";
-import Picker from "../components/picker";
 import {
   useUpdateClientMutation,
 } from "../services/client";

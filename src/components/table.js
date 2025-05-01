@@ -5,7 +5,9 @@ import IconButton from "../components/iconButton";
 import Divider from "../components/divider";
 import Animated, { useAnimatedStyle, useSharedValue, withTiming } from "react-native-reanimated";
 import Input from "../components/input";
-import Picker from "../components/picker";
+import Dropdown from "../components/dropdown";
+import TableInput from "../components/tableInput";
+import { yesOrNo } from "~/src/constants/dropdownValues";
 
 export default function Table({
   title,
@@ -231,7 +233,7 @@ export default function Table({
                     if (isEditing) {
                       if (fieldTypes[cellIndex].type === "input") {
                         return (
-                          <Input
+                          <TableInput
                             key={cell.id}
                             control={control}
                             field={field}
@@ -243,15 +245,12 @@ export default function Table({
                         );
                       } else if (fieldTypes[cellIndex].type === "picker") {
                         return (
-                          <Picker
+                          <Dropdown
                             key={cell.id}
-                            choices={fieldTypes[cellIndex].choices}
+                            options={fieldTypes[cellIndex].choices}
                             control={control}
                             field={field}
-                            textStyle={"color-white"}
-                            containerStyle={`${columnStyle[cellIndex]} -mt-1`}
-                            inputStyle={`-mt-0.5 rounded-none`}
-                            // inputStyle={`bg-gray-100 rounded-lg pl-1 m-0 m-0`}
+                            disabled={isLocked}
                           />
                         );
                       }

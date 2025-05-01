@@ -133,16 +133,16 @@ export default function ClientProfile({ navigation, route }) {
         columnStyle={["w-2/12", "w-3/12", "w-2/12", "w-2/12", "w-1/12", "w-2/12"]}
         control={control}
         Form={<AddAddressForm clientId={clientId} selections={data.addresses} />}
-        fieldTypes={[
-          {type: "picker", choices: types, cellAction: null},
-          {type: "input", cellAction: null},
-          {type: "input", cellAction: null},
-          {type: "input", cellAction: null},
-          {type: "input", cellAction: null},
-          {type: "input", cellAction: null}
-        ]}
+        // fieldTypes={[
+        //   {type: "picker", choices: types, cellAction: null},
+        //   {type: "input", cellAction: null},
+        //   {type: "input", cellAction: null},
+        //   {type: "input", cellAction: null},
+        //   {type: "input", cellAction: null},
+        //   {type: "input", cellAction: null}
+        // ]}
         isLocked={!isLocked}
-        onEdit={handleSubmit(onEdit)}
+        // onEdit={handleSubmit(onEdit)}
         onDelete={onDelete}
         onCancel={() => console.log(data.addresses)}
       />
@@ -213,10 +213,10 @@ export default function ClientProfile({ navigation, route }) {
         columns={tableColumns.contacts}
         columnStyle={["w-3/12", "w-2/12", "w-4/12", "w-3/12"]}
         Form={<AddContactForm clientId={clientId} />}
-        fieldTypes={[{type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
+        // fieldTypes={[{type: "input"}, {type: "input"}, {type: "input"}, {type: "input"}]}
         isLocked={!isLocked}
         control={control}
-        onEdit={handleSubmit(onEdit)}
+        // onEdit={handleSubmit(onEdit)}
         onDelete={onDelete}
         onCancel={() => console.log(data.contacts)}
       />
