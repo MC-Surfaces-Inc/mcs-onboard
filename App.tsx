@@ -28,16 +28,16 @@ function App(): React.JSX.Element {
   const auth = useSelector((state: RootStateOrAny) => state.auth);
   React.useEffect(() => {
     const bootstrapAsync = async () => {
-      let userToken;
+      let refreshToken;
 
       try {
-        userToken = await AsyncStorage.getItem("userToken");
-        console.log("TOKEN : " + userToken);
+        refreshToken = await AsyncStorage.getItem("refreshToken");
+        console.log("TOKEN : " + refreshToken);
       } catch (e) {
         console.log(e);
       }
 
-      dispatch(saveToken(userToken));
+      dispatch(saveToken(refreshToken));
     };
 
     bootstrapAsync();

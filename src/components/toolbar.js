@@ -4,10 +4,47 @@ import { useDispatch } from "react-redux";
 import { clearToken } from "../features/auth/authSlice";
 import { useRoute } from "@react-navigation/native";
 import FontAwesome5 from "react-native-vector-icons/FontAwesome5";
+import axios from "axios";
+import Config from "react-native-config";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import {
+  AuthFlowType,
+  CognitoIdentityProviderClient, GlobalSignOutCommand,
+  InitiateAuthCommand,
+  RevokeTokenCommand,
+} from "@aws-sdk/client-cognito-identity-provider";
+
+const cognitoClient = new CognitoIdentityProviderClient({
+  region: "us-east-1"
+});
 
 export default function Toolbar({ navigation }) {
   const dispatch = useDispatch();
   const route = useRoute();
+
+  const signOut = async() => {
+    const url = `https://us-east-1wl8dvhdtk.auth.us-east-1.amazoncognito.com/logout?client_id=${Config.COGNITO_CLIENT_ID}&logout_uri=mcsurfacesinc.onboard://&redirect_uri=mcsurfacesinc.onboard://`;
+    // const refreshToken = await AsyncStorage.getItem("refreshToken");
+    // const command = new RevokeTokenCommand({
+    //   ClientId: Config.COGNITO_CLIENT_ID,
+    //   Token: refreshToken,
+    // });
+
+    // const command = new GlobalSignOutCommand({
+    //   AccessToken: refreshToken,
+    // });
+
+    dispatch(clearToken());
+    try {
+      // const response = await cognitoClient.send(command);
+      const response = await axios.get(url);
+      dispatch(clearToken());
+
+      console.log(response);
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
   return (
     <View className={"bg-gray-800 items-center justify-between rounded-r-md p-1 w-52"}>
@@ -66,7 +103,7 @@ export default function Toolbar({ navigation }) {
       </View>
 
       <View className={"w-full items-start"}>
-        <TouchableOpacity onPress={() => dispatch(clearToken())} className={"h-12"}>
+        <TouchableOpacity onPress={signOut} className={"h-12"}>
           <View className={`flex-row items-center px-1`}>
             <View className={"mr-5 my-2 w-8 items-center"}>
               <FontAwesome5

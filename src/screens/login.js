@@ -17,7 +17,7 @@ import {
   AuthFlowType,
   CognitoIdentityProviderClient, ConfirmForgotPasswordCommand,
   ConfirmSignUpCommand,
-  ForgotPasswordCommand,
+  ForgotPasswordCommand, GetUserCommand,
   InitiateAuthCommand,
   SignUpCommand,
 } from "@aws-sdk/client-cognito-identity-provider";
@@ -49,9 +49,6 @@ export default function Login() {
       dispatch(saveToken(token));
     }
   }, [data, token, setUser, saveToken, dispatch]);
-
-  console.log(isLoading);
-  console.log(data);
 
   const onPressSignUp = () => {
     openSignUp.value = true;
@@ -134,7 +131,7 @@ export default function Login() {
         if (response?.$metadata.httpStatusCode === 200) {
           // store token and redirect
           setEmail(values.email);
-          setToken(response.AuthenticationResult.AccessToken);
+          setToken(response.AuthenticationResult.RefreshToken);
 
           // // save user to auth slice
           // if (data.user) {
@@ -164,39 +161,31 @@ export default function Login() {
       const formattedUrl = new URL(url).searchParams;
       const code = formattedUrl.get("code");
 
-      console.log("CODE: " + code);
       if (code) {
-        // post code to retrieve token
-        await axios.post(`${Config.COGNITO_OAUTH_URI}/token`, {
-          grant_type: "authorization_code",
-          client_id: Config.COGNITO_CLIENT_ID,
-          code: code,
-          redirect_uri: "mcsurfacesinc.onboard://"
-        }, {
-          headers: {
-            "Content-Type": "application/x-www-form-urlencoded",
-          }
-        }).then(async (res) => {
-          let token = res.data.access_token;
-
-          await axios.get(`${Config.COGNITO_OAUTH_URI}/userInfo`, {
+        try {
+          const tokenExchangeResponse = await axios.post(`${Config.COGNITO_OAUTH_URI}/token`, {
+            grant_type: "authorization_code",
+            client_id: Config.COGNITO_CLIENT_ID,
+            code: code,
+            redirect_uri: "mcsurfacesinc.onboard://"
+          }, {
             headers: {
-              "Authorization": `Bearer ${token}`,
+              "Content-Type": "application/x-www-form-urlencoded",
             }
-          }).then(async (res) => {
-            // store token and redirect
-            setEmail(res.data.email);
-            setToken(token);
-          }).catch((err) => {
-            console.log(err);
           });
-        }).catch(err => {
-          console.log(err);
-        });
+
+          const command = new GetUserCommand({
+            AccessToken: tokenExchangeResponse.data.access_token
+          });
+          const userInfoResponse = await cognitoClient.send(command);
+
+          setEmail(userInfoResponse.UserAttributes.find(attr => attr.Name === "email").Value);
+          setToken(tokenExchangeResponse.data.access_token);
+        } catch (error) {
+          console.error(error);
+        }
       }
     });
-
-
 
     return (
       <Animated.View style={[styles.animatedView, bodyStyle]}>
@@ -711,7 +700,7 @@ export default function Login() {
   return (
     <View className={"min-w-full min-h-full justify-center items-center bg-gray-700 z-100"} style={{ zIndex: 100 }}>
       <View className={"w-1/3 h-24 items-center justify-center rounded-lg bg-gray-500 z-20"}>
-        <Text className={"font-quicksand font-bold text-3xl my-5 text-white"}>
+        <Text className={"font-quicksand text-3xl my-5 text-white"}>
           OnBoard by MCS
         </Text>
       </View>

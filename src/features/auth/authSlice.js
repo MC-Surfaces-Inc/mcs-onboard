@@ -13,10 +13,11 @@ export const authSlice = createSlice({
   initialState,
   reducers: {
     saveToken: (state, action) => {
+      AsyncStorage.setItem("refreshToken", action.payload);
       state.token = action.payload;
     },
     clearToken: state => {
-      AsyncStorage.removeItem("userToken");
+      AsyncStorage.removeItem("refreshToken");
       state.token = null;
     },
     setLoading: state => {
